@@ -1,0 +1,216 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Rafiki
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /users:
+    # our controller name
+    x-swagger-router-controller: users
+    get:
+      description: Obtener la lista de usuarios
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetUsersListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Añadir un nuevo usuario
+      # movie info to be stored
+      parameters:
+        - name: name
+          description: Atributos usuario
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /users/{id}:
+    # our controller name
+    x-swagger-router-controller: user
+    get:
+      description: Obtener un usuario
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetUserResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar un usuario
+      # define the parameters
+      parameters:
+        - name: id
+          description: User id
+          type: string
+          in: path
+          required: true
+        - name: name
+          description: Propiedades de User
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: Eliminar User
+      # define the parameters
+      parameters:
+        - name: id
+          description: User id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /hello:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: hello_world
+    get:
+      description: Returns 'Hello' to the caller
+      # used as the method name of the controller
+      operationId: hello
+      parameters:
+        - name: name
+          in: query
+          description: The name of the person to whom to say hello
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/HelloWorldResponse"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  HelloWorldResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  GetUsersListResponse:
+    required:
+      - users
+    properties:
+      # The array of movies
+      users:
+        type: array
+        items: 
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            rut:
+              type: string
+            mail:
+              type: string
+  User:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Nombre completo del usuario
+      rut:
+        type: string
+        description: RUT del usuario
+      mail:
+        type: string
+        description: Correo del usuario
+    required:
+      - name
+      - rut
+      - mail
+  GeneralResponse:
+    type: object
+    properties:
+      success:
+        type: number
+        description: returns 1 if successful
+      description:
+        type: string
+        description: a short comment 
+    required:
+      - success
+      - description
+  GetUserResponse:
+    required:
+      - id
+      - name
+      - rut
+    properties:
+      id:
+        type: string
+      name: 
+        type: string
+      rut:
+        type: string
+      mail:
+        type: string
