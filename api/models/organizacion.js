@@ -49,4 +49,4 @@ const OrganizacionSchema = new Schema ({
     //cursos: []
 });
 
-module.exports = mongoose.model('Organizacion', OrganizacionSchema);
+module.exports = mongoose.model('organizacion', OrganizacionSchema);

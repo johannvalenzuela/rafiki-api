@@ -24,12 +24,12 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   }
 });
 
-var ModelOrganizacion = require('./api/models/Organizacion');
+var ModelOrganizacion = require('./api/models/organizacion');
 
 app.get('/get', (req, res) => {
   ModelOrganizacion.find({}, (err, organizacion) => {
       console.log(organizacion.length);
-      if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
+      if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
       if(!organizacion) return res.status(400).send({message: 'No existe ninguna organizacion'});
 
       res.status(200).send({organizacion});
