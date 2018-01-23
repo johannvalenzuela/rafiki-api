@@ -24,3 +24,15 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
     console.log('try this:\ncurl http://127.0.0.1:' + port + '/users?name=Scott');
   }
 });
+
+var ModelAsignatura = require('./api/models/Asignatura');
+
+app.get('/pruebas', (req, res) => {
+  ModelAsignatura.find({}, (err, Asignatura) => {
+      console.log(Asignatura);
+      if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
+      if(!Asignatura) return res.status(400).send({message: 'No existe ninguna Asignatura'});
+
+      res.status(200).send({Asignatura});
+  });
+});
