@@ -26,13 +26,25 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
 
 var ModelOrganizacion = require('./api/models/organizacion');
 
-app.get('/get', (req, res) => {
+app.get('/organizacion', (req, res) => {
   ModelOrganizacion.find({}, (err, organizacion) => {
       console.log(organizacion.length);
       if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
       if(!organizacion) return res.status(400).send({message: 'No existe ninguna organizacion'});
 
       res.status(200).send({organizacion});
+  });
+});
+
+// Buscar por uno en especifico
+app.get('/organizacion/:id', (req, res) => {
+  let organizacionID = req.params.id;
+
+  ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
+    if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
+    if(!organizacion) return res.status(400).send({message: 'El usuario no existe'});
+    res.status(200).send({organizaciones : organizacion});
+    console.log(organizacion);
   });
 });
 

@@ -19,34 +19,34 @@ mongoose.connect(`mongodb://${username}:${password}@${host}:${port}/${database}`
 });
 
 const OrganizacionSchema = new Schema ({
-    // rbd: Number, // Codigo de cada establecimiento
-    nombre : String
-    // descripcion: String, 
-    // reconocimientoOficial: Date, // Fecha
-    // dependencia: String, // Subvencionado, Municipal, etc
-    // sostenedor: String, // Corporacion o Sociedad sostenedora
-    // orientacionReligiosa: String,
-    // direccion: {
-    //     calle: String,
-    //     region: String,
-    //     comuna: String
-    // },
-    // correo: String,
-    // telefono: String,
-    // web: String,
-    // director: String,
-    // fechaPostulacion:{
-    //     inicio: Date,
-    //     cierre: Date
-    // },
-    // mensualidad: Number,
-    // totalAlumnosMatriculados: Number,
-    // promAlumnosCurso: Number,
-    // puntajeSimce: Number,
-    // proyectosEducativos: Array,
+    nombre : String,
+    rbd: Number, // Codigo de cada establecimiento
+    descripcion: String, 
+    reconocimientoOficial: Date, // Fecha
+    dependencia: String, // Subvencionado, Municipal, etc
+    sostenedor: String, // Corporacion o Sociedad sostenedora
+    orientacionReligiosa: String,
+    direccion: {
+        calle: String,
+        region: String,
+        comuna: String
+    },
+    correo: String,
+    telefono: String,
+    web: String,
+    director: String,
+    fechaPostulacion:{
+        inicio: Date,
+        cierre: Date
+    },
+    mensualidad: Number,
+    totalAlumnosMatriculados: Number,
+    promAlumnosCurso: Number,
+    puntajeSimce: Number,
+    proyectosEducativos: Array,
     //nivelEnsenanza: [], // Media, Basica, PreKinder, etc
     //usuarios: [],
     //cursos: []
 });
 
-module.exports = mongoose.model('organizacion', OrganizacionSchema);
+module.exports = mongoose.model('organizaciones', OrganizacionSchema);

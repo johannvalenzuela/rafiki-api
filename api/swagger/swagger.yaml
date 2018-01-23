@@ -206,6 +206,64 @@ definitions:
               type: string
             mail:
               type: string
+  Organizacion:
+    type: object
+    properties:
+      _id:
+        type: string
+      nombre:
+        type: string
+      rbd:
+        type: number
+      descripcion:
+        type: string
+      reconocimientoOficial:
+        type: string
+        format: date
+      dependencia:
+        type: string
+      sostenedor:
+        type: string
+      orientacionReligiosa:
+        type: string
+      direccion:
+        type: object
+        properties:
+          calle:
+            type: string
+          region:
+            type: string
+          comuna:
+            type: string
+      correo:
+        type: string
+      telefono:
+        type: string
+      web:
+        type: string
+      director:
+        type: string
+      fechaPostulacion:
+        type: object
+        properties:
+          inicio:
+            type: string
+            format: date
+          cierre:
+            type: string
+            format: date
+      mensualidad:
+        type: number
+      totalAlumnosMatriculados:
+        type: number
+      promAlumnosCurso:
+        type: number
+      puntaje:
+        type: number
+      proyectosEducativos:
+        type: array
+        items: 
+          type: string
   User:
     type: object
     properties:
