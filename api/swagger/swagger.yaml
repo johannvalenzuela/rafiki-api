@@ -24,6 +24,7 @@ paths:
     get:
       description: Obtener la lista de usuarios
       # define the type of response for Success "200" and Error
+      operationId: hello
       responses:
         "200":
           description: Success
