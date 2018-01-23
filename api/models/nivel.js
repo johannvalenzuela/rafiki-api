@@ -9,8 +9,6 @@ const Schema = mongoose.Schema;
 //mongoose.connect('mongodb://localhost/niveles'); // CONEXIÓN LOCAL 
 
 
-//mongoose.connect('mongodb://Rafiki:#Zeus2018@54.233.193.162/niveles');
-
 var username = 'Rafiki';
 var password = encodeURIComponent('#Zeus2018');
 var database = 'admin';
@@ -29,7 +27,7 @@ mongoose.connect(`mongodb://${username}:${password}@${host}:${port}/${database}`
 const NivelSchema = Schema({
     sigla: String, 
     tipo_nivel: String,
-    grado: String,
+    grado: Number,
     descripcion: String,
     decreto: String
  
