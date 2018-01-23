@@ -1,11 +1,24 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+// const bodyParser = require('body-parser');
+// const path = require('path');
+
+// const mongoose = require('mongoose');
+
+// const Schema = mongoose.Schema;
+// const model = require('./api/models/organizacion');
+
+
+// var organizacionSchema = new Schema(model);
+// var Organizacion = mongoose.model("Organizacion",organizacionSchema);
+
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 module.exports = app; // for testing
+
+// app.use(bodyParser.urlencoded({extended: false }));
+// app.use(bodyParser.json());
 
 var config = {
   appRoot: __dirname // required config
@@ -28,6 +41,8 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   }
 });
 
+// // ruta de la pagina HOME
+// app.get('/', (req, res) => res.send('Hello World!'));
 
-// Coneccion con mongoose
-mongoose.connect('mongodb://localhost/rafiki', { useMongoClient: true })
+// // Coneccion con mongoose
+// mongoose.connect('mongodb://localhost/rafiki', { useMongoClient: true })
