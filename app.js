@@ -25,14 +25,15 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   }
 });
 
+// pruebas
 var ModelAsignatura = require('./api/models/Asignatura');
 
 app.get('/pruebas', (req, res) => {
-  ModelAsignatura.find({}, (err, Asignatura) => {
-      console.log(Asignatura);
-      if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
-      if(!Asignatura) return res.status(400).send({message: 'No existe ninguna Asignatura'});
+  ModelAsignatura.find({}, (err, Asignaturas) => {
+      console.log(Asignaturas);
+      if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
+      if(!Asignaturas) return res.status(400).send({message: 'No existe ninguna Asignatura'});
 
-      res.status(200).send({Asignatura});
+      res.status(200).send({Asignaturas});
   });
 });

@@ -2,7 +2,20 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 // realizando conexion con la bd
-mongoose.connect('mongodb://localhost/pruebas');
+var username = 'Rafiki';
+var password = encodeURIComponent('#Zeus2018');
+var database = 'admin';
+var port = '27017';
+var host = '54.233.193.162';
+
+
+// Añadir conexion con MongoDB aqui
+mongoose.connect(`mongodb://${username}:${password}@${host}:${port}/${database}`, (err, res) => {
+    if(err) {
+        return console.log(`Error al conectarse a la BD: ${err}`);
+    }
+    console.log('Conexion con la BD OK...!');
+});
 
 const AsignaturaSchema = new Schema ({
     //id: String, // Codigo de cada establecimiento
@@ -17,14 +30,3 @@ const AsignaturaSchema = new Schema ({
 });
 
 module.exports = mongoose.model('Asignatura', AsignaturaSchema);
-
-
-// app.get('/pruebas', (req, res) => {
-//     ModelOrganizacion.find({}, (err, organizacion) => {
-//         console.log(organizacion);
-//         if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
-//         if(!organizacion) return res.status(400).send({message: 'No existe ninguna organizacion'});
-
-//         res.status(200).send({organizacion});
-//     });
-// });
