@@ -24,3 +24,15 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
     console.log('try this:\ncurl http://127.0.0.1:' + port + '/users?name=Scott');
   }
 });
+
+var ModelCurso = require('./api/models/curso');
+
+app.get('/cursos', (req, res) => {
+  ModelCurso.find({}, (err, curso) => {
+      console.log(curso);
+      if(err) return res.status(500).send({message: "Error al realizar peticion: ${err}"});
+      if(!curso) return res.status(400).send({message: 'No existe ningún curso'});
+
+      res.status(200).send({curso});
+  });
+});
