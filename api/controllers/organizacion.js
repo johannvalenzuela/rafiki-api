@@ -25,20 +25,35 @@ var util = require('util');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  organizacion: organizacion
+  getOrganizaciones: getOrganizaciones,
+  getOrganizacion: getOrganizacion
 };
 
+var ModelOrganizacion = require('../../api/models/organizacion');
 /*
   Functions in a127 controllers used for operations should take two parameters:
 
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function organizacion(req, res) {
-  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var name = req.swagger.params.name.value || 'stranger';
-  var hello = util.format('ORGANIZACION %s!', name);
+function getOrganizaciones(req, res) {
+  ModelOrganizacion.find({}, (err, organizacion) => {
+    console.log(organizacion.length);
+    if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
+    if(!organizacion) return res.status(400).send({message: 'No existe ninguna organizacion'});
 
-  // this sends back a JSON response which is a single string
-  res.json(hello);
+    res.status(200).send({organizacion});
+  });
+}
+
+function getOrganizacion(req, res) {
+  let organizacionID = req.params.id;
+  console.log(organizacionID);
+
+  ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
+    if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
+    if(!organizacion) return res.status(400).send({message: 'El usuario no existe'});
+    res.status(200).send({organizacion});
+    console.log(organizacion);
+  });
 }
