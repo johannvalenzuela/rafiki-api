@@ -1,5 +1,8 @@
 'use strict';
 
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 module.exports = app; // for testing
@@ -24,3 +27,7 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
     console.log('try this:\ncurl http://127.0.0.1:' + port + '/users?name=Scott');
   }
 });
+
+
+// Coneccion con mongoose
+mongoose.connect('mongodb://localhost/rafiki', { useMongoClient: true })
