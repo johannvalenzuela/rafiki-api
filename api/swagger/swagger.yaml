@@ -18,6 +18,7 @@ consumes:
 produces:
   - application/json
 paths:
+  
   /users:
     # our controller name
     x-swagger-router-controller: users
@@ -214,3 +215,22 @@ definitions:
         type: string
       mail:
         type: string
+  Curso:
+    type: object
+    properties:
+      idCurso:
+        type: string
+        description: Sigla del curso (Ejemplo 1A)
+      nivel:
+        type: string
+        description: Nivel educacional del curso
+      profesorJefe:
+        type: string
+        description: Nombre del profesor jefe del curso
+      sala:
+        type: string
+        description: Sala del curso
+      totalAlumnos:
+        type: number
+        description: Cantidad total de alumnos del curso
+   
