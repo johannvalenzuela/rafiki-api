@@ -27,6 +27,7 @@ var ModelAsignatura = require('../../api/models/Asignatura');
  */
 module.exports = {
   getAsignaturas: getAsignaturas,
+  postAsignatura: postAsignatura,
   getAsignatura: getAsignatura,
   updateAsignatura: updateAsignatura,
   deleteAsignatura: deleteAsignatura
@@ -38,38 +39,110 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
+// Listar Asignaturas
 function getAsignaturas(req, res) {
   ModelAsignatura.find({}, (err, Asignaturas) => {
     console.log(Asignaturas);
-    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
-    if (!Asignaturas) return res.status(400).send({ message: 'No existe ninguna Asignatura' });
-    res.status(200).send({ Asignaturas });
+    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
+    if (!Asignaturas) return res.status(400).json({ message: 'No existe ninguna Asignatura' });
+    res.status(200).json({ Asignaturas });
   });
 }
 
+function postAsignatura(req, res) {
+  ModelNivel.create(request.body, function (err, nivel) {
+    nivel.save(function(err){
+      if (err){
+        response.status(500).send(Responses.getError({message: err.message}));
+        return;
+      }
+      console.log(nivel);
+
+      response.status(200).json({ 
+        sigla : nivel.sigla,
+        tipo_nivel : nivel.tipo_nivel,
+        grado : nivel.grado,
+        descripcion : nivel.descripcion,
+        decreto : nivel.decreto
+      });
+    })
+  });
+}
+// POST
+// function createNivel(request, response) {
+//   ModelNivel.create(request.body, function (err, nivel) {
+//     nivel.save(function(err){
+//       if (err){
+//         response.status(500).send(Responses.getError({message: err.message}));
+//         return;
+//       }
+//       console.log(nivel);
+
+//       response.status(200).json({ 
+//         sigla : nivel.sigla,
+//         tipo_nivel : nivel.tipo_nivel,
+//         grado : nivel.grado,
+//         descripcion : nivel.descripcion,
+//         decreto : nivel.decreto
+//       });
+//     })
+//   });
+// }
+
+//Listar Asignatura por ID
 function getAsignatura(req, res) {
-  // let asignaturaID = req.params.id;
   let asignaturaID = req.swagger.params.id.value
   ModelAsignatura.findById(asignaturaID, (err, asignatura) => {
-    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
-    if (!asignatura) return res.status(400).send({ message: 'La asignatura no existe' });
-    res.status(200).send({ asignaturas: asignatura });
+    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
+    if (!asignatura) return res.status(400).json({ message: 'La asignatura no existe' });
+    res.status(200).json({ asignaturas: asignatura });
     console.log(asignatura);
   });
 }
+// function updateCustomer(request, response) {
+//   let id = request.swagger.params.id.value;
+//   Customer.findById(id, function(err, customer) {
+//     if (err) {
+//       response.status(500).send(Responses.getError({message: err.message}));
+//       return;
+//     }
+//     if (!customer) {
+//       response.status(404).send(Responses.getError({message: Customer ${id} not found.}));
+//       return;
+//     }
+//     customer = Object.assign(customer, request.body);
+//     customer.save(id, function (err, customer) {
+//       if (err) {
+//         response.status(500).send(Responses.getError({message: err.message}));
+//       }
 
+//       response.json(customer);
+//     });
+//   });
+// }
+
+//update !!!ARREGLAR!!!
 function updateAsignatura(req, res) {
+  let asignaturaID = req.swagger.params.id.value;
+  let update = req.swagger.params.body;
 
+  ModelAsignatura.findByIdAndUpdate(asignaturaID, update, (err, asignaturaUpdate) => {
+    if (err) return res.status(500).json({ message: `Error al actualizar la asignatura: ${err}` });
+
+    res.status(200).json({ Productos: asignaturaUpdate });
+    console.log(asignaturaUpdate);
+  });
 }
 
+//delete
 function deleteAsignatura(req, res) {
   let asignaturaID = req.swagger.params.id.value
   ModelAsignatura.findById(asignaturaID, (err, asignatura) => {
-    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
 
     asignatura.remove(err => {
-      if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
-      res.status(200).send({ message: 'La Asignatura fue eliminada con exito' });
+      if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
+      res.status(200).json({ message: 'La Asignatura fue eliminada con exito' });
     });
   });
 }

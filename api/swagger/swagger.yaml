@@ -33,6 +33,25 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Añadir un nuevo usuario
+      # movie info to be stored
+      parameters:
+        - name: name
+          description: Atributos usuario
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Asignatura"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /asignaturas/{id}:
     # our controller name
     x-swagger-router-controller: asignatura
@@ -56,6 +75,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     put:
       description: Actualizar una asignatura
+      operationId: updateAsignatura
       # define the parameters
       parameters:
         - name: id
@@ -63,7 +83,7 @@ paths:
           in: path
           required: true
         - name: name
-          description: Propiedades de User
+          description: Propiedades de Asignatura
           in: body
           required: true
           schema:
@@ -72,7 +92,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/GeneralResponse"
         default:
           description: Error
           schema:
@@ -129,7 +149,6 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-    
   /users/{id}:
     # our controller name
     x-swagger-router-controller: user
@@ -276,6 +295,9 @@ definitions:
       horasPedagogicasSinJecSemanal:
         type: number
         description: Numero de horas semanales sin jornada escolar completa
+    required:
+      - nombre
+      - enfasis
   User:
     type: object
     properties:
