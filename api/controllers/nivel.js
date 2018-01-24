@@ -104,6 +104,7 @@ function getNivelId(req, res) {
 // 	});
 // }
 
+// POST
 function createNivel(request, response) {
   ModelNivel.create(request.body, function (err, nivel) {
     nivel.save(function(err){
@@ -121,6 +122,28 @@ function createNivel(request, response) {
         decreto : nivel.decreto
       });
     })
+  });
+}
+
+function updateNivel(request, response) {
+  let id = request.swagger.params.id.value;
+  ModelNivel.findById(id, function(err, nivel) {
+    if (err) {
+      response.status(500).send(Responses.getError({message: err.message}));
+      return;
+    }
+    if (!nivel) {
+      response.status(404).send(Responses.getError({message: `nivel ${id} not found.`}));
+      return;
+    }
+    nivel = Object.assign(nivel, request.body);
+    nivel.save(id, function (err, nivel) {
+      if (err) {
+        response.status(500).send(Responses.getError({message: err.message}));
+      }
+
+      response.json(nivel);
+    });
   });
 }
 
