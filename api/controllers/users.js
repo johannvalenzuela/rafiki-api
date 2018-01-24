@@ -4,6 +4,9 @@
  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
 */
 
+const mongoose = require('mongoose');
+const User = mongoose.model('Users');
+
 /*
  Modules make it possible to import JavaScript files into your application.  Modules are imported
  using 'require' statements that give you a reference to the module.
@@ -25,7 +28,9 @@ var util = require('util');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  users: users
+  getUsers: getUsers,
+  postUser: postUser,
+  deleteUser: deleteUser
 };
 
 /*
@@ -34,11 +39,60 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function users(req, res) {
+function getUsers(req, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var name = req.swagger.params.name.value || 'stranger';
-  var hello = util.format('USUARIOOOOOOOOOOOOOOOOOOOOOOOOOO %s!', name);
+  User.find({}, function(err, users) {
+    if (err)
+      res.send(err);
+    res.json(users);
+  });
+}
 
-  // this sends back a JSON response which is a single string
-  res.json(hello);
+/*
+  Functions in a127 controllers used for operations should take two parameters:
+
+  Param 1: a handle to the request object
+  Param 2: a handle to the response object
+ */
+function postUser(req, res) {
+  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
+  User.create(req.body, function (err,newuser){
+    newuser.save(function(err) {
+      if (err)
+        res.status(500).send(err);
+      console.log(newuser);
+      res.status(200).json(newuser);
+    });
+  })
+
+}
+
+/**
+ * @param {Object} req: a handle to the request object
+ * @param {Object} res: a handle to the response object
+ */
+function deleteCustomer(req, res){
+  let id = req.swagger.params.id.value;
+  User.findById(id, function(err, user) {
+    if (err) {
+      res.status(500).send({});
+      return;
+    }
+    if (!user) {
+      res.status(404).json({
+        message: "Usuario no encontrado"
+      });
+      return;
+    }
+    user.remove(id, function (err, deletedUser) {
+      if (err) {
+        res.status(500).json({});
+      }
+
+      res.status(200).json({
+        success:1,
+        message: "Usuario eliminado"
+      });
+    });
+  });
 }
