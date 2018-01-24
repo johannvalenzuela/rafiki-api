@@ -27,7 +27,9 @@ var ModelNivel = require('../../api/models/nivel');
  */
 module.exports = {
   get_sigla: get_sigla,
-  get_niveles: get_niveles
+  get_niveles: get_niveles,
+  get_nivel_id: get_nivel_id
+
 };
 
 /*
@@ -45,17 +47,31 @@ function get_sigla(req, res) {
   res.json('Sigla Nivel académico: ' + nivel);
 }
 function get_niveles (req, res){
-  
-
   ModelNivel.find({}, (err, nivel) => {
       if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
       if(!nivel) return res.status(400).send({message: 'No existe ningún nivel'});
 
       res.json(nivel)
-      //res.status(200).send({nivel});
+      //res.status(200).send({nivel}); esto da error!!
       console.log(nivel);
   });
 
 }
 
+function get_nivel_id (req, res) {
+
+  let nivelId = req.swagger.params._id.value;
+
+  ModelNivel.findById(nivelId, (err, nivel) => {
+
+    // captura de errores 
+    if(err) return res.status(500).send({message: 'Error al realizar peticion'})
+    if(!nivel) return res.status(404).send({message: 'no existe la pelicula'})
+
+    res.json(nivel)
+      //res.status(200).send({nivel}); esto da error!!
+      console.log(nivel);
+  })
+
+})
 
