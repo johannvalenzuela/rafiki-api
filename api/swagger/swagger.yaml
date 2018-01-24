@@ -56,7 +56,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /users/{id}:
     # our controller name
-    x-swagger-router-controller: user
+    x-swagger-router-controller: users
     get:
       description: Obtener un usuario
       # define the type of response for Success "200" and Error
@@ -101,6 +101,7 @@ paths:
     delete:
       description: Eliminar User
       # define the parameters
+      operationId: deleteUser
       parameters:
         - name: id
           description: User id

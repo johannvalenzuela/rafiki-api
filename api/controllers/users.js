@@ -71,27 +71,34 @@ function postUser(req, res) {
  * @param {Object} req: a handle to the request object
  * @param {Object} res: a handle to the response object
  */
-function deleteCustomer(req, res){
+function deleteUser(req, res){
   let id = req.swagger.params.id.value;
   User.findById(id, function(err, user) {
     if (err) {
-      res.status(500).send({});
+      res.status(500).send({
+        success:0,
+        message: "Usuario no encontrado."
+      });
       return;
     }
     if (!user) {
       res.status(404).json({
-        message: "Usuario no encontrado"
+        success:0,
+        message: "Usuario no existe."
       });
       return;
     }
     user.remove(id, function (err, deletedUser) {
       if (err) {
-        res.status(500).json({});
+        res.status(500).json({
+          success:0,
+          message: "No se puede eliminar al usuario."
+        });
       }
 
       res.status(200).json({
         success:1,
-        message: "Usuario eliminado"
+        message: "Usuario eliminado."
       });
     });
   });
