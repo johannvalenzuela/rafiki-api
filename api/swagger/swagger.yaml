@@ -18,13 +18,48 @@ consumes:
 produces:
   - application/json
 paths:
+  /lista_niveles:
+    # our controller name
+    x-swagger-router-controller: nivel
+    get:
+      description: Obtener la lista de niveles académicos
+      operationId: get_niveles
+          
+     # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GetUsersListResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Añadir un nuevo usuario
+      # movie info to be stored
+      parameters:
+        - name: name
+          description: Atributos usuario
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /users:
     # our controller name
     x-swagger-router-controller: users
     get:
       description: Obtener la lista de usuarios
       # define the type of response for Success "200" and Error
-      operationId: hello
       responses:
         "200":
           description: Success

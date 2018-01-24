@@ -11,6 +11,7 @@
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
 var util = require('util');
+var ModelNivel = require('../../api/models/nivel');
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -25,7 +26,8 @@ var util = require('util');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  get_nivel: get_nivel
+  get_sigla: get_sigla,
+  get_niveles: get_niveles
 };
 
 /*
@@ -34,13 +36,26 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function get_nivel(req, res) {
+function get_sigla(req, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
   var nivel = req.swagger.params.sigla.value;
   
 
   // this sends back a JSON response which is a single string
-  res.json(nivel);
+  res.json('Sigla Nivel académico: ' + nivel);
+}
+function get_niveles (req, res){
+  
+
+  ModelNivel.find({}, (err, nivel) => {
+      if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
+      if(!nivel) return res.status(400).send({message: 'No existe ningún nivel'});
+
+      res.json(nivel)
+      //res.status(200).send({nivel});
+      console.log(nivel);
+  });
+
 }
 
 
