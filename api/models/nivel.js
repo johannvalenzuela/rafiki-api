@@ -33,4 +33,4 @@ const NivelSchema = Schema({
  
 })
 
-module.exports = mongoose.model('niveles', NivelSchema)
+module.exports = mongoose.model('Nivel', NivelSchema)
