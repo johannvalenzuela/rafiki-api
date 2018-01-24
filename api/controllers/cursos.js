@@ -27,7 +27,11 @@ var ModelCurso = require('../../api/models/curso');
  */
 module.exports = {
   getCursos: getCursos,
-  getCursoId: getCursoId
+  getCursoId: getCursoId,
+ // putCurso: putCurso,
+  //deleteCurso: deleteCurso,
+  //postCurso: postCurso
+
 };
 
 /*
@@ -46,11 +50,13 @@ function getCursos(req, res) {
 });
 }
 
-/*
+
 
 function getCursoId(req, res) {
   
-  let cursoId = req.params.id;
+  //let cursoId = req.params.id;
+
+  let cursoId = req.swagger.params.id.value
 
   ModelCurso.findById(cursoId, (err, curso) => {
     if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
@@ -59,7 +65,7 @@ function getCursoId(req, res) {
     //console.log(curso);
   });
 }
-
+/*
 //API REST: POST
 
 function postCurso(req, res) {
