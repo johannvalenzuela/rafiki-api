@@ -30,7 +30,7 @@ module.exports = {
   get_sigla: get_sigla,
   get_niveles: get_niveles,
   getNivelId: getNivelId,
-  postNivel: postNivel
+  createNivel: createNivel
 
 };
 
@@ -61,32 +61,66 @@ function get_niveles (req, res){
 }
 
 function getNivelId(req, res) {
+
+  let id = req.swagger.params.id.value;
+  ModelNivel.findById(id, function(err, nivel){
+    if (err){
+      res.status(500).send(res.getError({message: err.message}));
+      return;
+    }
+    if (!nivel){
+      res.status(404).send(res.getError({message: `nivel ${id} not found.`}));
+      return;
+    }
+
+    res.json(nivel);
+});
   
-  //let cursoId = req.params.id;
+  // //let cursoId = req.params.id;
 
-  let nivelId = req.swagger.params.id.value
+  // let nivelId = req.swagger.params.id.value
 
-  ModelNivel.findById(nivelId, (err, nivel) => {
-    if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
-    if(!nivel) return res.status(400).send({message: 'El nivel no existe'});
-    res.status(200).send({nivel});
+  // ModelNivel.findById(nivelId, (err, nivel) => {
+  //   if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
+  //   if(!nivel) return res.status(400).send({message: 'El nivel no existe'});
+  //   res.status(200).send({nivel});
 
-    console.log(nivel);
-  });
+  //   console.log(nivel);
+  // });
 }
 
-function postNivel(req, res) {
+// function postNivel(req, res) {
   
-  let nivel = new Nivel()
-	nivel.sigla = req.body.sigla
-  nivel.tipo_nivel = req.body.tipo_nivel
-  nivel.grado = req.body.grado
-  nivel.descripcion = req.body.descripcion
-  nivel.decreto = req.body.decreto
+//   let nivel = new Nivel()
+// 	nivel.sila = req.body.sigla
+//   nivel.tipo_nivel = req.body.tipo_nivel
+//   nivel.grado = req.body.grado
+//   nivel.descripcion = req.body.descripcion
+//   nivel.decreto = req.body.decreto
 
-	ModelNivel.save((err, nivelGuardado) =>{
-		if (err) return res.status(500).send({message: "Error al salvar la BD: ${err}"})
-		res.status(200).send({nivel: nivelGuardado})
-	});
+// 	ModelNivel.save((err, nivelGuardado) =>{
+// 		if (err) return res.status(500).send({message: "Error al salvar la BD: ${err}"})
+// 		res.status(200).send({nivel: nivelGuardado})
+// 	});
+// }
+
+function createNivel(request, response) {
+  ModelNivel.create(request.body, function (err, nivel) {
+    nivel.save(function(err){
+      if (err){
+        response.status(500).send(Responses.getError({message: err.message}));
+        return;
+      }
+      console.log(nivel);
+
+      response.status(200).json({ 
+        sigla : nivel.sigla,
+        tipo_nivel : nivel.tipo_nivel,
+        grado : nivel.grado,
+        descripcion : nivel.descripcion,
+        decreto : nivel.decreto
+      });
+    })
+  });
 }
 
