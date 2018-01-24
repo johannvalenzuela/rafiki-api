@@ -11,6 +11,7 @@
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
 var util = require('util');
+var ModelAsignatura = require('../../api/models/Asignatura');
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -25,7 +26,9 @@ var util = require('util');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  get_asignatura: get_asignatura
+  getAsignaturas: getAsignaturas,
+  getAsignatura: getAsignatura,
+  deleteAsignatura: deleteAsignatura
 };
 
 /*
@@ -34,10 +37,26 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function get_asignatura(req, res) {
-  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var asignatura = req.swagger.params.name.value || 'stranger';
+function getAsignaturas(req, res) {
+  ModelAsignatura.find({}, (err, Asignaturas) => {
+    console.log(Asignaturas);
+    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+    if (!Asignaturas) return res.status(400).send({ message: 'No existe ninguna Asignatura' });
+    res.status(200).send({ Asignaturas });
+  });
+}
 
-  // this sends back a JSON response which is a single string
-  res.json(asignatura);
+function getAsignatura(req, res) {
+  // let asignaturaID = req.params.id;
+  let asignaturaID = req.swagger.params.id.value
+  ModelAsignatura.findById(asignaturaID, (err, asignatura) => {
+    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+    if (!asignatura) return res.status(400).send({ message: 'La asignatura no existe' });
+    res.status(200).send({ asignaturas: asignatura });
+    console.log(asignatura);
+  });
+}
+
+function deleteAsignatura(req, res) {
+
 }
