@@ -31,7 +31,8 @@ module.exports = {
   get_niveles: get_niveles,
   getNivelId: getNivelId,
   createNivel: createNivel,
-  updateNivel: updateNivel
+  updateNivel: updateNivel,
+  deleteNivel: deleteNivel
 
 };
 
@@ -66,11 +67,11 @@ function getNivelId(req, res) {
   let id = req.swagger.params.id.value;
   ModelNivel.findById(id, function(err, nivel){
     if (err){
-      res.status(500).send(res.getError({message: err.message}));
+      res.status(500).send(Responses.getError({message: err.message}));
       return;
     }
     if (!nivel){
-      res.status(404).send(res.getError({message: `nivel ${id} not found.`}));
+      res.status(404).send(Responses.getError({message: `nivel ${id} not found.`}));
       return;
     }
 
@@ -144,6 +145,27 @@ function updateNivel(request, response) {
       }
 
       response.json(nivel);
+    });
+  });
+}
+
+function deleteNivel(request, response){
+  let id = request.swagger.params.id.value;
+  ModelNivel.findById(id, function(err, nivel) {
+    if (err) {
+      response.status(500).send(Responses.getError({message: err.message}));
+      return;
+    }
+    if (!nivel) {
+      response.status(404).send(Responses.getError({message:  `El nivel ${id} no ha sido encontrado.`}));
+      return;
+    }
+    nivel.remove(id, function (err, nivel) {
+      if (err) {
+        response.status(500).send(Responses.getError({message: err.message}));
+      }
+
+      response.json(Responses.getSuccess({message: `Nivel ${id} eliminado.`}));
     });
   });
 }
