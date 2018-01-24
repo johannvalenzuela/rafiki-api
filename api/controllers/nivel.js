@@ -28,7 +28,8 @@ var ModelNivel = require('../../api/models/nivel');
 module.exports = {
   get_sigla: get_sigla,
   get_niveles: get_niveles,
-  get_nivel_id: get_nivel_id
+  getNivelId: getNivelId,
+  postNivel: postNivel
 
 };
 
@@ -58,21 +59,33 @@ function get_niveles (req, res){
 
 }
 
-function get_nivel_id (req, res) {
+function getNivelId(req, res) {
+  
+  //let cursoId = req.params.id;
 
-  let nivelId = req.swagger.params.id.value;
- //res.json(nivelId);
-
+  let nivelId = req.swagger.params.id.value
 
   ModelNivel.findById(nivelId, (err, nivel) => {
+    if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
+    if(!nivel) return res.status(400).send({message: 'El nivel no existe'});
+    res.status(200).send({nivel});
 
-    // captura de errores 
-    if(err) return res.status(500).send({message: 'Error al realizar peticion'})
-    if(!nivel) return res.status(404).send({message: 'No existe el nivel'})
-    //res.json(nivelId);
-    res.json(nivelId);
     console.log(nivel);
   });
+}
 
+function postNivel(req, res) {
+  
+  let nivel = new Nivel()
+	nivel.sigla = req.body.sigla
+  nivel.tipo_nivel = req.body.tipo_nivel
+  nivel.grado = req.body.grado
+  nivel.descripcion = req.body.descripcion
+  nivel.decreto = req.body.decreto
+
+	ModelNivel.save((err, nivelGuardado) =>{
+		if (err) return res.status(500).send({message: "Error al salvar la BD: ${err}"})
+		res.status(200).send({nivel: nivelGuardado})
+	});
 }
 
