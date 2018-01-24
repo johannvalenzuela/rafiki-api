@@ -30,7 +30,8 @@ module.exports = {
   get_sigla: get_sigla,
   get_niveles: get_niveles,
   getNivelId: getNivelId,
-  createNivel: createNivel
+  createNivel: createNivel,
+  updateNivel: updateNivel
 
 };
 

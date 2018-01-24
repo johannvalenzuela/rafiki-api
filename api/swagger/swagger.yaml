@@ -40,6 +40,30 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    put: 
+      description: Actualizar nivel ingresado por id
+      operationId: updateNivel
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+        - name: data
+          description: Atributos Nivel
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Nivel"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Nivel"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /lista_niveles:
     # our controller name
     x-swagger-router-controller: nivel
@@ -264,7 +288,7 @@ definitions:
         description: descripción del nivel
       decreto:
         type: string
-        description: hola
+        description: Decreto para el nivel académico
     required:
       - sigla
       - tipo_nivel
