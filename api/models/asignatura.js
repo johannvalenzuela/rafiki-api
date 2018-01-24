@@ -20,8 +20,11 @@ mongoose.connect(`mongodb://${username}:${password}@${host}:${port}/${database}`
 const AsignaturaSchema = new Schema ({
     //id: String, // Codigo de cada establecimiento
     nombre: String,
-    enfasis: [],
-    //descripcion: String,
+    enfasis: {
+        type: [{
+            type: String
+        }]
+    },//descripcion: String,
     horasPedagogicasConJecAnual: Number,
     horasPedagogicasSinJecAnual: Number,
     horasPedagogicasConJecSemanal: Number,
