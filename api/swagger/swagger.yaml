@@ -36,18 +36,19 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     post:
       description: Añadir una nueva organizacion
+      operationId: createOrganizacion
       parameters:
-        - name: nombre
+        - name: data
           description: Atributos usuario
           in: body
           required: true
           schema:
-            $ref: "#/definitions/User"
+            $ref: "#/definitions/Organizacion"
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/Organizacion"
         default:
           description: Error
           schema:
@@ -83,7 +84,7 @@ paths:
           type: string
           in: path
           required: true
-        - name: body
+        - name: data
           description: Propiedades de la organizacion
           in: body
           required: true
@@ -93,17 +94,18 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/Organizacion"
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
     delete:
-      description: Eliminar User
+      description: Eliminar organizacion
+      operationId: deleteOrganizacion
       # define the parameters
       parameters:
         - name: id
-          description: User id
+          description: Id de la organizacion
           type: string
           in: path
           required: true
@@ -111,7 +113,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/Organizacion"
         default:
           description: Error
           schema:
@@ -179,7 +181,7 @@ paths:
           type: string
           in: path
           required: true
-        - name: name
+        - name: nombre
           description: Propiedades de User
           in: body
           required: true
@@ -273,8 +275,6 @@ definitions:
   Organizacion:
     type: object
     properties:
-      _id:
-        type: string
       nombre:
         type: string
       rbd:
@@ -283,7 +283,6 @@ definitions:
         type: string
       reconocimientoOficial:
         type: string
-        format: date
       dependencia:
         type: string
       sostenedor:
@@ -307,27 +306,23 @@ definitions:
         type: string
       director:
         type: string
+      numVacantes:
+        type: number
       fechaPostulacion:
         type: object
         properties:
           inicio:
             type: string
-            format: date
           cierre:
             type: string
-            format: date
       mensualidad:
         type: number
       totalAlumnosMatriculados:
         type: number
       promAlumnosCurso:
         type: number
-      puntaje:
+      puntajeSimce:
         type: number
-      proyectosEducativos:
-        type: array
-        items: 
-          type: string
   User:
     type: object
     properties:

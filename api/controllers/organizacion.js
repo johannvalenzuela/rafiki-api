@@ -1,36 +1,17 @@
 'use strict';
-/*
- 'use strict' is not required but helpful for turning syntactical errors into true errors in the program flow
- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
-*/
 
-/*
- Modules make it possible to import JavaScript files into your application.  Modules are imported
- using 'require' statements that give you a reference to the module.
-
-  It is a good idea to list the modules that your application depends on in the package.json in the project root
- */
 var util = require('util');
 
-/*
- Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
-
- For a controller in a127 (which this is) you should export the functions referenced in your Swagger document by name.
-
- Either:
-  - The HTTP Verb of the corresponding operation (get, put, post, delete, etc)
-  - Or the operationId associated with the operation in your Swagger document
-
-  In the starter/skeleton project the 'get' operation on the '/hello' path has an operationId named 'hello'.  Here,
-  we specify that in the exports of this module that 'hello' maps to the function named 'hello'
- */
 module.exports = {
   getListOrganizaciones: getListOrganizaciones,
   getOrganizacion: getOrganizacion,
+  createOrganizacion: createOrganizacion,
   updateOrganizacion: updateOrganizacion,
+  deleteOrganizacion: deleteOrganizacion
 };
 
-var ModelOrganizacion = require('../../api/models/organizacion');
+const ModelOrganizacion = require('../../api/models/organizacion');
+const Responses = require('../helpers/responses');
 /*
   Functions in a127 controllers used for operations should take two parameters:
 
@@ -40,36 +21,107 @@ var ModelOrganizacion = require('../../api/models/organizacion');
 function getListOrganizaciones(req, res) {
   ModelOrganizacion.find({}, (err, organizacion) => {
     console.log(organizacion.length);
-    if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
-    if(!organizacion) return res.status(400).send({message: 'No existe ninguna organizacion'});
+    if(err) return res.status(500).json({message: `Error al realizar peticion: ${err}`});
+    if(!organizacion) return res.status(400).json({message: 'No existe ninguna organizacion'});
 
-    res.status(200).send({organizacion});
+    res.status(200).json({organizacion});
   });
 }
 
 function getOrganizacion(req, res) {
-  //let organizacionID = req.params.id;
   let organizacionID = req.swagger.params.id.value;
-  console.log(organizacionID);
-
-  ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
-    if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
-    if(!organizacion) return res.status(400).send({message: 'El usuario no existe'});
-    res.status(200).send({organizacion});
-    console.log(organizacion);
+  ModelOrganizacion.findById(organizacionID, function(err, organizacion){
+    // console.log(organizacion);
+    if (err){
+      res.status(500).send(Responses.getError({message: err.message}));
+      return;
+    }
+    if (!organizacion){
+      res.status(404).send(Responses.getError({message: `La organizacion con ID ${organizacionID} no existe.`}));
+      return;
+    }
+    res.json({organizacion});
   });
 }
 
-function updateOrganizacion(req, res) {
-  let usuarioId = req.swagger.params.id.value;
-  let modificar = req.swagger.params.body;
+function updateOrganizacion(request, response) {
+  let id = request.swagger.params.id.value;
+  ModelOrganizacion.findById(id, function(err, organizacion) {
+    if (err) {
+      response.status(500).send(Responses.getError({message: err.message}));
+      return;
+    }
+    if (!organizacion) {
+      response.status(404).send(Responses.getError({message: `La organización con ID ${id} no se ha encontrado.`}));
+      return;
+    }
+    organizacion = Object.assign(organizacion, request.body);
+    organizacion.save(id, function (err, organizacion) {
+      if (err) {
+        response.status(500).send(Responses.getError({message: err.message}));
+      }
+      response.json(organizacion);
+    });
+  });
+}
 
-  // busca el usuario por la id y lo actualiza en la coleccion 'usuarios'
-  ModelOrganizacion.findByIdAndUpdate(usuarioId, modificar, (err, usuarioModificado) => {
-    if(err) return res.status(500).send({message: `Error al actualizar el usuario: ${err}`});
 
-  // enviar por pantalla usuario modificado
-  res.status(200).send({ Usuario: usuarioModificado });
-  console.log(usuarioModificado);
+function deleteOrganizacion(request, response) {
+  let organizacionID = request.swagger.params.id.value;
+
+  ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
+    if(err) return response.status(500).json({message: `Error al borrar la organizacion: ${err}`});
+    if (!organizacion) {
+      response.status(404).send(Responses.getError({message:  `La organizacion de ID ${organizacionID} no existe.`}));
+      return;
+    }
+    //Elimina la organizacion si se encontró el id
+    organizacion.remove(organizacionID, function (err, organizacion) {
+      if (err) {
+        response.status(500).send(Responses.getError({message: err.message}));
+      }
+      response.status(200).json(Responses.getSuccess({message: `La organizacion ${organizacionID} ha sido borrada.`}));
+    });
+  });
+}
+
+function createOrganizacion(req, res) {
+  ModelOrganizacion.create(req.body, function (err, organizacion) {
+    organizacion.save(function(err){
+      if (err){
+        res.status(500).send(Responses.getError({message: err.message}));
+        return;
+      }
+      console.log(organizacion);
+
+      res.status(200).json({ 
+        nombre: organizacion.nombre,
+        rbd: organizacion.rbd,
+        descripcion: organizacion.descripcion, 
+        reconocimientoOficial: organizacion.reconocimientoOficial, 
+        dependencia: organizacion.dependencia, 
+        sostenedor: organizacion.sostenedor,
+        orientacionReligiosa: organizacion.orientacionReligiosa,
+        direccion: {
+            calle: organizacion.direccion.calle,
+            region: organizacion.direccion.region,
+            comuna: organizacion.direccion.comuna
+        },
+        correo: organizacion.correo,
+        telefono: organizacion.telefono,
+        web: organizacion.web,
+        director: organizacion.director,
+        numVacantes: organizacion.numVacantes,
+        fechaPostulacion:{
+            inicio: organizacion.fechaPostulacion.inicio,
+            cierre: organizacion.fechaPostulacion.cierre
+        },
+        mensualidad: organizacion.mensualidad,
+        totalAlumnosMatriculados: organizacion.totalAlumnosMatriculados,
+        promAlumnosCurso: organizacion.promAlumnosCurso,
+        puntajeSimce: organizacion.puntajeSimce,
+        proyectosEducativos: [organizacion.proyectosEducativos],
+      });
+    })
   });
 }
