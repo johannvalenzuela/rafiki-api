@@ -24,12 +24,30 @@ paths:
     get:
       description: Obtener la lista de organizaciones
       # define the type of response for Success "200" and Error
-      operationId: getOrganizaciones
+      operationId: getListOrganizaciones
       responses:
         "200":
           description: Success
           schema:
             $ref: "#/definitions/Organizacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Añadir una nueva organizacion
+      parameters:
+        - name: nombre
+          description: Atributos usuario
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
         default:
           description: Error
           schema:
@@ -51,6 +69,49 @@ paths:
           description: Success
           schema:
             $ref: "#/definitions/Organizacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar una organizacion
+      operationId: updateOrganizacion
+      # define the parameters
+      parameters:
+        - name: id
+          description: ID de la organizacion
+          type: string
+          in: path
+          required: true
+        - name: body
+          description: Propiedades de la organizacion
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Organizacion"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: Eliminar User
+      # define the parameters
+      parameters:
+        - name: id
+          description: User id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/GeneralResponse"
         default:
           description: Error
           schema:

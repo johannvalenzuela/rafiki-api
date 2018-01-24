@@ -25,8 +25,9 @@ var util = require('util');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  getOrganizaciones: getOrganizaciones,
-  getOrganizacion: getOrganizacion
+  getListOrganizaciones: getListOrganizaciones,
+  getOrganizacion: getOrganizacion,
+  updateOrganizacion: updateOrganizacion,
 };
 
 var ModelOrganizacion = require('../../api/models/organizacion');
@@ -36,7 +37,7 @@ var ModelOrganizacion = require('../../api/models/organizacion');
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function getOrganizaciones(req, res) {
+function getListOrganizaciones(req, res) {
   ModelOrganizacion.find({}, (err, organizacion) => {
     console.log(organizacion.length);
     if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
@@ -47,7 +48,8 @@ function getOrganizaciones(req, res) {
 }
 
 function getOrganizacion(req, res) {
-  let organizacionID = req.params.id;
+  //let organizacionID = req.params.id;
+  let organizacionID = req.swagger.params.id.value;
   console.log(organizacionID);
 
   ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
@@ -55,5 +57,19 @@ function getOrganizacion(req, res) {
     if(!organizacion) return res.status(400).send({message: 'El usuario no existe'});
     res.status(200).send({organizacion});
     console.log(organizacion);
+  });
+}
+
+function updateOrganizacion(req, res) {
+  let usuarioId = req.swagger.params.id.value;
+  let modificar = req.swagger.params.body;
+
+  // busca el usuario por la id y lo actualiza en la coleccion 'usuarios'
+  ModelOrganizacion.findByIdAndUpdate(usuarioId, modificar, (err, usuarioModificado) => {
+    if(err) return res.status(500).send({message: `Error al actualizar el usuario: ${err}`});
+
+  // enviar por pantalla usuario modificado
+  res.status(200).send({ Usuario: usuarioModificado });
+  console.log(usuarioModificado);
   });
 }
