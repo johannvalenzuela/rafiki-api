@@ -77,34 +77,8 @@ function getNivelId(req, res) {
 
     res.json(nivel);
 });
-  
-  // //let cursoId = req.params.id;
-
-  // let nivelId = req.swagger.params.id.value
-
-  // ModelNivel.findById(nivelId, (err, nivel) => {
-  //   if(err) return res.status(500).send({message: `Error al realizar peticion: ${err}`});
-  //   if(!nivel) return res.status(400).send({message: 'El nivel no existe'});
-  //   res.status(200).send({nivel});
-
-  //   console.log(nivel);
-  // });
 }
-
-// function postNivel(req, res) {
   
-//   let nivel = new Nivel()
-// 	nivel.sila = req.body.sigla
-//   nivel.tipo_nivel = req.body.tipo_nivel
-//   nivel.grado = req.body.grado
-//   nivel.descripcion = req.body.descripcion
-//   nivel.decreto = req.body.decreto
-
-// 	ModelNivel.save((err, nivelGuardado) =>{
-// 		if (err) return res.status(500).send({message: "Error al salvar la BD: ${err}"})
-// 		res.status(200).send({nivel: nivelGuardado})
-// 	});
-// }
 
 // POST
 function createNivel(request, response) {
@@ -165,8 +139,9 @@ function deleteNivel(request, response){
         response.status(500).send(Responses.getError({message: err.message}));
       }
 
-      response.json(Responses.getSuccess({message: `Nivel ${id} eliminado.`}));
+      response.status(200).json(Responses.getSuccess({message: `Nivel ${id} eliminado.`}));
     });
   });
 }
+
 

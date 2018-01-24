@@ -64,6 +64,24 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    delete: 
+      description: eliminar el nivel ingresado por id
+      operationId: deleteNivel
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Nivel"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /lista_niveles:
     # our controller name
     x-swagger-router-controller: nivel
@@ -289,13 +307,7 @@ definitions:
       decreto:
         type: string
         description: Decreto para el nivel académico
-    required:
-      - sigla
-      - tipo_nivel
-      - grado
-      - descripcion
-      - decreto
-      
+
   GeneralResponse:
     type: object
     properties:
