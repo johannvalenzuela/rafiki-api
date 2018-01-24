@@ -79,6 +79,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     delete:
       description: Eliminar una Asignatura
+      operationId: deleteAsignatura
       # define the parameters
       parameters:
         - name: id

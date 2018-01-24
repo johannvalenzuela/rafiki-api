@@ -28,6 +28,7 @@ var ModelAsignatura = require('../../api/models/Asignatura');
 module.exports = {
   getAsignaturas: getAsignaturas,
   getAsignatura: getAsignatura,
+  updateAsignatura: updateAsignatura,
   deleteAsignatura: deleteAsignatura
 };
 
@@ -57,6 +58,18 @@ function getAsignatura(req, res) {
   });
 }
 
-function deleteAsignatura(req, res) {
+function updateAsignatura(req, res) {
 
+}
+
+function deleteAsignatura(req, res) {
+  let asignaturaID = req.swagger.params.id.value
+  ModelAsignatura.findById(asignaturaID, (err, asignatura) => {
+    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+
+    asignatura.remove(err => {
+      if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+      res.status(200).send({ message: 'La Asignatura fue eliminada con exito' });
+    });
+  });
 }
