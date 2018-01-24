@@ -77,6 +77,7 @@ paths:
     put:
       description: Actualizar un usuario
       # define the parameters
+      operationId: updateUser
       parameters:
         - name: id
           description: User id
@@ -196,10 +197,6 @@ definitions:
         items:
           type: string
         description: Tipo de usuario
-    required:
-      - nombre
-      - rut
-      - correo
   GeneralResponse:
     type: object
     properties:

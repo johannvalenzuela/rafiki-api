@@ -30,7 +30,8 @@ var util = require('util');
 module.exports = {
   getUsers: getUsers,
   postUser: postUser,
-  deleteUser: deleteUser
+  deleteUser: deleteUser,
+  updateUser: updateUser
 };
 
 /*
@@ -100,6 +101,42 @@ function deleteUser(req, res){
         success:1,
         message: "Usuario eliminado."
       });
+    });
+  });
+}
+
+
+/**
+ * @param {Object} req: a handle to the request object
+ * @param {Object} res: a handle to the response object
+ */
+function updateUser(req, res){
+  let id = req.swagger.params.id.value;
+  User.findById(id, function(err, user) {
+    if (err) {
+      res.status(500).json({
+        success: 0,
+        message: ""
+      });
+      return;
+    }
+    if (!user) {
+      res.status(404).json({
+        success: 0,
+        message: ""
+      });
+      return;
+    }
+    user = Object.assign(user, req.body);
+    user.save(id, function (err, user) {
+      if (err) {
+        res.status(500).json({
+          success:1,
+          messsage: ""
+        });
+      }
+
+      res.json(customer);
     });
   });
 }
