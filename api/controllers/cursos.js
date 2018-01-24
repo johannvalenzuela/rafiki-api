@@ -11,6 +11,7 @@
   It is a good idea to list the modules that your application depends on in the package.json in the project root
  */
 var util = require('util');
+var ModelCurso = require('../../api/models/curso');
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -25,7 +26,8 @@ var util = require('util');
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  cursos: cursos
+  getCursos: getCursos,
+  getCursoId: getCursoId
 };
 
 /*
@@ -34,11 +36,78 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-function cursos(req, res) {
-  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var name = req.swagger.params.name.value || 'stranger';
-  var hello = util.format('USUARIOOOOOOOOOOOOOOOOOOOOOOOOOO %s!', name);
+function getCursos(req, res) {
+  ModelCurso.find({}, (err, curso) => {
+    console.log(curso);
+    if(err) return res.status(500).send({message: "Error al realizar peticion: ${err}"});
+    if(!curso) return res.status(400).send({message: 'No existe ningún curso'});
 
-  // this sends back a JSON response which is a single string
-  res.json(hello);
+    res.status(200).send({curso});
+});
 }
+
+/*
+
+function getCursoId(req, res) {
+  
+  let cursoId = req.params.id;
+
+  ModelCurso.findById(cursoId, (err, curso) => {
+    if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
+    if(!curso) return res.status(400).send({message: 'El curso no existe'});
+    res.status(200).send({curso : curso});
+    //console.log(curso);
+  });
+}
+
+//API REST: POST
+
+function postCurso(req, res) {
+  
+  let curso = new Curso()
+
+	curso.name = req.body.name
+	curso.age = req.body.age
+
+	ModelCurso.save((err, cursoGuardado) =>{
+
+		if (err) return res.status(500).send({message: "Error al salvar la BD: ${err}"})
+
+		res.status(200).send({curso: cursoGuardado})
+	})
+}
+
+//API REST: DELETE
+
+function deleteCurso(req, res) {
+
+  let cursoId = req.params._id
+
+	ModelCurso.findById(cursoID, (err, curso) => {
+
+		if (err) return res.status(500).send({message: "Error al borrar curso: ${err}"})
+
+		curso.remove(err =>{
+
+			if(err) res.status(500).send({mesagge: "Error al borrar curso"})
+			res.status(200).send({mesagge: "Curso eliminado"})
+		})
+	})
+}
+
+//API REST: PUT
+
+function putCurso(req, res) {
+  
+  let cursoId = req.params._id
+	let update = req.body
+
+	ModelCurso.findByIdAndUpdate(cursoId, update, {new: true}, (err, cursoUpdated) => {
+
+		if (err) return res.status(500).send({message: "Error al actual curso: ${err}"})
+
+		res.status(200).send({ curso: cursoUpdated})
+	})
+}
+
+*/
