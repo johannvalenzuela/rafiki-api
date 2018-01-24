@@ -34,11 +34,12 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
     post:
-      description: Añadir un nuevo usuario
+      description: Añadir una nueva asignatura
+      operationId: postAsignatura
       # movie info to be stored
       parameters:
         - name: name
-          description: Atributos usuario
+          description: Atributos Asignatura
           in: body
           required: true
           schema:
@@ -47,7 +48,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/Asignatura"
         default:
           description: Error
           schema:
@@ -82,7 +83,7 @@ paths:
           type: string
           in: path
           required: true
-        - name: name
+        - name: data
           description: Propiedades de Asignatura
           in: body
           required: true
@@ -92,7 +93,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/Asignatura"
         default:
           description: Error
           schema:
@@ -295,9 +296,6 @@ definitions:
       horasPedagogicasSinJecSemanal:
         type: number
         description: Numero de horas semanales sin jornada escolar completa
-    required:
-      - nombre
-      - enfasis
   User:
     type: object
     properties:

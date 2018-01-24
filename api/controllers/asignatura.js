@@ -49,45 +49,25 @@ function getAsignaturas(req, res) {
   });
 }
 
-function postAsignatura(req, res) {
-  ModelNivel.create(request.body, function (err, nivel) {
-    nivel.save(function(err){
-      if (err){
-        response.status(500).send(Responses.getError({message: err.message}));
+function postAsignatura(request, response) {
+  ModelAsignatura.create(request.body, function (err, asignatura) {
+    asignatura.save(function (err) {
+      if (err) {
+        response.status(500).send(Responses.getError({ message: err.message }));
         return;
       }
-      console.log(nivel);
-
-      response.status(200).json({ 
-        sigla : nivel.sigla,
-        tipo_nivel : nivel.tipo_nivel,
-        grado : nivel.grado,
-        descripcion : nivel.descripcion,
-        decreto : nivel.decreto
+      console.log()
+      response.status(200).json({
+        nombre: asignatura.nombre,
+        enfasis: asignatura.enfasis,
+        horasPedagogicasConJecAnual: asignatura.horasPedagogicasConJecAnual,
+        horasPedagogicasSinJecAnual: asignatura.horasPedagogicasSinJecAnual,
+        horasPedagogicasConJecSemanal: asignatura.horasPedagogicasConJecSemanal,
+        horasPedagogicasSinJecSemanal: asignatura.horasPedagogicasSinJecSemanal
       });
     })
   });
 }
-// POST
-// function createNivel(request, response) {
-//   ModelNivel.create(request.body, function (err, nivel) {
-//     nivel.save(function(err){
-//       if (err){
-//         response.status(500).send(Responses.getError({message: err.message}));
-//         return;
-//       }
-//       console.log(nivel);
-
-//       response.status(200).json({ 
-//         sigla : nivel.sigla,
-//         tipo_nivel : nivel.tipo_nivel,
-//         grado : nivel.grado,
-//         descripcion : nivel.descripcion,
-//         decreto : nivel.decreto
-//       });
-//     })
-//   });
-// }
 
 //Listar Asignatura por ID
 function getAsignatura(req, res) {
@@ -99,38 +79,27 @@ function getAsignatura(req, res) {
     console.log(asignatura);
   });
 }
-// function updateCustomer(request, response) {
-//   let id = request.swagger.params.id.value;
-//   Customer.findById(id, function(err, customer) {
-//     if (err) {
-//       response.status(500).send(Responses.getError({message: err.message}));
-//       return;
-//     }
-//     if (!customer) {
-//       response.status(404).send(Responses.getError({message: Customer ${id} not found.}));
-//       return;
-//     }
-//     customer = Object.assign(customer, request.body);
-//     customer.save(id, function (err, customer) {
-//       if (err) {
-//         response.status(500).send(Responses.getError({message: err.message}));
-//       }
 
-//       response.json(customer);
-//     });
-//   });
-// }
+//update
+function updateAsignatura(request, response) {
+  let asignaturaID = request.swagger.params.id.value;
+  ModelAsignatura.findById(asignaturaID, function(err, asignatura) {
+    if (err) {
+      response.status(500).send(Responses.getError({message: err.message}));
+      return;
+    }
+    if (!asignatura) {
+      response.status(404).send(Responses.getError({message: `asignatura ${asignaturaID} not found.`}));
+      return;
+    }
+    asignatura = Object.assign(asignatura, request.body);
+    asignatura.save(asignaturaID, function (err, asignatura) {
+      if (err) {
+        response.status(500).send(Responses.getError({message: err.message}));
+      }
 
-//update !!!ARREGLAR!!!
-function updateAsignatura(req, res) {
-  let asignaturaID = req.swagger.params.id.value;
-  let update = req.swagger.params.body;
-
-  ModelAsignatura.findByIdAndUpdate(asignaturaID, update, (err, asignaturaUpdate) => {
-    if (err) return res.status(500).json({ message: `Error al actualizar la asignatura: ${err}` });
-
-    res.status(200).json({ Productos: asignaturaUpdate });
-    console.log(asignaturaUpdate);
+      response.json(asignatura);
+    });
   });
 }
 
