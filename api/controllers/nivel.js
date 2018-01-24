@@ -60,18 +60,19 @@ function get_niveles (req, res){
 
 function get_nivel_id (req, res) {
 
-  let nivelId = req.swagger.params._id.value;
+  let nivelId = req.swagger.params.id.value;
+ //res.json(nivelId);
+
 
   ModelNivel.findById(nivelId, (err, nivel) => {
 
     // captura de errores 
     if(err) return res.status(500).send({message: 'Error al realizar peticion'})
-    if(!nivel) return res.status(404).send({message: 'no existe la pelicula'})
+    if(!nivel) return res.status(404).send({message: 'No existe el nivel'})
+    //res.json(nivelId);
+    res.json(nivelId);
+    console.log(nivel);
+  });
 
-    res.json(nivel)
-      //res.status(200).send({nivel}); esto da error!!
-      console.log(nivel);
-  })
-
-})
+}
 
