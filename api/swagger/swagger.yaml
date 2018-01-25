@@ -53,6 +53,36 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /organizaciones:
+    # our controller name
+    x-swagger-router-controller: organizacion
+    get:
+      description: Obtener la lista de organizaciones
+      # define the type of response for Success "200" and Error
+      operationId: getListOrganizaciones
+            $ref: "#/definitions/Organizacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+      description: Añadir una nueva organizacion
+      operationId: createOrganizacion
+      parameters:
+        - name: data
+          description: Atributos usuario
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Organizacion"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Organizacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /asignaturas/{id}:
     # our controller name
     x-swagger-router-controller: asignatura
@@ -112,6 +142,168 @@ paths:
           description: Success
           schema:
             $ref: "#/definitions/Asignatura"
+  /cursos:
+    # our controller name
+    x-swagger-router-controller: cursos
+    get:
+      description: Obtener la lista de cursos
+      operationId: getCursos
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Añadir un nuevo curso
+      operationId: postCurso
+      # movie info to be stored
+      parameters:
+        - name: data
+          description: Atributos de curso
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Curso"     
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /organizaciones/{id}:
+    # our controller name
+    x-swagger-router-controller: organizacion
+    get:
+      description: Obtener una organizacion
+      operationId: getOrganizacion
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Organizacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar una organizacion
+      operationId: updateOrganizacion
+      # define the parameters
+      parameters:
+        - name: id
+          description: ID de la organizacion
+          type: string
+          in: path
+          required: true
+        - name: data
+          description: Propiedades de la organizacion
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Organizacion"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Organizacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: Eliminar organizacion
+      operationId: deleteOrganizacion
+      # define the parameters
+      parameters:
+        - name: id
+          description: Id de la organizacion
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Organizacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"                
+  /cursos/{id}:
+    # our controller name
+    x-swagger-router-controller: cursos
+    get:
+      description: Obtener un curso
+      operationId: getCursoId
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar un curso
+      operationId: putCurso
+      # define the parameters
+      parameters:
+        - name: id
+          description: Curso id
+          type: string
+          in: path
+          required: true
+        - name: name
+          description: Propiedades de User
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Curso"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"        
+    delete:
+      description: Eliminar curso
+      operationId: deleteCurso
+      # define the parameters
+      parameters:
+        - name: id
+          description: User id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
         default:
           description: Error
           schema:
@@ -122,6 +314,7 @@ paths:
     get:
       description: Obtener la lista de usuarios
       # define the type of response for Success "200" and Error
+      operationId: getUsers
       responses:
         "200":
           description: Success
@@ -134,8 +327,9 @@ paths:
     post:
       description: Añadir un nuevo usuario
       # movie info to be stored
+      operationId: postUser
       parameters:
-        - name: name
+        - name: data
           description: Atributos usuario
           in: body
           required: true
@@ -145,14 +339,14 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/User"
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
   /users/{id}:
     # our controller name
-    x-swagger-router-controller: user
+    x-swagger-router-controller: users
     get:
       description: Obtener un usuario
       # define the type of response for Success "200" and Error
@@ -173,6 +367,7 @@ paths:
     put:
       description: Actualizar un usuario
       # define the parameters
+      operationId: updateUser
       parameters:
         - name: id
           description: User id
@@ -197,6 +392,7 @@ paths:
     delete:
       description: Eliminar User
       # define the parameters
+      operationId: deleteUser
       parameters:
         - name: id
           description: User id
@@ -296,34 +492,90 @@ definitions:
       horasPedagogicasSinJecSemanal:
         type: number
         description: Numero de horas semanales sin jornada escolar completa
+  Organizacion:
+    type: object
+    properties:
+      nombre:
+        type: string
+      rbd:
+        type: number
+      descripcion:
+        type: string
+      reconocimientoOficial:
+        type: string
+      dependencia:
+        type: string
+      sostenedor:
+        type: string
+      orientacionReligiosa:
+        type: string
+      direccion:
+        type: object
+        properties:
+          calle:
+            type: string
+          region:
+            type: string
+          comuna:
+            type: string
+      correo:
+        type: string
+      telefono:
+        type: string
+      web:
+        type: string
+      director:
+        type: string
+      numVacantes:
+        type: number
+      fechaPostulacion:
+        type: object
+        properties:
+          inicio:
+            type: string
+          cierre:
+            type: string
+      mensualidad:
+        type: number
+      totalAlumnosMatriculados:
+        type: number
+      promAlumnosCurso:
+        type: number
+      puntajeSimce:
+        type: number
   User:
     type: object
     properties:
-      name:
+      _id:
+        type: string
+      _v:
+        type: number
+      nombre:
         type: string
         description: Nombre completo del usuario
       rut:
         type: string
         description: RUT del usuario
-      mail:
+      correo:
         type: string
         description: Correo del usuario
-    required:
-      - name
-      - rut
-      - mail
+      role:
+        type: array
+        items:
+          type: string
+        description: Tipo de usuario
   GeneralResponse:
     type: object
     properties:
       success:
         type: number
         description: returns 1 if successful
-      description:
+      message:
         type: string
         description: a short comment 
     required:
       - success
-      - description
+      - message
   GetUserResponse:
     required:
       - id
@@ -338,3 +590,24 @@ definitions:
         type: string
       mail:
         type: string
+  Curso:
+    type: object
+    properties:
+      idCurso:
+        type: string
+        description: Sigla del curso (Ejemplo 1A)
+      nivel:
+        type: string
+        description: Nivel educacional del curso
+      asignatura:
+        type: string
+        description: Nombre de la asignatura
+      profesorJefe:
+        type: string
+        description: Nombre del profesor jefe del curso
+      salaCurso:
+        type: string
+        description: Sala del curso
+      totalAlumnos:
+        type: number
+        description: Cantidad total de alumnos del curso
