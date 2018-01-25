@@ -9,15 +9,17 @@ var mongoose = require('mongoose');
 require("./api/models/user.js");
 require('./api/models/organizacion');
 require('./api/models/curso');
+require('./api/models/asignatura');
+require('./api/models/nivel');
 
 module.exports = app; // for testing
 
+// Conexión servidor de pruebas
 var username = 'Rafiki';
 var password = encodeURIComponent('#Zeus2018');
 var database = 'rafiki-test';
 var port = '27017';
 var host = '54.233.193.162';
-
 mongoose.connect(`mongodb://${host}:${port}/${database}`, (err, res) => {
     if(err) {
         return console.log(`Error al conectarse a la BD: ${err}`);
@@ -46,4 +48,8 @@ SwaggerExpress.create(config, (err, swaggerExpress) => {
     console.log('try this:\ncurl http://127.0.0.1/:' + port + '/users?name=Scott');
   }
 });
+
+
+
+
 
