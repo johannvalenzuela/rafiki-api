@@ -34,7 +34,6 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-
   /cursos/{id}:
     # our controller name
     x-swagger-router-controller: cursos
@@ -56,7 +55,6 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-
   /users:
     # our controller name
     x-swagger-router-controller: users
@@ -262,13 +260,15 @@ definitions:
       nivel:
         type: string
         description: Nivel educacional del curso
+      asignatura:
+        type: string
+        description: Nombre de la asignatura
       profesorJefe:
         type: string
         description: Nombre del profesor jefe del curso
-      sala:
+      salaCurso:
         type: string
         description: Sala del curso
       totalAlumnos:
         type: number
         description: Cantidad total de alumnos del curso
-   
