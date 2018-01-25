@@ -75,6 +75,50 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar un curso
+      operationId: putCurso
+      # define the parameters
+      parameters:
+        - name: id
+          description: Curso id
+          type: string
+          in: path
+          required: true
+        - name: name
+          description: Propiedades de User
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Curso"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: Eliminar curso
+      operationId: deleteCurso
+      # define the parameters
+      parameters:
+        - name: id
+          description: User id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /users:
     # our controller name
     x-swagger-router-controller: users
