@@ -9,6 +9,8 @@ var mongoose = require('mongoose');
 require("./api/models/user.js");
 require('./api/models/organizacion');
 require('./api/models/curso');
+require('./api/models/asignatura');
+require('./api/models/nivel');
 
 module.exports = app; // for testing
 
@@ -46,3 +48,8 @@ SwaggerExpress.create(config, (err, swaggerExpress) => {
     console.log('try this:\ncurl http://127.0.0.1/:' + port + '/users?name=Scott');
   }
 });
+
+
+
+
+
