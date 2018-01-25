@@ -34,6 +34,26 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Añadir un nuevo curso
+      operationId: postCurso
+      # movie info to be stored
+      parameters:
+        - name: data
+          description: Atributos de curso
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Curso"     
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /cursos/{id}:
     # our controller name
     x-swagger-router-controller: cursos
