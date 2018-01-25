@@ -9,6 +9,8 @@ var mongoose = require('mongoose');
 require("./api/models/user.js");
 require('./api/models/organizacion');
 require('./api/models/curso');
+require('./api/models/asignatura');
+require('./api/models/nivel');
 
 module.exports = app; // for testing
 
@@ -46,17 +48,8 @@ SwaggerExpress.create(config, (err, swaggerExpress) => {
     console.log('try this:\ncurl http://127.0.0.1/:' + port + '/users?name=Scott');
   }
 });
-var ModelNivel = require('./api/models/nivel');
 
-// app.get('/niveles', (req, res) => {
-//   ModelNivel.find({}, (err, nivel) => {
-//       console.log();
-//       if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
-//       if(!nivel) return res.status(400).send({message: 'No existe ningún nivel'});
 
-//       res.status(200).send({nivel});
-//       console.log(nivel);
-//   });
-// });
+
 
 
