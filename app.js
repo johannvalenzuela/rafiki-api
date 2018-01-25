@@ -5,6 +5,22 @@ var app = require('express')();
 var mongoose = require('mongoose');
 require("./api/models/user.js");
 module.exports = app; // for testing
+const mongoose = require('mongoose');
+
+var username = 'Rafiki';
+var password = encodeURIComponent('#Zeus2018');
+var database = 'rafiki-test';
+var port = '27017';
+var host = '54.233.193.162';
+
+mongoose.connect(`mongodb://${host}:${port}/${database}`, (err, res) => {
+    if(err) {
+        return console.log(`Error al conectarse a la BD: ${err}`);
+    }
+    console.log('Conexion con la BD OK...!');
+});
+
+
 
 var config = {
   appRoot: __dirname // required config
@@ -26,4 +42,16 @@ SwaggerExpress.create(config, (err, swaggerExpress) => {
   if (swaggerExpress.runner.swagger.paths['/users']) {
     console.log('try this:\ncurl http://127.0.0.1:' + port + '/users?name=Scott');
   }
+});
+
+var ModelCurso = require('./api/models/curso');
+
+app.get('/cursos', (req, res) => {
+  ModelCurso.find({}, (err, curso) => {
+      console.log(curso);
+      if(err) return res.status(500).send({message: "Error al realizar peticion: ${err}"});
+      if(!curso) return res.status(400).send({message: 'No existe ningún curso'});
+
+      res.status(200).send({curso});
+  });
 });
