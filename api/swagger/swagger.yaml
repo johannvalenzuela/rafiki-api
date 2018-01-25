@@ -24,6 +24,7 @@ paths:
     get:
       description: Obtener la lista de usuarios
       # define the type of response for Success "200" and Error
+      operationId: getUsers
       responses:
         "200":
           description: Success
@@ -36,8 +37,9 @@ paths:
     post:
       description: Añadir un nuevo usuario
       # movie info to be stored
+      operationId: postUser
       parameters:
-        - name: name
+        - name: data
           description: Atributos usuario
           in: body
           required: true
@@ -47,14 +49,14 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/User"
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
   /users/{id}:
     # our controller name
-    x-swagger-router-controller: user
+    x-swagger-router-controller: users
     get:
       description: Obtener un usuario
       # define the type of response for Success "200" and Error
@@ -75,6 +77,7 @@ paths:
     put:
       description: Actualizar un usuario
       # define the parameters
+      operationId: updateUser
       parameters:
         - name: id
           description: User id
@@ -99,6 +102,7 @@ paths:
     delete:
       description: Eliminar User
       # define the parameters
+      operationId: deleteUser
       parameters:
         - name: id
           description: User id
@@ -175,31 +179,36 @@ definitions:
   User:
     type: object
     properties:
-      name:
+      _id:
+        type: string
+      _v:
+        type: number
+      nombre:
         type: string
         description: Nombre completo del usuario
       rut:
         type: string
         description: RUT del usuario
-      mail:
+      correo:
         type: string
         description: Correo del usuario
-    required:
-      - name
-      - rut
-      - mail
+      role:
+        type: array
+        items:
+          type: string
+        description: Tipo de usuario
   GeneralResponse:
     type: object
     properties:
       success:
         type: number
         description: returns 1 if successful
-      description:
+      message:
         type: string
         description: a short comment 
     required:
       - success
-      - description
+      - message
   GetUserResponse:
     required:
       - id
