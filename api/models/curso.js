@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 //mongoose.connect('mongodb://localhost/cursos');
 //mongoose.connect('mongodb://Rafiki:%23Zeus2018@54.233.193.162:27017/cursos')
 
+/*
 var username = 'Rafiki';
 var password = encodeURIComponent('#Zeus2018');
 var database = 'admin';
@@ -16,6 +17,8 @@ mongoose.connect(`mongodb://${username}:${password}@${host}:${port}/${database}`
     }
     console.log('Conexion con la BD OK...!');
 });
+
+*/
 
 const CursoSchema = new Schema ({
 
