@@ -24,7 +24,7 @@ const CursoSchema = new Schema ({
 
     idCurso: String, 
     nivel: String, 
-    nombre: String,
+    asignatura: String,
     profesorJefe: String, 
     salaCurso: String, 
     totalAlumnos: Number
