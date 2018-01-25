@@ -12,6 +12,13 @@
  */
 var util = require('util');
 var ModelCurso = require('../../api/models/curso');
+const Responses = require('../helpers/responses');
+
+/*const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());*/
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -28,9 +35,9 @@ var ModelCurso = require('../../api/models/curso');
 module.exports = {
   getCursos: getCursos,
   getCursoId: getCursoId,
- // putCurso: putCurso,
-  //deleteCurso: deleteCurso,
-  //postCurso: postCurso
+  putCurso: putCurso,
+  deleteCurso: deleteCurso,
+  postCurso: postCurso,
 
 };
 
@@ -40,6 +47,9 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
+
+ //API REST: GET (Kuestra Todos los cursos)
+
 function getCursos(req, res) {
   ModelCurso.find({}, (err, curso) => {
     console.log(curso);
@@ -51,11 +61,10 @@ function getCursos(req, res) {
 }
 
 
+//API REST: GET (Muestra un curso según Id)
 
 function getCursoId(req, res) {
   
-  //let cursoId = req.params.id;
-
   let cursoId = req.swagger.params.id.value
 
   ModelCurso.findById(cursoId, (err, curso) => {
@@ -65,55 +74,84 @@ function getCursoId(req, res) {
     //console.log(curso);
   });
 }
-/*
-//API REST: POST
 
-function postCurso(req, res) {
-  
-  let curso = new Curso()
+//API REST: DELETE (Elimina un curso según Id)
 
-	curso.name = req.body.name
-	curso.age = req.body.age
+function deleteCurso(request, response) {
+  let cursoID = request.swagger.params.id.value;
 
-	ModelCurso.save((err, cursoGuardado) =>{
-
-		if (err) return res.status(500).send({message: "Error al salvar la BD: ${err}"})
-
-		res.status(200).send({curso: cursoGuardado})
-	})
+  ModelCurso.findById(cursoID, (err, curso) => {
+    if(err) return response.status(500).json({message: `Error al borrar la curso: ${err}`});
+    if (!curso) {
+      response.status(404).send(Responses.getError({message:  `El curso de ID ${cursoID} no existe`}));
+      return;
+    }
+    //Elimina la curso si se encontró el id
+    curso.remove(cursoID, function (err, curso) {
+      if (err) {
+        response.status(500).send(Responses.getError({message: err.message}));
+      }
+      response.status(200).json(Responses.getSuccess({message: `El curso ${cursoID} ha sido eliminado`}));
+    });
+  });
 }
 
-//API REST: DELETE
+//API REST: PUT (Actualiza un curso según Id)
 
-function deleteCurso(req, res) {
+function putCurso(request, response) {
 
-  let cursoId = req.params._id
+  let idCurso = request.swagger.params.id.value;
 
-	ModelCurso.findById(cursoID, (err, curso) => {
+  ModelCurso.findById(idCurso, function(err, curso) {
 
-		if (err) return res.status(500).send({message: "Error al borrar curso: ${err}"})
+    if (err) {
+      response.status(500).send(Responses.getError({message: err.message}));
+      //console.log('Error: ${err}');
+      return;
+    }
+    if (!curso) {
+      response.status(404).send(Responses.getError({message: 'El Curso ${idCurso} no existe'}));
+      return;
+    }
 
-		curso.remove(err =>{
+    curso = Object.assign(curso, request.body);
 
-			if(err) res.status(500).send({mesagge: "Error al borrar curso"})
-			res.status(200).send({mesagge: "Curso eliminado"})
-		})
-	})
+    curso.save(idCurso, function (err, curso) {
+
+      if (err) {
+        response.status(500).send(Responses.getError({message: err.message}));
+      }
+
+      response.json(curso);
+    });
+  });
 }
 
-//API REST: PUT
+//API REST: POST (Inserta un nuevo curso)
 
-function putCurso(req, res) {
-  
-  let cursoId = req.params._id
-	let update = req.body
+function postCurso(request, response) {
 
-	ModelCurso.findByIdAndUpdate(cursoId, update, {new: true}, (err, cursoUpdated) => {
+  ModelCurso.create(request.body, function (err, curso) {
 
-		if (err) return res.status(500).send({message: "Error al actual curso: ${err}"})
+    curso.save(function(err){
+      if (err){
+        response.status(500).send(Responses.getError({message: err.message}));
+        return;
+      }
+      console.log(curso);
 
-		res.status(200).send({ curso: cursoUpdated})
-	})
+      response.status(200).json({ 
+        idCurso : curso.idCurso,
+        nivel : curso.nivel,
+        asignatura : curso.asignatura,
+        profesorJefe : curso.profesorJefe,
+        salaCurso : curso.salaCurso,
+        totalAlumnos: curso.totalAlumnos
+      });
+    })
+  });
 }
 
-*/
+
+
+
