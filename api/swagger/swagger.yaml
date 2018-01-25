@@ -155,11 +155,16 @@ paths:
       description: Obtener la lista de organizaciones
       # define the type of response for Success "200" and Error
       operationId: getListOrganizaciones
+      responses:
+        "200":
+          description: Success
+          schema:
             $ref: "#/definitions/Organizacion"
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+    post:
       description: Añadir una nueva organizacion
       operationId: createOrganizacion
       parameters:
