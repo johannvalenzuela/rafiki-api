@@ -18,7 +18,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /nivel/{id}:
+  /niveles/{id}:
       # our controller name
     x-swagger-router-controller: nivel
     get:
@@ -81,7 +81,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  /lista_niveles:
+  /niveles:
     # our controller name
     x-swagger-router-controller: nivel
     get:
