@@ -577,9 +577,6 @@ definitions:
         items: 
           type: string
         description: Descripcion de lo esperado para la asignatura
-      horasPedagogicas:
-        type: number
-        description: Numero de horas
       horasPedagogicasConJecAnual:
         type: number
         description: Numero de horas anuales con jornada escolar completa
