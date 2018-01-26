@@ -35,7 +35,7 @@ app.use(bodyParser.json());*/
 module.exports = {
   getCursos: getCursos,
   getCursoId: getCursoId,
-  putCurso: putCurso,
+  updateCurso: updateCurso,
   deleteCurso: deleteCurso,
   postCurso: postCurso,
 
@@ -98,7 +98,7 @@ function deleteCurso(request, response) {
 
 //API REST: PUT (Actualiza un curso según Id)
 
-function putCurso(request, response) {
+function updateCurso(request, response) {
 
   let idCurso = request.swagger.params.id.value;
 

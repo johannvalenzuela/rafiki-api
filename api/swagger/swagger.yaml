@@ -366,7 +366,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     put:
       description: Actualizar un curso
-      operationId: putCurso
+      operationId: updateCurso
       # define the parameters
       parameters:
         - name: id
