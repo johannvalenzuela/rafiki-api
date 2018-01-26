@@ -48,15 +48,21 @@ module.exports = {
   Param 2: a handle to the response object
  */
 
- //API REST: GET (Kuestra Todos los cursos)
+ //API REST: GET (Muestra Todos los cursos)
 
 function getCursos(req, res) {
-  ModelCurso.find({}, (err, curso) => {
-    console.log(curso);
-    if(err) return res.status(500).send({message: "Error al realizar peticion: ${err}"});
-    if(!curso) return res.status(400).send({message: 'No existe ningún curso'});
 
-    res.status(200).send({curso});
+  /**Se buscan todos los cursos */
+  ModelCurso.find({}, (err, cursos) => {
+    
+    /**En caso de error del servidor, se retorna error 500*/
+    if(err) return res.status(500).send({message: "Error al realizar peticion: ${err}"});
+
+    /**En caso que los cursos no se encuentren, se retorna un error 404*/ 
+    if(!cursos) return res.status(404).send({message: 'No existe ningún curso'});
+
+    /**Se responde todos los cursos*/
+    res.status(200).send({cursos});
 });
 }
 
@@ -65,31 +71,48 @@ function getCursos(req, res) {
 
 function getCursoId(req, res) {
   
+  /**Se recibe y guarda el id del curso */
   let cursoId = req.swagger.params.id.value
 
+  /**Se busca el curso mediante id */
   ModelCurso.findById(cursoId, (err, curso) => {
+    
+    /**En caso de error del servidor, se retorna error 500*/
     if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
-    if(!curso) return res.status(400).send({message: 'El curso no existe'});
+
+    /**En caso que el curso no se encuentre, se retorna un error 404*/ 
+    if(!curso) return res.status(404).send({message: 'El curso no existe'});
+
+    /**Se responde el curso según id */
     res.status(200).send({curso : curso});
-    //console.log(curso);
+  
   });
 }
 
 //API REST: DELETE (Elimina un curso según Id)
 
 function deleteCurso(request, response) {
+  
+  /**Se recibe y guarda el id del curso */
   let cursoID = request.swagger.params.id.value;
-
+  
+  /**Se busca el curso mediante id */
   ModelCurso.findById(cursoID, (err, curso) => {
-    if(err) return response.status(500).json({message: `Error al borrar la curso: ${err}`});
+
+    /**En caso de error del servidor, se retorna error 500*/
+    if(err) return response.status(500).json({message: `Error al borrar el curso. Error: ${err}`});
+    
+    /**En caso que el curso no se encuentre, se retorna un error 404*/ 
     if (!curso) {
       response.status(404).send(Responses.getError({message:  `El curso de ID ${cursoID} no existe`}));
       return;
     }
-    //Elimina la curso si se encontró el id
+
+    /**Se elimina el curso */
     curso.remove(cursoID, function (err, curso) {
       if (err) {
         response.status(500).send(Responses.getError({message: err.message}));
+        return;
       }
       response.status(200).json(Responses.getSuccess({message: `El curso ${cursoID} ha sido eliminado`}));
     });
@@ -99,29 +122,37 @@ function deleteCurso(request, response) {
 //API REST: PUT (Actualiza un curso según Id)
 
 function updateCurso(request, response) {
-
+  
+  /**Se recibe y guarda el id del curso */
   let idCurso = request.swagger.params.id.value;
-
+ 
+  /**Se busca el curso mediante id */
   ModelCurso.findById(idCurso, function(err, curso) {
-
+    
+    /**En caso de error del servidor, se retorna error 500*/
     if (err) {
       response.status(500).send(Responses.getError({message: err.message}));
-      //console.log('Error: ${err}');
       return;
     }
+
+    /**En caso que el curso no se encuentre, se retorna un error 404*/ 
     if (!curso) {
       response.status(404).send(Responses.getError({message: 'El Curso ${idCurso} no existe'}));
       return;
     }
-
+    
+    /**Se copian los valores al curso */
     curso = Object.assign(curso, request.body);
-
+    
+    /**Se guardan los nuevos valores del curso */
     curso.save(idCurso, function (err, curso) {
 
       if (err) {
         response.status(500).send(Responses.getError({message: err.message}));
+        return;
       }
 
+       /**Se responde json con el contenido actualizado del curso */
       response.json(curso);
     });
   });
@@ -131,15 +162,19 @@ function updateCurso(request, response) {
 
 function postCurso(request, response) {
 
+  /**Se crea un nuevo curso */
   ModelCurso.create(request.body, function (err, curso) {
-
+    
+    /**Se guarda el nuevo curso */
     curso.save(function(err){
+      
+      /**En caso de error del servidor, se retorna error 500*/
       if (err){
         response.status(500).send(Responses.getError({message: err.message}));
         return;
       }
-      console.log(curso);
 
+      /**Se responde un json con el contenido del curso*/
       response.status(200).json({ 
         idCurso : curso.idCurso,
         nivel : curso.nivel,
