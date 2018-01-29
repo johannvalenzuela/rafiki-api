@@ -12,12 +12,13 @@ module.exports = {
 
 const ModelOrganizacion = require('../../api/models/organizacion');
 const Responses = require('../helpers/responses');
-/*
-  Functions in a127 controllers used for operations should take two parameters:
 
-  Param 1: a handle to the request object
-  Param 2: a handle to the response object
- */
+/*
+  Funcion que obtiene una lista de todas las organizaciones
+
+  Param 1: una identificacion de solicitud de un objeto
+  Param 2: una identificacion de respuesta de un objeto
+*/
 function getListOrganizaciones(req, res) {
   ModelOrganizacion.find({}, (err, organizacion) => {
     console.log(organizacion.length);
@@ -28,6 +29,12 @@ function getListOrganizaciones(req, res) {
   });
 }
 
+/*
+  Funcion que obtiene una organizacion en especifico por medio de la ID
+
+  Param 1: una identificacion de solicitud de un objeto
+  Param 2: una identificacion de respuesta de un objeto
+*/
 function getOrganizacion(req, res) {
   let organizacionID = req.swagger.params.id.value;
   ModelOrganizacion.findById(organizacionID, function(err, organizacion){
@@ -44,8 +51,19 @@ function getOrganizacion(req, res) {
   });
 }
 
+/*
+  Funcion que actualiza los atributos modificados de una organizacion en especifico por medio de la ID
+
+  Param 1: una identificacion de solicitud de un objeto
+  Param 2: una identificacion de respuesta de un objeto
+*/
 function updateOrganizacion(request, response) {
   let id = request.swagger.params.id.value;
+  
+  if(id.length < 24 || id.length > 24){
+    return response.status(400).send(Responses.getError({message: 'Se ingresó una ID no valida'}));
+  }
+
   ModelOrganizacion.findById(id, function(err, organizacion) {
     if (err) {
       response.status(500).send(Responses.getError({message: err.message}));
@@ -66,8 +84,18 @@ function updateOrganizacion(request, response) {
 }
 
 
+/*
+  Funcion que elimina una organizacion en especifico por medio de la ID
+
+  Param 1: una identificacion de solicitud de un objeto
+  Param 2: una identificacion de respuesta de un objeto
+*/
 function deleteOrganizacion(request, response) {
-  let organizacionID = request.swagger.params.id.value;
+  let organizacionID = request.swagger.params.id.value;ç
+
+  if(id.length < 24 || id.length > 24){
+    return response.status(400).send(Responses.getError({message: 'Se ingresó una ID no valida'}));
+  }
 
   ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
     if(err) return response.status(500).json({message: `Error al borrar la organizacion: ${err}`});
@@ -85,6 +113,12 @@ function deleteOrganizacion(request, response) {
   });
 }
 
+/*
+  Funcion que crea una organizacion
+
+  Param 1: una identificacion de solicitud de un objeto
+  Param 2: una identificacion de respuesta de un objeto
+*/
 function createOrganizacion(req, res) {
   ModelOrganizacion.create(req.body, function (err, organizacion) {
     organizacion.save(function(err){
