@@ -577,9 +577,6 @@ definitions:
         items: 
           type: string
         description: Descripcion de lo esperado para la asignatura
-      horasPedagogicas:
-        type: number
-        description: Numero de horas
       horasPedagogicasConJecAnual:
         type: number
         description: Numero de horas anuales con jornada escolar completa
@@ -597,52 +594,75 @@ definitions:
     properties:
       nombre:
         type: string
+        description: Nombre completo de la organizacion
       rbd:
         type: number
+        description: Numero Rol Base de Datos de la organizacion
       descripcion:
         type: string
+        description: Descripcion de la organizacion
       reconocimientoOficial:
         type: string
+        description: Fecha de reconocimiento oficial de la organizacion
       dependencia:
         type: string
+        description: Tipo de organizacion (Municipal, Subvencionado, etc)
       sostenedor:
         type: string
+        description: Nombre del sostenero de la organizacion
       orientacionReligiosa:
         type: string
+        description: Nombre de la orientacion religiosa de la organizacion
       direccion:
         type: object
+        description: Objeto que contiene la ubicacion de la organizacion
         properties:
           calle:
             type: string
+            description: Nombre de la calle en donde se ubica la organizacion
           region:
             type: string
+            description: Nombre de la region en donde se ubica la organizacion
           comuna:
             type: string
+            description: Nombre de la comuna en donde se ubica la organizacion
       correo:
         type: string
+        description: Correo de la organizacion
       telefono:
         type: string
+        description: Telefono de la organizacion
       web:
         type: string
+        description: Pagina web de la organizacion
       director:
         type: string
+        description: Nombre del director de la organizacion
       numVacantes:
         type: number
+        description: Numero de vacantes disponibles de la organizacion
       fechaPostulacion:
         type: object
+        description: Objeto que contiene la fecha de inicio y cierre de la organizacion
         properties:
           inicio:
             type: string
+            description: Fecha de inicio para las postulaciones de la organizacion
           cierre:
             type: string
+            description: Fecha de cierre para las postulaciones de la organizacion
       mensualidad:
         type: number
+        description: Costo de la mensualidad de la organizacion
       totalAlumnosMatriculados:
         type: number
+        description: Cantidad total de alumnos matriculados en la organizacion
       promAlumnosCurso:
         type: number
+        description: Promedio general de alumnos por curso en la organizacion
       puntajeSimce:
         type: number
+        description: Ultimo puntaje SIMCE obtenido por los alumnos en la organizacion 
   User:
     type: object
     properties:
