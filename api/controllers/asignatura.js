@@ -39,24 +39,32 @@ module.exports = {
   Param 1: a handle to the request object
   Param 2: a handle to the response object
  */
-// Listar Asignaturas
+
+//Listar Asignaturas
 function getAsignaturas(req, res) {
+  /** Se buscan todas las asignaturas */
   ModelAsignatura.find({}, (err, Asignaturas) => {
     console.log(Asignaturas);
-    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
-    if (!Asignaturas) return res.status(400).json({ message: 'No existe ninguna Asignatura' });
+    /** Existe un error interno del servidor se retorna error 500 */
+    if (err){} return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
+    /** No existe en el servidor se retorna error 404 */
+    if (!Asignaturas) return res.status(404).json({ message: 'No existe ninguna Asignatura' });
     res.status(200).json({ Asignaturas });
   });
 }
 
+//Agregar una Asignatura
 function postAsignatura(request, response) {
+  /** Se crea una nueva asignatura */
   ModelAsignatura.create(request.body, function (err, asignatura) {
+    /** Se guarda la asignatura */
     asignatura.save(function (err) {
+      /** Existe un error interno del servidor se retorna error 500 */
       if (err) {
         response.status(500).send(Responses.getError({ message: err.message }));
         return;
       }
-      console.log()
+      /** Responde un json con el contenido de la asignatura */
       response.status(200).json({
         nombre: asignatura.nombre,
         enfasis: asignatura.enfasis,
@@ -71,31 +79,41 @@ function postAsignatura(request, response) {
 
 //Listar Asignatura por ID
 function getAsignatura(req, res) {
+  /** Se recibe y guarda el id de la asignatura */
   let asignaturaID = req.swagger.params.id.value
+  /** Se Busca Asignatura por ID */
   ModelAsignatura.findById(asignaturaID, (err, asignatura) => {
+    /** Existe un error interno del servidor se retorna error 500 */
     if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
-    if (!asignatura) return res.status(400).json({ message: 'La asignatura no existe' });
+    /** No existe en el servidor se retorna error 404 */
+    if (!asignatura) return res.status(404).json({ message: 'La asignatura no existe' });
     res.status(200).json({ asignaturas: asignatura });
     console.log(asignatura);
   });
 }
 
-//update
+//Actualizar una Asignatura por ID
 function updateAsignatura(request, response) {
+  /** Se recibe y guarda el id de la asignatura */
   let asignaturaID = request.swagger.params.id.value;
   ModelAsignatura.findById(asignaturaID, function(err, asignatura) {
+    /** Existe un error interno del servidor se retorna error 500 */
     if (err) {
       response.status(500).send(Responses.getError({message: err.message}));
       return;
     }
+    /** No existe en el servidor se retorna error 404 */
     if (!asignatura) {
-      response.status(404).send(Responses.getError({message: `asignatura ${asignaturaID} not found.`}));
+      response.status(404).send(Responses.getError({message: `asignatura ${asignaturaID} no encontrado.`}));
       return;
     }
+    //copia los valores del objeto("Object.assign")
     asignatura = Object.assign(asignatura, request.body);
     asignatura.save(asignaturaID, function (err, asignatura) {
+      /** Existe un error interno del servidor se retorna error 500 */
       if (err) {
         response.status(500).send(Responses.getError({message: err.message}));
+        return;
       }
 
       response.json(asignatura);
@@ -103,13 +121,17 @@ function updateAsignatura(request, response) {
   });
 }
 
-//delete
+//Eliminar una Asignatura por ID
 function deleteAsignatura(req, res) {
+  /** Se recibe y guarda el id de la asignatura */
   let asignaturaID = req.swagger.params.id.value
+  //Se Busca Asignatura por ID
   ModelAsignatura.findById(asignaturaID, (err, asignatura) => {
+    /** Existe un error interno del servidor se retorna error 500 */
     if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
 
     asignatura.remove(err => {
+      /** Existe un error interno del servidor se retorna error 500 */
       if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
       res.status(200).json({ message: 'La Asignatura fue eliminada con exito' });
     });
