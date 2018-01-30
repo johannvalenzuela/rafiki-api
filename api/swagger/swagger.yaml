@@ -12,12 +12,41 @@ schemes:
   - http
   - https
 # format of bodies a client can send (Content-Type)
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 consumes:
   - application/json
 # format of the responses to the client (Accepts)
 produces:
   - application/json
 paths:
+  /login/{role}:
+    x-swagger-router-controller: main-controller
+    post:
+      operationId: loginPost
+      description: "Login with a particular role"
+      parameters:
+        - name: role
+          in: path
+          required: true
+          type: string
+        - name: authentication
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Authentication"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Token"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/Error"
   /niveles/{id}:
       # our controller name
     x-swagger-router-controller: nivel
@@ -87,6 +116,10 @@ paths:
     get:
       description: Obtener la lista de niveles académicos
       operationId: get_niveles
+    #  security:
+    #    - Bearer: []
+    #  x-security-scopes:
+    #    - admin
      # define the type of response for Success "200" and Error
       responses:
         "200":
@@ -536,6 +569,30 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  Authentication:
+    type: object
+    properties:
+      username:
+        type: string
+        example: "username"
+      password:
+        type: string
+        example: "password"
+  Resource:
+    type: object
+    properties:
+      resource:
+        type: string
+  Token:
+    type: object
+    properties:
+      token:
+        type: string
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
   HelloWorldResponse:
     required:
       - message
@@ -748,4 +805,4 @@ definitions:
         description: Sala del curso
       totalAlumnos:
         type: number
-        description: Cantidad total de alumnos del curso
+        description: Cantidad total de alumnos del cursoo
