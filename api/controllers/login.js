@@ -9,7 +9,7 @@ function loginPost(req, res, next){
     var username = req.body.username;
     var password = req.body.password;
   
-    if (role != "user" && role != "admin") {
+    if (role != "user" && role != "admin" && role != "israel") {
       var response = { message: 'Error: Role must be either "admin" or "user"' };
       res.writeHead(400, { "Content-Type": "application/json" });
       return res.end(JSON.stringify(response));

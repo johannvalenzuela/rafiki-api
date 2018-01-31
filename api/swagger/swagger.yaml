@@ -116,10 +116,12 @@ paths:
     get:
       description: Obtener la lista de niveles académicos
       operationId: get_niveles
-      security:
-        - Bearer: []
-      x-security-scopes:
-        - admin
+      #security:
+      #  - Bearer: []
+      #x-security-scopes:
+      #  - admin
+      #  - user 
+      #  - israel
      # define the type of response for Success "200" and Error
       responses:
         "200":
