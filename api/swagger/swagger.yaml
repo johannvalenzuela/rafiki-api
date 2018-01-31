@@ -24,7 +24,7 @@ produces:
   - application/json
 paths:
   /login/{role}:
-    x-swagger-router-controller: main-controller
+    x-swagger-router-controller: login
     post:
       operationId: loginPost
       description: "Login with a particular role"
@@ -116,10 +116,10 @@ paths:
     get:
       description: Obtener la lista de niveles académicos
       operationId: get_niveles
-    #  security:
-    #    - Bearer: []
-    #  x-security-scopes:
-    #    - admin
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - admin
      # define the type of response for Success "200" and Error
       responses:
         "200":

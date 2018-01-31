@@ -3,7 +3,7 @@
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 var mongoose = require('mongoose');
-
+var auth = require("./api/helpers/auth");
 
 //Modelos
 require("./api/models/user.js");
@@ -39,6 +39,11 @@ SwaggerExpress.create(config, (err, swaggerExpress) => {
   mongoose.Promise = global.Promise;
   mongoose.connect('mongodb://54.233.193.162:27017/rafiki-test');
   var port = process.env.PORT || 10010;
+  app.use(
+    swaggerExpress.runner.swaggerTools.swaggerSecurity({
+      Bearer: auth.verifyToken
+    })
+  );
   app.listen(port);
 
   if (swaggerExpress.runner.swagger.paths['/hello']) {
