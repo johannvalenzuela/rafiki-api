@@ -749,3 +749,48 @@ definitions:
       totalAlumnos:
         type: number
         description: Cantidad total de alumnos del curso
+  Actividad:
+    type: object
+    properties:
+      profesorAutor:
+        type: string
+        description: Nombre del autor de la actividad
+      anhoAcademico:
+        type: number
+        description: Año en que se crea la actividad
+      semestre:
+        type: number
+        description: Semestre en que se crea la actividad (1 - 2)
+      nivelDificultad:
+        type: string
+        description: Nivel de dificultad de la actividad
+      nivelAprendizaje:
+        type: string
+        description: Nivel de aprendizaje según taxonomia de bloom
+      tipoPregunta:
+        type: string
+        description: Tipo de pregunta (Enumeración - Conocimiento especifico - Ensayo)
+      asignatura:
+        type: string
+        description: Nombre de la asignatura
+      tema:
+        type: string
+        description: Nombre del tema de la actividad
+      subTema:
+        type: string
+        description: Nombre del subtema de la actividad
+      pregunta:
+        type: string
+        description: Enunciado de la pregunta
+      respuestaReferencia:
+        type: string
+        description: Respuesta de referencia otorgada por el autor
+      puntajeTotal:
+        type: number
+        description: Puntaje total de la pregunta
+      retroalimentacion:
+        type: array
+        items: 
+          type: string
+        description: Enlaces y/o información complementaria para ser entregada como retroalimentación
+      
