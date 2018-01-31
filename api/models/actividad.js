@@ -5,21 +5,82 @@ const Schema = mongoose.Schema;
 
 const ActividadSchema = new Schema ({
     
-    profesorAutor: String, 
-    anhoAcademico: Number,
-    semestre: Number,
-    nivelDificultad: String,
-    nivelAprendizaje: String, //Según taxonomia de bloom: Recordar, Comprender, Aplicar, Analizar, Evaluar, Crear.
-    tipoPregunta: String, //Enumeración, Conocimiento especifico, Ensayo.
-    asignatura: String,
-    tema: String,
-    subTema: String,
-    pregunta: String,
-    respuestaReferencia: String,
-    puntajeTotal: Number,
-    retroalimentacion: Array //Enlaces de interes y/o información complementaria. Se entrega solo en preguntas de Ensayo.
+    profesorAutor: {
+        type: String, 
+    },
 
-   
+    anhoAcademico: {
+        type: Number,
+    },
+
+    semestre: {
+        type: Number,
+        enum: ['1','2']
+    },
+
+    nivelDificultad: {
+        type: String, 
+    },
+
+    nivelAprendizaje: {
+        type: String, 
+        enum: ['Recordar', 'Comprender', 'Aplicar','Analizar','Evaluar', 'Crear']
+    }, 
+
+    tipoPregunta:{
+        type: String, 
+        enum: ['Enumeracion', 'Conocimiento especifico', 'Ensayo','Verdadero y Falso','Alternativas',]
+    },
+
+    asignatura: {
+        type: String 
+    },
+
+    tema: {
+        type: String 
+    },
+
+    subTema: {
+        type: String 
+    },
+
+    preguntaEnunciado: {
+        type: String
+    },
+
+    preguntaAlternativas: {
+        type: [{
+          type: String  
+        }]
+    },
+
+    respuesta: {
+        type: String
+    },
+    
+    respuestaVerdaderoFalso: {
+        type: Boolean
+    },
+
+    respuestaAlternativas: {
+        type: [{
+            type: String  
+        }]
+    }, 
+
+    puntajeTotal: {
+        type: Number, 
+    },
+
+    //Enlaces de interes y/o información complementaria. Se entrega solo en preguntas de Ensayo.
+    retroalimentacion: {
+        type: [{
+            type: String  
+        }]
+    }, 
+
+  
+
 });
 
 module.exports = mongoose.model('Actividad', ActividadSchema);
