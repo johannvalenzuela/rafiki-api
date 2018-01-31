@@ -46,7 +46,7 @@ function getAsignaturas(req, res) {
   ModelAsignatura.find({}, (err, Asignaturas) => {
     console.log(Asignaturas);
     /** Existe un error interno del servidor se retorna error 500 */
-    if (err){} return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
+    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
     /** No existe en el servidor se retorna error 404 */
     if (!Asignaturas) return res.status(404).json({ message: 'No existe ninguna Asignatura' });
     res.status(200).json({ Asignaturas });

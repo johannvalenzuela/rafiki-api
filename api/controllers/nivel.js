@@ -5,7 +5,6 @@ var ModelNivel = require('../../api/models/nivel');
 const Responses = require('../helpers/responses');
 /** Exportación de las funciones para usar en el resto del código */
 module.exports = {
-  get_sigla: get_sigla,
   get_niveles: get_niveles,
   getNivelId: getNivelId,
   createNivel: createNivel,
