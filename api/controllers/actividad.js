@@ -62,6 +62,7 @@ function getActividades(req, res) {
     if(!actividades) return res.status(404).send({message: 'No existe ningún Actividad'});
 
     /**Se responde todos los Actividads*/
+    console.log(actividades);
     res.status(200).send({actividades});
 });
 }
@@ -144,7 +145,7 @@ function updateActividad(request, response) {
     }
     
     /**Se copian los valores a la Actividad */
-    actividad = Object.assign(Actividad, request.body);
+    actividad = Object.assign(actividad, request.body);
     
     /**Se guardan los nuevos valores de la Actividad */
     actividad.save(idActividad, function (err, Actividad) {
@@ -180,12 +181,25 @@ function postActividad(request, response) {
 
       /*
 
-      //ACTUALIZAR LOS CAMPOS A MOSTRAR
       response.status(200).json({ 
-        profesorAutor : actividad.profesorAutor
-      });
+        profesorAutor : actividad.profesorAutor,
+        anhoAcademico: actividad.anhoAcademico,
+        semestre: actividad.semestre,
+        nivelDificultad: actividad.nivelDificultad,
+        nivelAprendizaje: actividad.nivelAprendizaje,
+        tipoPregunta: actividad.tipoPregunta,
+        tema: actividad.tema,
+        subTema: actividad.subTema,
+        preguntaEnunciado: actividad.preguntaEnunciado,
+        preguntaaActividades: actividad.preguntaaActividades,
+        respuesta: actividad.respuesta, 
+        respuestaVerdaderoFalso: actividad.respuestaVerdaderoFalso, 
+        respuestaAlternativas: actividad.respuestaAlternativas, 
+        puntajeTotal: actividad.puntajeTotal,
+        retroalimentacion: actividad.retroalimentacion
+      });*/
 
-      */
+    
     })
   });
 }
