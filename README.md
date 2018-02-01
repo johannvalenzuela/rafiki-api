@@ -1,75 +1,74 @@
-# Rafiki
+# Rafiki API
 
 ## Getting Started
 
-### Prerequisitos
+Asistente educativo para gestión de proyectos docentes. REST API para gestionar la transacción de datos. 
 
-* Google Chrome
-* Visual Studio Code
+
+### Requerimientos
+
+* npm & node
+* git
 
 ### Instalando
 
-1. Descargar e instalar node 8.9.3 & npm 5.5.1 (última LTS al 21-12-2017)
+1. Instalar Swagger
 	
-	https://nodejs.org/
+	npm i -g swagger
 	
-2. Descargar e instalar Git 
+2. Clonar repositorio
 	
-	https://git-scm.com/
+	git clone https://github.com/johannvalenzuela/rafiki-api.git
 	
-3. Descargar repositorio
-	
-	git clone https://github.com/johannvalenzuela/rafiki
-	
-4. Instalar Angular CLI
-	
-	npm install -g @angular/cli@latest
-
-5. Instalar dependencias
+3. Instalar dependencias
 	
 	npm install
-	
-## Versionado
+
+## Contol de versiones
+
+### semver
 
 Utilizamos versionado semántico https://semver.org/lang/es/
+
+### Commits
+
+Como guía de estilo utilizamos https://udacity.github.io/git-styleguide/
 
 ### Branches
 
 	* master: última versión disponible para producción
 	* release: candidato a versión de producción
-	* dev: 
+	* dev: integracion de las funcionalidades
+	* hotfix: corrección de bugs urgentes
+	* #feat: desarrollo de una funcionalidad
 
 ## Construido con
 
-* [Angular CLI](https://github.com/angular/angular-cli)
+* Swagger
+* Express
+* Node
+* Mongoose
 
 ## Autores
 
-* Johann Valenzuela - Propietario
+* [Hector Astorga](https://github.com/hastorga) - Contribuidor
+* [Samuel Carrasco](https://github.com/scarrascofuentes) - Contribuidor
+* [Israel Jasma](https://github.com/israeljasmac) - Contribuidor
+* [Israel Ogas](https://github.com/IsraelOgas) - Contribuidor
+* [Johann Valenzuela](https://github.com/IsraelOgas) - Propietario
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.2.
+## Servidor de Desarrollo
 
-## Development server
+	swagger project start
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Swagger REST editor
 
-## Code scaffolding
+	swaggger project edit
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Verificar sintaxis
 
-## Build
+	swagger project verify
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+## Test e2e 
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
+	swagger project test
