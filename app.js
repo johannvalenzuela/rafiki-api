@@ -3,7 +3,7 @@
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 var mongoose = require('mongoose');
-
+var auth = require("./api/helpers/auth");
 
 //Modelos
 require("./api/models/user.js");
@@ -11,6 +11,7 @@ require('./api/models/organizacion');
 require('./api/models/curso');
 require('./api/models/asignatura');
 require('./api/models/nivel');
+require('./api/models/actividad');
 
 module.exports = app; // for testing
 
@@ -28,7 +29,10 @@ mongoose.connect(`mongodb://${host}:${port}/${database}`, (err, res) => {
 });
 
 var config = {
-  appRoot: __dirname // required config
+  appRoot: __dirname, // required config
+  swaggerSecurityHandlers: {
+    Bearer: auth.verifyToken
+  }
 };
 
 SwaggerExpress.create(config, (err, swaggerExpress) => {
@@ -39,6 +43,7 @@ SwaggerExpress.create(config, (err, swaggerExpress) => {
   mongoose.Promise = global.Promise;
   mongoose.connect('mongodb://54.233.193.162:27017/rafiki-test');
   var port = process.env.PORT || 10010;
+
   app.listen(port);
 
   if (swaggerExpress.runner.swagger.paths['/hello']) {
