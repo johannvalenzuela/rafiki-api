@@ -165,10 +165,10 @@ function updateActividad(request, response) {
 
 function postActividad(request, response) {
 
-  /**Se crea una nueva Actividad */
+    /**Se crea una nueva actividad */
   ModelActividad.create(request.body, function (err, actividad) {
     
-    /**Se guarda la nueva Actividad */
+    /**Se guarda la nueva actividad */
     actividad.save(function(err){
       
       /**En caso de error del servidor, se retorna error 500*/
@@ -177,7 +177,16 @@ function postActividad(request, response) {
         return;
       }
 
-      /**Se responde un json con el contenido de la Actividad*/
+      /**Se responde un json con el contenido de la actividad*/
+
+      response.status(200).json(actividad);
+
+     
+    })
+  });
+}
+
+/**Se responde un json con el contenido de la Actividad*/
 
       /*
 
@@ -198,12 +207,6 @@ function postActividad(request, response) {
         puntajeTotal: actividad.puntajeTotal,
         retroalimentacion: actividad.retroalimentacion
       });*/
-
-    
-    })
-  });
-}
-
 
 
 
