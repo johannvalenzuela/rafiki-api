@@ -12,12 +12,142 @@ schemes:
   - http
   - https
 # format of bodies a client can send (Content-Type)
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 consumes:
   - application/json
 # format of the responses to the client (Accepts)
 produces:
   - application/json
 paths:
+  /actividades:
+    # our controller name
+    x-swagger-router-controller: actividad
+    get:
+      description: Obtener la lista de actividades
+      operationId: getActividades
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Actividad"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Añadir una nueva actividad
+      operationId: postActividad
+      # movie info to be stored
+      parameters:
+        - name: data
+          description: Atributos de actividad
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Actividad"     
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Actividad"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /actividades/{id}:
+    # our controller name
+    x-swagger-router-controller: actividad
+    get:
+      description: Obtener una actividad
+      operationId: getActividadId
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Actividad"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar una actividad
+      operationId: updateActividad
+      # define the parameters
+      parameters:
+        - name: id
+          description: Id de Actividad
+          type: string
+          in: path
+          required: true
+        - name: data
+          description: Atributos de actividad
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Actividad"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Actividad"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"        
+    delete:
+      description: Eliminar actividad
+      operationId: deleteActividad
+      # define the parameters
+      parameters:
+        - name: id
+          description: Id de actividad
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Actividad"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /login/{role}:
+    x-swagger-router-controller: login
+    post:
+      operationId: loginPost
+      description: "Login with a particular role"
+      parameters:
+        - name: role
+          in: path
+          required: true
+          type: string
+        - name: authentication
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Authentication"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Token"
+        "403":
+          description: "Access Denied"
+          schema:
+            $ref: "#/definitions/Error"
   /niveles/{id}:
       # our controller name
     x-swagger-router-controller: nivel
@@ -87,6 +217,12 @@ paths:
     get:
       description: Obtener la lista de niveles académicos
       operationId: get_niveles
+      #security:
+      #  - Bearer: []
+      #x-security-scopes:
+      #  - admin
+      #  - user 
+      #  - israel
      # define the type of response for Success "200" and Error
       responses:
         "200":
@@ -536,6 +672,30 @@ paths:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  Authentication:
+    type: object
+    properties:
+      username:
+        type: string
+        example: "username"
+      password:
+        type: string
+        example: "password"
+  Resource:
+    type: object
+    properties:
+      resource:
+        type: string
+  Token:
+    type: object
+    properties:
+      token:
+        type: string
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
   HelloWorldResponse:
     required:
       - message
@@ -749,3 +909,60 @@ definitions:
       totalAlumnos:
         type: number
         description: Cantidad total de alumnos del curso
+  Actividad:
+    type: object
+    properties:
+      profesorAutor:
+        type: string
+        description: Nombre del autor de la actividad
+      anhoAcademico:
+        type: number
+        description: Año en que se crea la actividad
+      semestre:
+        type: number
+        description: Semestre en que se crea la actividad (1 - 2)
+      nivelDificultad:
+        type: string
+        description: Nivel de dificultad de la actividad
+      nivelAprendizaje:
+        type: string
+        description: Nivel de aprendizaje ('Recordar', 'Comprender', 'Aplicar','Analizar','Evaluar', 'Crear')
+      tipoPregunta:
+        type: string
+        description: Tipo de pregunta ('Enumeracion', 'Conocimiento especifico', 'Ensayo','Verdadero y Falso','Alternativas')
+      asignatura:
+        type: string
+        description: Nombre de la asignatura
+      tema:
+        type: string
+        description: Nombre del tema de la actividad
+      subTema:
+        type: string
+        description: Nombre del subtema de la actividad
+      preguntaEnunciado:
+        type: string
+        description: Enunciado de la pregunta
+      preguntaAlternativas:
+        type: array
+        items: 
+          type: string
+        description: Alternativas correspondientes al enunciado de la pregunta
+      respuesta:
+        type: string
+        description: Respuesta de referencia 
+      respuestaVerdaderoFalso:
+        type: boolean
+        description: Respuesta de referencia para pregunta de Verdadero y Falso (true - false)
+      respuestaAlternativas:
+        type: array
+        items: 
+          type: string
+        description: Respuesta(s) de referencia para pregunta de Alternativas
+      puntajeTotal:
+        type: number
+        description: Puntaje total de la pregunta
+      retroalimentacion:
+        type: array
+        items: 
+          type: string
+        description: Enlaces y/o información complementaria para ser entregada como retroalimentación
