@@ -11,6 +11,7 @@ require('./api/models/organizacion');
 require('./api/models/curso');
 require('./api/models/asignatura');
 require('./api/models/nivel');
+require('./api/models/actividad');
 
 module.exports = app; // for testing
 
