@@ -91,9 +91,10 @@ function updateOrganizacion(request, response) {
   Param 2: una identificacion de respuesta de un objeto
 */
 function deleteOrganizacion(request, response) {
-  let organizacionID = request.swagger.params.id.value;ç
+  let organizacionID = request.swagger.params.id.value;
+  console.log(organizacionID);
 
-  if(id.length < 24 || id.length > 24){
+  if(organizacionID.length < 24 || organizacionID.length > 24){
     return response.status(400).send(Responses.getError({message: 'Se ingresó una ID no valida'}));
   }
 
@@ -112,6 +113,7 @@ function deleteOrganizacion(request, response) {
     });
   });
 }
+
 
 /*
   Funcion que crea una organizacion
