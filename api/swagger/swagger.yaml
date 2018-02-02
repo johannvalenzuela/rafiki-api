@@ -644,6 +644,107 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /evaluaciones:
+    # our controller name
+    x-swagger-router-controller: evaluacion
+    get:
+      description: Obtener la lista de evaluaciones
+      # define the type of response for Success "200" and Error
+      operationId: getEvaluaciones
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Evaluacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Agregar una evaluación
+      # movie info to be stored
+      operationId: postEvaluacion
+      parameters:
+        - name: data
+          description: Atributos evaluación en un JSON
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Evaluacion"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Evaluacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /evaluaciones/{id}:
+    # our controller name
+    x-swagger-router-controller: evaluacion
+    get:
+      description: Obtener una evaluacion
+      operationId: getEvaluacion
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Evaluacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar una evaluacion
+      operationId: updateEvaluacion
+      # define the parameters
+      parameters:
+        - name: id
+          description: ID de la evaluacion
+          type: string
+          in: path
+          required: true
+        - name: data
+          description: Propiedades nuevas para la evaluacion
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Evaluacion"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Evaluacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: Eliminar una evaluacion
+      operationId: deleteEvaluacion
+      # define the parameters
+      parameters:
+        - name: id
+          description: Id de la evaluacion
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Evaluacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse" 
   /hello:
     # binds a127 app logic to a route
     x-swagger-router-controller: hello_world
@@ -960,6 +1061,29 @@ definitions:
       puntajeTotal:
         type: number
         description: Puntaje total de la pregunta
+      retroalimentacion:
+        type: array
+        items: 
+          type: string
+        description: Enlaces y/o información complementaria para ser entregada como retroalimentación
+  Evaluacion:
+    type: object
+    properties:
+      profesorAutor:
+        type: string
+        description: Profesor autor de la evaluacion
+      nivelAprendizaje:
+        type: string
+        description: Nivel de aprendizaje ('Recordar', 'Comprender', 'Aplicar','Analizar','Evaluar', 'Crear')
+      asignatura:
+        type: string
+        description: Nombre de la asignatura
+      detalles:
+        type: string
+        description: Detalles que explican de qué trata esta evaluación
+      tipoEjecucion:
+        type: string
+        description: Formas en las que se llevará acabo la evaluación
       retroalimentacion:
         type: array
         items: 
