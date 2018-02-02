@@ -826,16 +826,15 @@ definitions:
   User:
     type: object
     properties:
-      _id:
-        type: string
-      _v:
-        type: number
       nombre:
         type: string
         description: Nombre completo del usuario
       rut:
         type: string
         description: RUT del usuario
+      password:
+        type: string
+        description: Clave del usuario
       correo:
         type: string
         description: Correo del usuario
