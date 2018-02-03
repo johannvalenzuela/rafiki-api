@@ -776,7 +776,7 @@ definitions:
   Authentication:
     type: object
     properties:
-      username:
+      correo:
         type: string
         example: "username"
       password:
