@@ -6,7 +6,7 @@ module.exports = {
 
 function loginPost(req, res, next){
     var role = req.swagger.params.role.value;
-    var username = req.body.username;
+    var username = req.body.correo;
     var password = req.body.password;
   
     if (role != "user" && role != "admin" && role != "israel") {
