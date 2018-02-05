@@ -620,7 +620,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GeneralResponse"
+            $ref: "#/definitions/User"
         default:
           description: Error
           schema:
