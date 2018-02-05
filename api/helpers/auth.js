@@ -62,10 +62,10 @@ exports.verifyToken = function(req, authOrSecDef, token, callback) {
   }
 };
 
-exports.issueToken = function(username, role) {
+exports.issueToken = function(correo, role) {
   var token = jwt.sign(
     {
-      sub: username,
+      sub: correo,
       iss: issuer,
       role: role
     },
