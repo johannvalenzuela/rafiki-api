@@ -136,7 +136,7 @@ function updateUser(req, res){
         });
       }
 
-      res.json(customer);
+      res.json(user);
     });
   });
 }
