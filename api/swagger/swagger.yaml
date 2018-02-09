@@ -744,6 +744,107 @@ paths:
         default:
           description: Error
           schema:
+            $ref: "#/definitions/ErrorResponse"
+  /planEstudio:
+    # our controller name
+    x-swagger-router-controller: planEstudio
+    get:
+      description: Obtener una lista de plan de estudios
+      # define the type of response for Success "200" and Error
+      operationId: getPlanEstudios
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PlanEstudio"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Agregar un plan de estudio
+      # movie info to be stored
+      operationId: postPlanEstudio
+      parameters:
+        - name: data
+          description: JSON con los atributos del plan de estudio
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/PlanEstudio"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PlanEstudio"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /planEstudio/{id}:
+    # our controller name
+    x-swagger-router-controller: planEstudio
+    get:
+      description: Obtener una plan de estudio
+      operationId: getPlanEstudio
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PlanEstudio"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar un plan de evaluacion
+      operationId: updatePlanEstudio
+      # define the parameters
+      parameters:
+        - name: id
+          description: ID del plan de estudio
+          type: string
+          in: path
+          required: true
+        - name: data
+          description: Nuevas propiedades para el plan de estudio
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/PlanEstudio"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PlanEstudio"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: Eliminar un plan de estudio
+      operationId: deletePlanEstudio
+      # define the parameters
+      parameters:
+        - name: id
+          description: ID del plan de estudio
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/PlanEstudio"
+        default:
+          description: Error
+          schema:
             $ref: "#/definitions/ErrorResponse" 
   /hello:
     # binds a127 app logic to a route
@@ -1089,3 +1190,35 @@ definitions:
         items: 
           type: string
         description: Enlaces y/o información complementaria para ser entregada como retroalimentación
+  PlanEstudio:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: Nombre del plan de estudio
+      asignaturas:
+        type: array
+        items: 
+          type: object
+          properties:
+            nombre:
+              type: string
+              description: Nombre de la asignatura
+            horasMensuales:
+                type: number
+                description: Cantidad de horas mensuales
+            horasAnuales:
+                type: number
+                description: Cantidad de horas anuales
+      tipo:
+        type: string
+        description: Tipo de jornada ('Con JEC', 'SIN JEC')
+      horasLibreDisposicion:
+        type: number
+        description: Cantidad de horas de libre disposicion
+      totalTiempoMinFG:
+        type: number
+        description: Tiempo total de Formacion General
+      totalTiempoMinFD:
+        type: number
+        description: Tiempo total de Formacion Diferenciada
