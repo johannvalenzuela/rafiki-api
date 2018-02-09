@@ -24,7 +24,8 @@ const planEstudioSchema = new Schema({
 
     tipo: {
         type: String,
-        enum: ['Con JEC', 'Sin JEC']
+        lowercase: true,
+        enum: ['con jec', 'sin jec']
     },
 
     horasLibreDisposicion: {
