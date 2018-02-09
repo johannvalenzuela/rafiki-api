@@ -53,7 +53,7 @@ exports.getEvaluacion = (req, res) => {
  * @param res | 200 Evaluacion eliminada | 500 Error al buscar | 404 La evaluación no existe |
  * @return {message:mensaje} JSON con mensaje
  */
-exports.deleteActividad = (req, res) => {
+exports.deleteEvaluacion = (req, res) => {
     let id = req.swagger.params.id.value;
     Model.findById(id, (err, evaluacion) => {
 
