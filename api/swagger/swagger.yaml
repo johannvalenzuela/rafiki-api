@@ -1190,4 +1190,29 @@ definitions:
         items: 
           type: string
         description: Enlaces y/o información complementaria para ser entregada como retroalimentación
-
+  RecursoEducativo:
+    type: object
+    properties:
+      titulo:
+        type: string
+        description: Titulo del recurso educativo
+      descripcion:
+        type: string
+        description: Descripcion del recurso educativo
+      asignatura:
+        type: string
+        description: Nombre de la asignatura a la que alude el recurso educativo
+      nivel:
+        type: string
+        description: Nivel al que corresponde el recurso educativo
+      tipoRecurso:
+        type: string
+        description: Tipo de recurso educativo
+      autor:
+        type: string
+        description: Nombre del autor del recurso educativo
+      links:
+        type: array
+        items: 
+          type: string
+        description: Enlaces a las partes que componen el recurso educativo
