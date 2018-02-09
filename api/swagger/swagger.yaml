@@ -1212,7 +1212,7 @@ definitions:
                 description: Cantidad de horas anuales
       tipo:
         type: string
-        description: Tipo de jornada ('Con JEC', 'SIN JEC')
+        description: Tipo de jornada ('Con JEC', 'Sin JEC')
       horasLibreDisposicion:
         type: number
         description: Cantidad de horas de libre disposicion
