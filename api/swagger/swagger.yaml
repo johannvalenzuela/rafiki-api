@@ -804,7 +804,26 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/ObjAprendizaje"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: un Objetivo de Aprendizaje
+      operationId: deleteObjAprendizaje
+      # define the parameters
+      parameters:
+        - name: id
+          description: Id del Objetivo de Aprendizaje
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ObjAprendizaje"
         default:
           description: Error
           schema:
