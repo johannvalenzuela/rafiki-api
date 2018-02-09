@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const objAprendizaje = new Schema ({
+const objAprendizajeSchema = new Schema ({
     numero: Number,
     tipo: {
         type: String, 
@@ -11,4 +11,4 @@ const objAprendizaje = new Schema ({
     descripcion: String
 });
 
-module.exports = mongoose.model('ObjAprendizaje', objAprendizajeSchema);
+module.exports = mongoose.model('objaprendizajes', objAprendizajeSchema);
