@@ -771,6 +771,44 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
+  # Objetivos de Aprendizaje
+  /aprendizajes:
+     # our controller name
+     x-swagger-router-controller: objAprendizaje
+     get:
+       description: Obtener una lista de objetivos de aprendizaje
+       # define the type of response for Success "200" and Error
+       operationId: getObjAprendizajes
+       responses:
+         "200":
+           description: Success
+           schema:
+             $ref: "#/definitions/ObjAprendizaje"
+         default:
+           description: Error
+           schema:
+             $ref: "#/definitions/ErrorResponse"
+  /aprendizajes/{id}:
+    # our controller name
+    x-swagger-router-controller: objAprendizaje
+    get:
+      description: Obtener un Objetivo de Aprendizaje
+      operationId: getObjAprendizaje
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Evaluacion"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 # complex objects have schema definitions
 definitions:
   Authentication:
@@ -1089,3 +1127,16 @@ definitions:
         items: 
           type: string
         description: Enlaces y/o información complementaria para ser entregada como retroalimentación
+# Objetivos de Aprendizaje
+  ObjAprendizaje:
+    type: object
+    properties:
+      numero:
+        type: number
+        description: numero del objetivo de aprendizaje
+      tipo:
+        type: string
+        description: Tipo de aprendizaje ('Habilidad', 'Conocimiento', 'Actitud')
+      descripcion:
+        type: string
+        description: Informacion respecto a que apunta el objetivo de aprendizaje
