@@ -15,12 +15,9 @@ const Responses = require('../helpers/responses');
  */
 exports.getObjAprendizajes = (req, res) => {
     ModelAprendizaje.find({}, (err, objAprendizajes) => {
-        console.log(objAprendizajes);
+
         if (err) return res.status(500).send({ message: "Error al realizar peticion: ${err}" });
-
         if (!objAprendizajes) return res.status(404).send({ message: 'No existe ningun objetivo de aprendizaje' });
-
-        console.log(objAprendizajes);
         res.status(200).send({ objAprendizajes });
     });
 }
