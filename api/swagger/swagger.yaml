@@ -773,21 +773,41 @@ paths:
     x-swagger-pipe: swagger_raw
   # Objetivos de Aprendizaje
   /aprendizajes:
-     # our controller name
-     x-swagger-router-controller: objAprendizaje
-     get:
-       description: Obtener una lista de objetivos de aprendizaje
-       # define the type of response for Success "200" and Error
-       operationId: getObjAprendizajes
-       responses:
-         "200":
-           description: Success
-           schema:
-             $ref: "#/definitions/ObjAprendizaje"
-         default:
-           description: Error
-           schema:
-             $ref: "#/definitions/ErrorResponse"
+    # our controller name
+    x-swagger-router-controller: objAprendizaje
+    get:
+      description: Obtener una lista de objetivos de aprendizaje
+      # define the type of response for Success "200" and Error
+      operationId: getObjAprendizajes
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ObjAprendizaje"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Agregar un objetivos de aprendizaje
+      # movie info to be stored
+      operationId: postObjAprendizaje
+      parameters:
+        - name: data
+          description: Atributos objetivos de aprendizaje en un JSON
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ObjAprendizaje"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ObjAprendizaje"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /aprendizajes/{id}:
     # our controller name
     x-swagger-router-controller: objAprendizaje
@@ -800,6 +820,31 @@ paths:
           type: string
           in: path
           required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ObjAprendizaje"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar un Objetivo de Aprendizaje
+      operationId: updateObjAprendizaje
+      # define the parameters
+      parameters:
+        - name: id
+          description: ID del Objetivo de Aprendizaje
+          type: string
+          in: path
+          required: true
+        - name: data
+          description: Propiedades nuevas para el Objetivo de Aprendizaje
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ObjAprendizaje"
       responses:
         "200":
           description: Success
