@@ -47,25 +47,29 @@ exports.getObjAprendizaje = (req, res) => {
  *
  * @author Israel Jasma
  * @exports deleteObjAprendizaje DELETE /aprendizajes/{id}
- * @param req Petición HTTP, id de objAprendizaje en Path
+ * @param req Petición HTTP, id de objetivo de aprendizaje en Path
  * @param res | 200 Objetivo de aprendizaje eliminada | 500 Error al buscar | 404 El objetivo de aprendizaje no existe |
  * @return {message:mensaje} JSON con mensaje
  */
-exports.deleteObjAprendizaje = (req, res) => {
+exports.updateObjAprendizaje = (req, res) => {
     let id = req.swagger.params.id.value;
     ModelAprendizaje.findById(id, (err, objAprendizaje) => {
 
-        if (err) return res.status(500).json({ message: `Error al borrar el objetivo de aprendizaje. Error: ${err}` });
-        if (!objAprendizaje) {
-            res.status(404).send(Responses.getError({ message: `El objetivo de aprendizaje de ID ${id} no existe` }));
+        if (err) {
+            res.status(500).send(Responses.getError({ message: err.message }));
             return;
         }
-        objAprendizaje.remove(id, function (err, objAprendizaje) {
+        if (!objAprendizaje) {
+            res.status(404).send(Responses.getError({ message: 'El objetivo de aprendizaje ${id} no existe' }));
+            return;
+        }
+        objAprendizaje = Object.assign(objAprendizaje, req.body);
+        objAprendizaje.save(id, (err, objAprendizaje) => {
             if (err) {
                 res.status(500).send(Responses.getError({ message: err.message }));
                 return;
             }
-            res.status(200).json(Responses.getSuccess({ message: `El objetivo de aprendizaje ${id} ha sido eliminado` }));
+            res.json(objAprendizaje);
         });
 
     });
