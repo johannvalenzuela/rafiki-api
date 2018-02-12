@@ -10,4 +10,4 @@ const OrientacionCurricularSchema = new Schema ({
    
 });
 
-module.exports = mongoose.model('orientacion_curricular', OrientacionCurricularSchema);
+module.exports = mongoose.model('orientaciones', OrientacionCurricularSchema);
