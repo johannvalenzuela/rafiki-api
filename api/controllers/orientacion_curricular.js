@@ -19,7 +19,7 @@ function getOrientaciones (req, res){
       if(!orientacion) return res.status(400).send({message: 'No existe ningún orientacion'});
 
       /** Si no existe error se retonan las orientaciones con status 200: OK */
-      res.status(200).json(orientacion)
+      res.status(200).json({orientacion});
       console.log(orientacion);
   });
 
@@ -37,24 +37,22 @@ function getOrientacionId(req, res) {
     if (!orientacion) return res.status(404).send(Responses.getError({message: `orientacion ${id} not found.`}));
 
     res.json(orientacion);
-});
+  });
 }
   
 
 /** POST: Función que crea un orientacion. */
 function createOrientacion(request, response) {
   ModelOrientacion.create(request.body, function (err, orientacion) {
-    orientacion.save(function(err){
-
-      /** Si existe un error interno del servidor se retorna error 500 */
-      if (err) return response.status(500).send(Responses.getError({message: err.message}));
-      console.log(orientacion);
-
+   
       /** Se crea el nuevo orientacion con los atributos requeridos */
-      response.status(200).json({ 
-        basesCurriculares : orientacion.basesCurriculares,
-        programaEstudio : orientacion.programaEstudio
-      });
+      orientacion.save(function (err) {
+
+        if (err) {
+            response.status(500).send(Responses.getError({ message: err.message }));
+            return;
+        }
+        response.status(200).json(orientacion);
     })
   });
 }
