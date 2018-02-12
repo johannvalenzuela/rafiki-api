@@ -872,6 +872,107 @@ paths:
             $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
+  /recursosEducativos:
+    # our controller name
+    x-swagger-router-controller: recursoEducativo
+    get:
+      description: Obtener la lista de recursos educativos
+      operationId: getRecursosEducativos
+      # define the type of response for Success "200" and Error
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/RecursoEducativo"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: Añadir un nuevo recurso educativo
+      operationId: postRecursoEducativo
+      # movie info to be stored
+      parameters:
+        - name: data
+          description: Atributos del Recurso educativo
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/RecursoEducativo"     
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/RecursoEducativo"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /recursosEducativos/{id}:
+    # our controller name
+    x-swagger-router-controller: recursoEducativo
+    get:
+      description: Obtener un recurso educativo
+      operationId: getRecursoEducativoId
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/RecursoEducativo"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: Actualizar un recurso educativo
+      operationId: updateRecursoEducativo
+      # define the parameters
+      parameters:
+        - name: id
+          description: Id del recurso educativo
+          type: string
+          in: path
+          required: true
+        - name: data
+          description: Atributos del recurso educativo
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/RecursoEducativo"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/RecursoEducativo"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"        
+    delete:
+      description: Eliminar recurso educativo
+      operationId: deleteRecursoEducativo
+      # define the parameters
+      parameters:
+        - name: id
+          description: Id del recurso educativo
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/RecursoEducativo"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 # complex objects have schema definitions
 definitions:
   Authentication:
@@ -1222,3 +1323,30 @@ definitions:
       totalTiempoMinFD:
         type: number
         description: Tiempo total de Formacion Diferenciada
+  RecursoEducativo:
+    type: object
+    properties:
+      titulo:
+        type: string
+        description: Titulo del recurso educativo
+      descripcion:
+        type: string
+        description: Descripcion del recurso educativo
+      asignatura:
+        type: string
+        description: Nombre de la asignatura a la que alude el recurso educativo
+      nivel:
+        type: string
+        description: Nivel al que corresponde el recurso educativo
+      tipoRecurso:
+        type: string
+        description: Tipo de recurso educativo
+      autor:
+        type: string
+        description: Nombre del autor del recurso educativo
+      links:
+        type: array
+        items: 
+          type: string
+        description: Enlaces a las partes que componen el recurso educativo
+
