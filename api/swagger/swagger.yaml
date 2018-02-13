@@ -790,7 +790,7 @@ paths:
     x-swagger-router-controller: orientacion_curricular
     get:
       description: Obtener una orientacion por id
-      operationId: getOrientacion
+      operationId: getOrientacionId
       # define the type of response for Success "200  " and Error
       parameters:
         - name: id
