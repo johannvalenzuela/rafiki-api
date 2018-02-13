@@ -64,7 +64,7 @@ paths:
     x-swagger-router-controller: actividad
     get:
       description: Obtener una actividad
-      operationId: getActividadId
+      operationId: getActividad
       # define the type of response for Success "200" and Error
       parameters:
         - name: id
