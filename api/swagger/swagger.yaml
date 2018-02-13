@@ -82,7 +82,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     put:
       description: Actualizar una actividad
-      operationId: updateObjAprendizaje
+      operationId: updateActividad
       # define the parameters
       parameters:
         - name: id
