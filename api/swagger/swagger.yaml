@@ -484,7 +484,7 @@ paths:
     x-swagger-router-controller: cursos
     get:
       description: Obtener un curso
-      operationId: getCursoId
+      operationId: getCurso
       # define the type of response for Success "200" and Error
       parameters:
         - name: id
