@@ -2,81 +2,82 @@
 
 var util = require('util');
 
-module.exports = {
-  getListOrganizaciones: getListOrganizaciones,
-  getOrganizacion: getOrganizacion,
-  createOrganizacion: createOrganizacion,
-  updateOrganizacion: updateOrganizacion,
-  deleteOrganizacion: deleteOrganizacion
-};
-
 const ModelOrganizacion = require('../../api/models/organizacion');
 const Responses = require('../helpers/responses');
 
-/*
-  Funcion que obtiene una lista de todas las organizaciones
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function getListOrganizaciones(req, res) {
+/** 
+ * @name getListOrganizaciones getListOrganizaciones GET /organizaciones
+ * @description Funcion que obtiene una lista de organizaciones
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Organizacion} JSON Objeto Organizacion
+ */
+exports.getListOrganizaciones = (req, res) => {
   ModelOrganizacion.find({}, (err, organizacion) => {
-    console.log(organizacion.length);
-    if(err) return res.status(500).json({message: `Error al realizar peticion: ${err}`});
-    if(!organizacion) return res.status(400).json({message: 'No existe ninguna organizacion'});
-
-    res.status(200).json({organizacion});
-  });
-}
-
-/*
-  Funcion que obtiene una organizacion en especifico por medio de la ID
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function getOrganizacion(req, res) {
-  let organizacionID = req.swagger.params.id.value;
-  ModelOrganizacion.findById(organizacionID, function(err, organizacion){
+    // console.log(organizacion.length);
+    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
+    if (!organizacion) return res.status(400).json({ message: 'No existe ninguna organizacion' });
+    console.log(res.status(200).statusCode);
     // console.log(organizacion);
-    if (err){
-      res.status(500).send(Responses.getError({message: err.message}));
-      return;
-    }
-    if (!organizacion){
-      res.status(404).send(Responses.getError({message: `La organizacion con ID ${organizacionID} no existe.`}));
-      return;
-    }
-    res.json({organizacion});
+    console.log(err);
+    res.status(200).json({ organizacion });
   });
 }
 
-/*
-  Funcion que actualiza los atributos modificados de una organizacion en especifico por medio de la ID
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function updateOrganizacion(request, response) {
-  let id = request.swagger.params.id.value;
-  
-  if(id.length < 24 || id.length > 24){
-    return response.status(400).send(Responses.getError({message: 'Se ingresó una ID no valida'}));
-  }
-
-  ModelOrganizacion.findById(id, function(err, organizacion) {
+/** 
+ * @name getOrganizacion getOrganizacion GET /organizaciones
+ * @description Funcion que obtiene una organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Organizacion} JSON Objeto Organizacion
+ */
+exports.getOrganizacion = (req, res) => {
+  let organizacionID = req.swagger.params.id.value;
+  ModelOrganizacion.findById(organizacionID, function (err, organizacion) {
+    // console.log(organizacion);
     if (err) {
-      response.status(500).send(Responses.getError({message: err.message}));
+      res.status(500).send(Responses.getError({ message: err.message }));
       return;
     }
     if (!organizacion) {
-      response.status(404).send(Responses.getError({message: `La organización con ID ${id} no se ha encontrado.`}));
+      res.status(404).send(Responses.getError({ message: `La organizacion con ID ${organizacionID} no existe.` }));
+      return;
+    }
+
+    res.json({ organizacion });
+  });
+}
+
+/** 
+ * @name updateOrganizacion updateOrganizacion PUT /organizaciones
+ * @description Funcion que modifica una  organizacion
+ * @author Israel Ogas
+ * @param request una identificacion de solicitud de un objeto
+ * @param response una identificacion de respuesta de un objeto
+ * @return {Organizacion} JSON Objeto Organizacion
+ */
+exports.updateOrganizacion = (request, response) => {
+  let id = request.swagger.params.id.value;
+
+  if (id.length < 24 || id.length > 24) {
+    return response.status(400).send(Responses.getError({ message: 'Se ingresó una ID no valida' }));
+  }
+
+  ModelOrganizacion.findById(id, function (err, organizacion) {
+    if (err) {
+      response.status(500).send(Responses.getError({ message: err.message }));
+      return;
+    }
+    if (!organizacion) {
+      response.status(404).send(Responses.getError({ message: `La organización con ID ${id} no se ha encontrado.` }));
       return;
     }
     organizacion = Object.assign(organizacion, request.body);
     organizacion.save(id, function (err, organizacion) {
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
+        response.status(500).send(Responses.getError({ message: err.message }));
       }
       response.json(organizacion);
     });
@@ -84,80 +85,53 @@ function updateOrganizacion(request, response) {
 }
 
 
-/*
-  Funcion que elimina una organizacion en especifico por medio de la ID
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function deleteOrganizacion(request, response) {
+/** 
+ * @name deleteOrganizacion createOrganizacion DELETE /organizaciones
+ * @description Funcion que elimina una organizacion
+ * @author Israel Ogas
+ * @param request una identificacion de solicitud de un objeto
+ * @param response una identificacion de respuesta de un objeto
+ * @return JSON con una respuesta
+ */
+exports.deleteOrganizacion = (request, response) => {
   let organizacionID = request.swagger.params.id.value;
   console.log(organizacionID);
 
-  if(organizacionID.length < 24 || organizacionID.length > 24){
-    return response.status(400).send(Responses.getError({message: 'Se ingresó una ID no valida'}));
+  if (organizacionID.length < 24 || organizacionID.length > 24) {
+    return response.status(400).send(Responses.getError({ message: 'Se ingresó una ID no valida' }));
   }
 
   ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
-    if(err) return response.status(500).json({message: `Error al borrar la organizacion: ${err}`});
+    if (err) return response.status(500).json({ message: `Error al borrar la organizacion: ${err}` });
     if (!organizacion) {
-      response.status(404).send(Responses.getError({message:  `La organizacion de ID ${organizacionID} no existe.`}));
+      response.status(404).send(Responses.getError({ message: `La organizacion de ID ${organizacionID} no existe.` }));
       return;
     }
     //Elimina la organizacion si se encontró el id
     organizacion.remove(organizacionID, function (err, organizacion) {
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
+        response.status(500).send(Responses.getError({ message: err.message }));
       }
-      response.status(200).json(Responses.getSuccess({message: `La organizacion ${organizacionID} ha sido borrada.`}));
+      response.status(200).json(Responses.getSuccess({ message: `La organizacion ${organizacionID} ha sido borrada.` }));
     });
   });
 }
 
 
-/*
-  Funcion que crea una organizacion
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function createOrganizacion(req, res) {
+/** 
+ * @name createOrganizacion createOrganizacion POST /organizaciones
+ * @description Funcion que crea una nueva organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Organizacion} JSON Objeto Organizacion
+ */
+exports.createOrganizacion = (req, res) => {
   ModelOrganizacion.create(req.body, function (err, organizacion) {
-    organizacion.save(function(err){
-      if (err){
-        res.status(500).send(Responses.getError({message: err.message}));
-        return;
-      }
-      console.log(organizacion);
-
-      res.status(200).json({ 
-        nombre: organizacion.nombre,
-        rbd: organizacion.rbd,
-        descripcion: organizacion.descripcion, 
-        reconocimientoOficial: organizacion.reconocimientoOficial, 
-        dependencia: organizacion.dependencia, 
-        sostenedor: organizacion.sostenedor,
-        orientacionReligiosa: organizacion.orientacionReligiosa,
-        direccion: {
-            calle: organizacion.direccion.calle,
-            region: organizacion.direccion.region,
-            comuna: organizacion.direccion.comuna
-        },
-        correo: organizacion.correo,
-        telefono: organizacion.telefono,
-        web: organizacion.web,
-        director: organizacion.director,
-        numVacantes: organizacion.numVacantes,
-        fechaPostulacion:{
-            inicio: organizacion.fechaPostulacion.inicio,
-            cierre: organizacion.fechaPostulacion.cierre
-        },
-        mensualidad: organizacion.mensualidad,
-        totalAlumnosMatriculados: organizacion.totalAlumnosMatriculados,
-        promAlumnosCurso: organizacion.promAlumnosCurso,
-        puntajeSimce: organizacion.puntajeSimce,
-        proyectosEducativos: [organizacion.proyectosEducativos],
-      });
+    if (err) return res.status(500).send(Responses.getError({ message: err.message }));
+    organizacion.save(function (err) {
+      if (err) return res.status(500).send(Responses.getError({ message: err.message }));
+      res.status(200).json(organizacion);
     })
   });
 }
