@@ -139,13 +139,18 @@ exports.updateActividad = (req, res) => {
  * @author Samuel Carrasco Fuentess
  * @exports postActividad  POST /actividades
  * @param req Petición HTTP, JSON Objeto Actividad en Body
- * @param res | 200 Actividad creada | 500 Error al buscar |
+ * @param res | 200 Actividad creada | 500 Error al buscar | 400 Bad Request
  * @return {actividad} JSON Objeto Actividad 
  */
 
 exports.postActividad = (req, res) => {
 
   ModelActividad.create(req.body, function (err, actividad) {
+
+    if (err) {
+      res.status(400).send(Responses.getError({ message: err.message }));
+      return;
+    }
 
     actividad.save(function (err) {
 
