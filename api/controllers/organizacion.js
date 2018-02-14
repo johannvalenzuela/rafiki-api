@@ -1,7 +1,6 @@
 'use strict';
 
 var util = require('util');
-
 const ModelOrganizacion = require('../../api/models/organizacion');
 
 /** 
@@ -27,12 +26,11 @@ exports.getListOrganizaciones = (req, res) => {
     if (organizacion.length == 0) {
       return res.status(200).json({ message: 'No existe ninguna organizacion' });
     } else {
-      return res.status(200).json(
-        {
-          link: req.url,
-          data: organizacion,
-          type: "organizaciones"
-        });
+      return res.status(200).json({
+        link: req.url,
+        data: organizacion,
+        type: "organizaciones"
+      });
     }
   });
 }
@@ -87,7 +85,6 @@ exports.getOrganizacion = (req, res) => {
 
 }
 
-
 /**
  * @name updateOrganizacion updateOrganizacion PUT /organizaciones
  * @description Funcion que modifica una  organizacion
@@ -134,7 +131,7 @@ exports.updateOrganizacion = (req, res) => {
       res.status(201).json({ link: req.url });
     });
   });
-} 
+}
 
 /** 
  * @name deleteOrganizacion createOrganizacion DELETE /organizaciones
@@ -183,7 +180,6 @@ exports.deleteOrganizacion = (req, res) => {
     });
   });
 }
-
 
 /** 
  * @name createOrganizacion createOrganizacion POST /organizaciones
@@ -252,8 +248,10 @@ exports.createOrganizacion = (req, res) => {
     estado: "417"
   });
 
-  if (Error.length > 0) return res.status(400).json({ errors: Error });
-
+  if (Error.length > 0) {
+    return res.status(400).json({ errors: Error });
+  }
+  
   ModelOrganizacion.create(req.body, function (err, organizacion) {
     if (err) return res.status(400).json({ errors: Error });
     if (organizacion) {
