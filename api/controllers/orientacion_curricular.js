@@ -22,12 +22,36 @@ module.exports = {
  * @return {[orientaciones]} JSON con un objeto que contiene arreglo de Objetos orientacion_curricular
  */
 function getOrientaciones(req, res) {
+  let Error = [];
   ModelOrientacion.find({}, (err, orientacion) => {
-    if (err) return res.status(500).send({ message: 'Error al realizar peticion: ${err}' });
-    if (!orientacion) return res.status(400).send({ message: 'No existe ningún orientacion' });
+    if (err) {
+      Error.push({
+        titulo: "error interno del servidor",
+        detalle : "ocurrió un error interno al realizar petición",
+        link : req.url,
+        estado : "500"
+      })
+      return res.json({ errors: Error })
+    }
+    if (!orientacion) {
+      Error.push({
+        titulo: "No se ha encontrado elementos",
+        detalle: "No existen orientaciones curriculares",
+        link : req.url,
+        estado: "404"
+      })
+      return res.json({errors: Error})
+    }
+     else{
+      res.status(200).json({ 
+        link: req.url,
+        data: orientacion,
+        type: "orientaciones"
+      });
+      console.log(orientacion);
 
-    res.status(200).json({ orientacion });
-    console.log(orientacion);
+    }
+   
   });
 
 }
@@ -41,11 +65,28 @@ function getOrientaciones(req, res) {
  * @return {[orientacion_curricular: orientacion_curricular]} JSON con un objeto orientacion_curricular
  */
 function getOrientacionId(req, res) {
-
+  let Error = [];
   let id = req.swagger.params.id.value;
   ModelOrientacion.findById(id, function (err, orientacion) {
-    if (err) return res.status(500).send(Responses.getError({ message: err.message }));
-    if (!orientacion) return res.status(404).send(Responses.getError({ message: `orientacion ${id} not found.` }));
+    if (err) {
+      Error.push({
+        titulo : "Error interno de servidor",
+        detalle : "No se ha podido conectar con la bd",
+        link : req.url,
+        estado: "500"
+
+      })
+      return res.json({errors : Error})
+    } 
+    if (!orientacion) {
+      Error.push({
+        titulo : "No se ha encontrado el elemento",
+        detalle : "No se encuentra la orientación curricular buscada",
+        link : req.url,
+        estado : "404"
+      })
+      return res.json({errors : Error})
+    } 
 
     res.json(orientacion);
   });
@@ -62,15 +103,16 @@ function getOrientacionId(req, res) {
  * @return {orientacion_curricular} JSON con un objeto orientacion_curricular
  */
 function createOrientacion(request, response) {
+  let Error = [];
   ModelOrientacion.create(request.body, function (err, orientacion) {
+    if(err) return response.status(500).json({errors: Error});
+    orientacion.save( (err) => {
 
-    orientacion.save(function (err) {
-
-      if (err) {
-        response.status(500).send(Responses.getError({ message: err.message }));
-        return;
-      }
-      response.status(200).json(orientacion);
+      if (err) Error.push({
+        "titulo" : "Ocurrio un error al guardar en la BD"
+      })
+      else
+        response.status(200).json(orientacion);
     })
   });
 }
