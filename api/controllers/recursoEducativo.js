@@ -15,16 +15,39 @@ const Responses = require('../helpers/responses');
  */
 exports.getRecursosEducativos = (req, res) => {
 
+    let Error = [];
+
     ModelRecursoEducativo.find({}, (err, recursosEducativos) => {
 
+        if (err) {
+            Error.push({
+                titulo: "Error Interno en el Servidor",
+                detalle: "Ocurrió algún error al realizar petición",
+                link: req.url,
+                estado: "500"
+            })
+            return res.json({ errors: Error })
+        }
 
-        if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+        if (!recursosEducativos) {
 
+            Error.push({
+                titulo: "No existen Recursos Educativos",
+                detalle: "La base de datos se encuentra sin recursos educativos",
+                link: req.url,
+                estado: "404"
+            });
+            return res.json({ errors: Error });
+        } else {
 
-        if (!recursosEducativos) return res.status(404).send({ message: 'No existe ningún Recurso Educativo' });
+            return res.status(200).json({
+                link: req.url,
+                data: recursosEducativos,
+                type: "recursos educativos"
+            });
 
-        console.log(recursosEducativos);
-        res.status(200).send({ recursosEducativos });
+        }
+
     });
 }
 
@@ -39,20 +62,42 @@ exports.getRecursosEducativos = (req, res) => {
  */
 exports.getRecursoEducativo = (req, res) => {
 
-
+    let Error = [];
     let idRecursoEducativo = req.swagger.params.id.value
 
 
     ModelRecursoEducativo.findById(idRecursoEducativo, (err, recursoEducativo) => {
 
 
-        if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+        if (err) {
+            Error.push({
+                titulo: "Error Interno en el Servidor",
+                detalle: "Ocurrio algun error al realizar peticion",
+                link: req.url,
+                estado: "500"
+            })
+            return res.json({ errors: Error })
+        }
 
+        if (!recursoEducativo) {
 
-        if (!recursoEducativo) return res.status(404).send({ message: 'El Recurso Educativo no existe' });
+            Error.push({
+                titulo: "El Recurso Educativo no existe",
+                detalle: "El id ingresado no corresponde a un recurso educativo",
+                link: req.url,
+                estado: "404"
+            });
+            return res.json({ errors: Error });
+        }
+        else {
 
+            res.json({
+                link: req.url,
+                data: recursoEducativo,
+                type: "recursos educativos"
+            });
 
-        res.status(200).send({ recursoEducativo });
+        }
 
     });
 }
@@ -68,25 +113,35 @@ exports.getRecursoEducativo = (req, res) => {
  */
 exports.deleteRecursoEducativo = (req, res) => {
 
-
+    let Error = [];
     let idRecursoEducativo = req.swagger.params.id.value;
 
     ModelRecursoEducativo.findById(idRecursoEducativo, (err, recursoEducativo) => {
 
-
-        if (err) return res.status(500).json({ message: `Error al borrar el Recurso Educativo - Error: ${err}` });
-
         if (!recursoEducativo) {
-            res.status(404).send(Responses.getError({ message: `El Recurso Educativo de ID ${idRecursoEducativo} no existe` }));
-            return;
+
+            Error.push({
+                titulo: "El Recurso Educativo no existe",
+                detalle: "El id ingresado no corresponde a un recurso educativo",
+                link: req.url,
+                estado: "404"
+            });
+            return res.json({ errors: Error });
         }
 
         recursoEducativo.remove(idRecursoEducativo, function (err, recursoEducativo) {
+
             if (err) {
-                res.status(500).send(Responses.getError({ message: err.message }));
-                return;
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrió algún error al realizar petición",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.json({ errors: Error })
             }
-            res.status(200).json(Responses.getSuccess({ message: `El Recurso Educativo ${idRecursoEducativo} ha sido eliminado` }));
+            else
+                res.status(200).json({ link: req.url });
         });
     });
 }
@@ -103,31 +158,40 @@ exports.deleteRecursoEducativo = (req, res) => {
  */
 exports.updateRecursoEducativo = (req, res) => {
 
+    let Error = [];
     let idRecursoEducativo = req.swagger.params.id.value;
 
     ModelRecursoEducativo.findById(idRecursoEducativo, function (err, recursoEducativo) {
 
 
-        if (err) {
-            res.status(500).send(Responses.getError({ message: err.message }));
-            return;
-        }
+
 
         if (!recursoEducativo) {
-            res.status(404).send(Responses.getError({ message: `El Recurso Educativo ${idRecursoEducativo} no existe` }));
-            return;
+
+            Error.push({
+                titulo: "El Recurso Educativo no existe",
+                detalle: "El id ingresado no se corresponde a un recurso educativo",
+                link: req.url,
+                estado: "404"
+            });
+            return res.json({ errors: Error });
         }
 
         recursoEducativo = Object.assign(recursoEducativo, req.body);
 
-        recursoEducativo.save(idRecursoEducativo, function(err, recursoEducativo) {
+        recursoEducativo.save(idRecursoEducativo, function (err, recursoEducativo) {
 
             if (err) {
-                res.status(500).send(Responses.getError({ message: err.message }));
-                return;
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrió algún error al realizar petición",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.json({ errors: Error })
             }
-
-            res.status(200).json(recursoEducativo);
+            else
+                res.status(201).json({ link: req.url });
         });
     });
 }
@@ -139,27 +203,77 @@ exports.updateRecursoEducativo = (req, res) => {
  * @author Samuel Carrasco Fuentes
  * @exports postEvaluacion POST /recursosEducativos
  * @param req Petición HTTP, JSON Objeto Recurso Educativo en Body
- * @param res | 200 Recurso educativo creada | 500 Error al buscar |
+ * @param res | 201 Recurso educativo creado | 500 Error al buscar | 400 Solicitud incorrecta |
  * @return {recursoEducativo} JSON con Objeto Recurso Educativo
  */
-exports.postRecursoEducativo = (req, res) =>{
+exports.postRecursoEducativo = (req, res) => {
 
+    let Error = [];
+
+    if (!req.body.titulo) Error.push({
+        titulo: "Peticion Incompleta",
+        detalle: "Se requiere el campo 'titulo'",
+        link: req.url,
+        estado: "417"
+    });
+
+    if (!req.body.asignatura) Error.push({
+        titulo: "Solicitud Incompleta",
+        detalle: "Se requiere el campo 'asignatura'",
+        link: req.url,
+        estado: "417"
+    });
+
+    if (!req.body.nivel) Error.push({
+        titulo: "Solicitud Incompleta",
+        detalle: "Se requiere el campo 'nivel'",
+        link: req.url,
+        estado: "417"
+    });
+
+    if (!req.body.tipoRecurso) Error.push({
+        titulo: "Solicitud Incompleta",
+        detalle: "Se requiere el campo 'tipoRecurso'",
+        link: req.url,
+        estado: "417"
+    });
+
+    if (!req.body.links) Error.push({
+        titulo: "Solicitud Incompleta",
+        detalle: "Se requiere el campo 'links'",
+        link: req.url,
+        estado: "417"
+    });
+
+    if (Error.length > 0) {
+        return res.status(400).json({ errors: Error });
+    }
 
     ModelRecursoEducativo.create(req.body, function (err, recursoEducativo) {
 
         if (err) {
-            res.status(404).send(Responses.getError({ message: err.message }));
-            return;
+            Error.push({
+                titulo: "Solicitud incorrecta",
+                detalle: "El valor de un atributo es incorrecto",
+                link: req.url,
+                estado: "400"
+            })
+            return res.json({ errors: Error })
         }
 
         recursoEducativo.save(function (err) {
 
             if (err) {
-                res.status(500).send(Responses.getError({ message: err.message }));
-                return;
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrió algún error al realizar petición",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.json({ errors: Error })
             }
 
-            res.status(200).json(recursoEducativo);
+            res.status(201).json({ link: req.url });
 
         })
     });
