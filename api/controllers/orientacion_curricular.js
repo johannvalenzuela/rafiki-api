@@ -27,31 +27,27 @@ function getOrientaciones(req, res) {
     if (err) {
       Error.push({
         titulo: "error interno del servidor",
-        detalle : "ocurrió un error interno al realizar petición",
-        link : req.url,
-        estado : "500"
+        detalle: "ocurrió un error interno al realizar petición",
+        link: req.url,
+        estado: "500"
       })
       return res.json({ errors: Error })
     }
-    if (!orientacion) {
+    if (orientacion.length == 0) {
       Error.push({
         titulo: "No se ha encontrado elementos",
         detalle: "No existen orientaciones curriculares",
-        link : req.url,
+        link: req.url,
         estado: "404"
       })
-      return res.json({errors: Error})
+      return res.json({ errors: Error })
     }
-     else{
-      res.status(200).json({ 
-        link: req.url,
-        data: orientacion,
-        type: "orientaciones"
-      });
+    else {
+      res.status(200).json({ orientacion });
       console.log(orientacion);
 
     }
-   
+
   });
 
 }
@@ -67,28 +63,39 @@ function getOrientaciones(req, res) {
 function getOrientacionId(req, res) {
   let Error = [];
   let id = req.swagger.params.id.value;
-  ModelOrientacion.findById(id, function (err, orientacion) {
-    if (err) {
-      Error.push({
-        titulo : "Error interno de servidor",
-        detalle : "No se ha podido conectar con la bd",
-        link : req.url,
-        estado: "500"
 
-      })
-      return res.json({errors : Error})
-    } 
+  if (id.length != 24) {
+    Error.push({
+      titulo: "ID no valida",
+      detalle: "No se introdujo una ID valida",
+      link: req.url,
+      estado: "404"
+    })
+    return res.json({ errors: Error })
+  }
+  ModelOrientacion.findById(id, function (err, orientacion) {
+
     if (!orientacion) {
       Error.push({
-        titulo : "No se ha encontrado el elemento",
-        detalle : "No se encuentra la orientación curricular buscada",
-        link : req.url,
-        estado : "404"
+        titulo: "No existe el elemento buscado",
+        detalle: "No se introdujo una ID de alguna orientación curricular",
+        link: req.url,
+        estado: "404"
       })
-      return res.json({errors : Error})
-    } 
+      return res.json({ errors: Error })
+    } else
+      if (err) {
+        Error.push({
+          titulo: "Error interno del servidor",
+          detalle: "falló comunicación con la BD",
+          link: req.url,
+          estado: "500"
+        })
+        return res.json({ errors: Error })
+      }
 
-    res.json(orientacion);
+
+    res.status(200).json(orientacion);
   });
 }
 
@@ -105,12 +112,18 @@ function getOrientacionId(req, res) {
 function createOrientacion(request, response) {
   let Error = [];
   ModelOrientacion.create(request.body, function (err, orientacion) {
-    if(err) return response.status(500).json({errors: Error});
-    orientacion.save( (err) => {
+    if (err) return response.status(500).json({ errors: Error });
+    orientacion.save((err) => {
 
-      if (err) Error.push({
-        "titulo" : "Ocurrio un error al guardar en la BD"
-      })
+      if (err) {
+        Error.push({
+          titulo: "Error interno del servidor",
+          detalle: "falló comunicación con la BD",
+          link: req.url,
+          estado: "500"
+        })
+        res.json({ errors: Error })
+      }
       else
         response.status(200).json(orientacion);
     })
@@ -128,17 +141,46 @@ function createOrientacion(request, response) {
  */
 function updateOrientacion(request, response) {
   let id = request.swagger.params.id.value;
+  let Error = [];
 
-  ModelOrientacion.findById(id, function (err, orientacion) {
-    if (err) return response.status(500).send(Responses.getError({ message: err.message }));
-    if (!orientacion) return response.status(404).send(Responses.getError({ message: `orientacion ${id} not found.` }));
-    orientacion = Object.assign(orientacion, request.body);
-    orientacion.save(id, function (err, orientacion) {
+  if (id.length != 24) {
+    Error.push({
+      titulo: "ID no valida",
+      detalle: "No se introdujo una ID valida",
+      link: req.url,
+      estado: "404"
+    })
+    return res.json({ errors: Error })
+  } else
 
-      if (err) return response.status(500).send(Responses.getError({ message: err.message }));
-      response.json(orientacion);
+    ModelOrientacion.findById(id, function (err, orientacion) {
+      if (!orientacion) {
+        Error.push({
+          titulo: "No existe el elemento buscado",
+          detalle: "No se introdujo una ID de alguna orientación curricular",
+          link: req.url,
+          estado: "404"
+        })
+        return res.json({ errors: Error })
+      } else
+        if (err) {
+          Error.push({
+            titulo: "Error interno del servidor",
+            detalle: "falló comunicación con la BD",
+            link: req.url,
+            estado: "500"
+          })
+          return res.json({ errors: Error })
+        }
+        else {
+
+          orientacion = Object.assign(orientacion, request.body);
+          orientacion.save(id, function (err, orientacion) {
+
+            response.status(200).json(orientacion);
+          });
+        }
     });
-  });
 }
 /** 
  * Función para eliminar un objeto orientacion_curricular
@@ -151,16 +193,27 @@ function updateOrientacion(request, response) {
  */
 function deleteOrientacion(request, response) {
   let id = request.swagger.params.id.value;
+  let Error = [];
 
-  ModelOrientacion.findById(id, function (err, orientacion) {
-    if (err) return response.status(500).send(Responses.getError({ message: err.message }));
-    if (!orientacion) return response.status(404).send(Responses.getError({ message: `El orientacion ${id} no ha sido encontrado.` }));
-    
-    orientacion.remove(id, function (err, orientacion) {
+  if (id.length != 24) {
+    Error.push({
+      titulo: "ID no valida",
+      detalle: "No se introdujo una ID valida",
+      link: req.url,
+      estado: "404"
+    })
+    return res.json({ errors: Error })
+  } else
+
+    ModelOrientacion.findById(id, function (err, orientacion) {
       if (err) return response.status(500).send(Responses.getError({ message: err.message }));
-      response.status(200).json(Responses.getSuccess({ message: `orientacion ${id} eliminado.` }));
+      if (!orientacion) return response.status(404).send(Responses.getError({ message: `El orientacion ${id} no ha sido encontrado.` }));
+
+      orientacion.remove(id, function (err, orientacion) {
+        if (err) return response.status(500).send(Responses.getError({ message: err.message }));
+        response.status(200).json(Responses.getSuccess({ message: `orientacion ${id} eliminado.` }));
+      });
     });
-  });
 }
 
 
