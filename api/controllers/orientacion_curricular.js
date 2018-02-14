@@ -12,88 +12,111 @@ module.exports = {
   deleteOrientacion: deleteOrientacion
 
 };
-/** GET: Función que retorna la lista de orientaciones existentes en la BD */
-function getOrientaciones (req, res){
+/** 
+ * Función para obtener un arreglo de orientaciones curriculares
+ *
+ * @author Héctor Astorga Terraza
+ * @exports getOrientaciones GET /orientaciones
+ * @param req Petición HTTP
+ * @param res | 200 hay orientaciones | 404 No hay orientaciones | 500 Error al buscar |
+ * @return {[orientaciones]} JSON con un objeto que contiene arreglo de Objetos orientacion_curricular
+ */
+function getOrientaciones(req, res) {
   ModelOrientacion.find({}, (err, orientacion) => {
-      if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
-      if(!orientacion) return res.status(400).send({message: 'No existe ningún orientacion'});
+    if (err) return res.status(500).send({ message: 'Error al realizar peticion: ${err}' });
+    if (!orientacion) return res.status(400).send({ message: 'No existe ningún orientacion' });
 
-      /** Si no existe error se retonan las orientaciones con status 200: OK */
-      res.status(200).json({orientacion});
-      console.log(orientacion);
+    res.status(200).json({ orientacion });
+    console.log(orientacion);
   });
 
 }
-/** GET/ID: Se retorna un orientacion al recibir por PATH el id del mismo. */
+/** 
+ * Función para obtener un objeto orientacion_curricular
+ *
+ * @author Héctor Astorga Terraza
+ * @exports getOrientacionId GET /orientaciones/{id}
+ * @param req Petición HTTP, id de la orientación curricular en path
+ * @param res | 200 existe orientacion curricular | 404 No hay orientación curricular | 500 Error al buscar |
+ * @return {[orientacion_curricular: orientacion_curricular]} JSON con un objeto orientacion_curricular
+ */
 function getOrientacionId(req, res) {
 
   let id = req.swagger.params.id.value;
-   /** FindById, busca dentro de la BD el orientacion que se desea conseguir*/
-  ModelOrientacion.findById(id, function(err, orientacion){
-      /** Si existe un error interno del servidor se retorna error 500 */
-    if (err) return res.status(500).send(Responses.getError({message: err.message}));
-
-    /** Si no existe el orientacion se retorna error 404 */
-    if (!orientacion) return res.status(404).send(Responses.getError({message: `orientacion ${id} not found.`}));
+  ModelOrientacion.findById(id, function (err, orientacion) {
+    if (err) return res.status(500).send(Responses.getError({ message: err.message }));
+    if (!orientacion) return res.status(404).send(Responses.getError({ message: `orientacion ${id} not found.` }));
 
     res.json(orientacion);
   });
 }
-  
 
-/** POST: Función que crea un orientacion. */
+
+/** 
+ * Función para insertar un objeto orientacion_curricular
+ *
+ * @author Héctor Astorga Terraza 
+ * @exports createOrientacion POST /orientacion
+ * @param req Petición HTTP, objeto orientacion_curricular JSON en Body
+ * @param res | 200 objeto orientacion_curricular creado | 500 Error al buscar |
+ * @return {orientacion_curricular} JSON con un objeto orientacion_curricular
+ */
 function createOrientacion(request, response) {
   ModelOrientacion.create(request.body, function (err, orientacion) {
-   
-      /** Se crea el nuevo orientacion con los atributos requeridos */
-      orientacion.save(function (err) {
 
-        if (err) {
-            response.status(500).send(Responses.getError({ message: err.message }));
-            return;
-        }
-        response.status(200).json(orientacion);
+    orientacion.save(function (err) {
+
+      if (err) {
+        response.status(500).send(Responses.getError({ message: err.message }));
+        return;
+      }
+      response.status(200).json(orientacion);
     })
   });
 }
-/** PUT: Función que actualiza un orientacion. */
+
+/** 
+ * Función para actualizar un objeto orientacion_curricular
+ *
+ * @author Héctor Astorga Terraza
+ * @exports updateNivel PUT /orientaciones/{id}
+ * @param req Petición HTTP, id del objeto orientacion_curricular en path
+ * @param res | 200 orientación curricular creada | 404 no existe orientación curricular | 500 Error al buscar |
+ * @return {orientacion_curricular} JSON con un objeto orientacion_curricular
+ */
 function updateOrientacion(request, response) {
   let id = request.swagger.params.id.value;
-  /** FindById, busca dentro de la BD el orientacion que se desea actualizar */
-  ModelOrientacion.findById(id, function(err, orientacion) {
-    /** Si existe un error interno del servidor se retorna error 500 */
-    if (err) return response.status(500).send(Responses.getError({message: err.message}));
-      
-    
-    /** Si el id no está asociado a algún orientacion en la BD, se retorna un error 404 */
-    if (!orientacion) return response.status(404).send(Responses.getError({message: `orientacion ${id} not found.`}));
-      
-    /** Object.assign copia los valores del request.body al objeto orientacion */
+
+  ModelOrientacion.findById(id, function (err, orientacion) {
+    if (err) return response.status(500).send(Responses.getError({ message: err.message }));
+    if (!orientacion) return response.status(404).send(Responses.getError({ message: `orientacion ${id} not found.` }));
     orientacion = Object.assign(orientacion, request.body);
     orientacion.save(id, function (err, orientacion) {
-      /** si hay error al guardar se muestra un error 500 */
-      if (err) return response.status(500).send(Responses.getError({message: err.message}));
-      
-      /** Se muestra el orientacion actualizado */
+
+      if (err) return response.status(500).send(Responses.getError({ message: err.message }));
       response.json(orientacion);
     });
   });
 }
-/** DELETE: Función que elimina un orientacion. */
-function deleteOrientacion(request, response){
+/** 
+ * Función para eliminar un objeto orientacion_curricular
+ *
+ * @author Héctor Astorga Terraza
+ * @exports deleteNivel DELETE /orientaciones/{id}
+ * @param req Petición HTTP, id del objeto orientacion_curricular en path
+ * @param res | 200 orientacion eliminada | 404 no existe la orientación curricular | 500 Error al buscar |
+ * @return {message:mensaje} JSON con mensaje
+ */
+function deleteOrientacion(request, response) {
   let id = request.swagger.params.id.value;
-  ModelOrientacion.findById(id, function(err, orientacion) {
-    if (err) return response.status(500).send(Responses.getError({message: err.message}));
-      
+
+  ModelOrientacion.findById(id, function (err, orientacion) {
+    if (err) return response.status(500).send(Responses.getError({ message: err.message }));
+    if (!orientacion) return response.status(404).send(Responses.getError({ message: `El orientacion ${id} no ha sido encontrado.` }));
     
-    /** Si el id no está asociado a algún orientacion en la BD, se retorna un error 404 */
-    if (!orientacion) return response.status(404).send(Responses.getError({message:  `El orientacion ${id} no ha sido encontrado.`}));
-      
-    /** Se elimina de la BD el orientacion asociado al id ingresado. */
     orientacion.remove(id, function (err, orientacion) {
-      if (err) return response.status(500).send(Responses.getError({message: err.message}));
-     /* Si no hay error se elimina y se muestra un mensaje de que el orientacion ha sido borrado */ 
-      response.status(200).json(Responses.getSuccess({message: `orientacion ${id} eliminado.`}));
+      if (err) return response.status(500).send(Responses.getError({ message: err.message }));
+      response.status(200).json(Responses.getSuccess({ message: `orientacion ${id} eliminado.` }));
     });
   });
 }
