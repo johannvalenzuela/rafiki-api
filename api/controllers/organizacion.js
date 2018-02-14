@@ -57,16 +57,7 @@ exports.getOrganizacion = (req, res) => {
   }
 
   ModelOrganizacion.findById(organizacionID, function (err, organizacion) {
-    if (err) {
-      Error.push({
-        titulo: "Error Interno en el Servidor",
-        detalle: "Ocurrio algun error al realizar peticion",
-        link: req.url,
-        estado: "500"
-      })
-      return res.json({ errors: Error })
-    }
-    if (!organizacion) {
+    if (err && !organizacion) {
       Error.push({
         titulo: "ID no encontrada",
         detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
