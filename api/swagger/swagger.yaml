@@ -1011,7 +1011,7 @@ paths:
     x-swagger-router-controller: recursoEducativo
     get:
       description: Obtener un recurso educativo
-      operationId: getRecursoEducativoId
+      operationId: getRecursoEducativo
       # define the type of response for Success "200" and Error
       parameters:
         - name: id
@@ -1460,4 +1460,5 @@ definitions:
         items: 
           type: string
         description: Enlaces a las partes que componen el recurso educativo
+
 
