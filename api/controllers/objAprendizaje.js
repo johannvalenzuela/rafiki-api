@@ -51,29 +51,25 @@ exports.getObjAprendizaje = (req, res) => {
  * @param res | 200 Objetivo de aprendizaje eliminada | 500 Error al buscar | 404 El objetivo de aprendizaje no existe |
  * @return {message:mensaje} JSON con mensaje
  */
-exports.updateObjAprendizaje = (req, res) => {
+exports.deleteObjAprendizaje = (req, res) => {
     let id = req.swagger.params.id.value;
     ModelAprendizaje.findById(id, (err, objAprendizaje) => {
-
-        if (err) {
-            res.status(500).send(Responses.getError({ message: err.message }));
-            return;
-        }
+  
+        if (err) return res.status(500).json({ message: `Error al borrar el objetivo de aprendizaje. Error: ${err}` });
         if (!objAprendizaje) {
-            res.status(404).send(Responses.getError({ message: 'El objetivo de aprendizaje ${id} no existe' }));
+            res.status(404).send(Responses.getError({ message: `EL objetivo de aprendizaje de ID ${id} no existe` }));
             return;
         }
-        objAprendizaje = Object.assign(objAprendizaje, req.body);
-        objAprendizaje.save(id, (err, objAprendizaje) => {
+        objAprendizaje.remove(id, function (err, objAprendizaje) {
             if (err) {
                 res.status(500).send(Responses.getError({ message: err.message }));
                 return;
             }
-            res.json(objAprendizaje);
+            res.status(200).json(Responses.getSuccess({ message: `El objetivo de aprendizaje ${id} ha sido eliminada` }));
         });
-
+  
     });
-}
+  }
 
 /** 
  * Función para actualizar un objetivo de aprendizaje.
@@ -82,7 +78,7 @@ exports.updateObjAprendizaje = (req, res) => {
  * @exports updateObjAprendizaje PUT /aprendizajes/{id}
  * @param req Petición HTTP, id de objetivo de aprendizaje en path
  * @param res | 200 Objetivo de aprendizaje encontrada | 404 Objetivo de aprendizaje no existe | 500 Error al buscar |
- * @return {evaluacion} JSON Objeto objetivo de aprendizaje
+ * @return {objAprendizaje} JSON Objeto objetivo de aprendizaje
  */
 // Arreglar
 exports.updateObjAprendizaje = (req, res) => {
