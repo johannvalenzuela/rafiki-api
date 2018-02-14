@@ -318,7 +318,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /asignaturas/{id}:
     # our controller name
     x-swagger-router-controller: asignatura
@@ -455,11 +455,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar organizacion
       operationId: deleteOrganizacion
@@ -474,11 +474,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"                
+            $ref: "#/definitions/Errors"                
   /cursos/{id}:
     # our controller name
     x-swagger-router-controller: cursos
@@ -1460,4 +1460,24 @@ definitions:
         items: 
           type: string
         description: Enlaces a las partes que componen el recurso educativo
-
+  Errors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+          properties:  
+            titulo:
+              type: string
+            detalle:
+              type: string
+            link:
+              type: string
+            estado:
+              type: string
+  Response:
+    type: object
+    properties:
+      link:
+        type: string
