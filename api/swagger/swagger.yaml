@@ -920,7 +920,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir un nuevo recurso educativo
       operationId: postRecursoEducativo
@@ -940,7 +940,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /aprendizajes/{id}:
     # our controller name
     x-swagger-router-controller: objAprendizaje
@@ -1026,7 +1026,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar un recurso educativo
       operationId: updateRecursoEducativo
@@ -1051,7 +1051,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"        
+            $ref: "#/definitions/Errors"        
     delete:
       description: Eliminar recurso educativo
       operationId: deleteRecursoEducativo
@@ -1070,7 +1070,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
 # complex objects have schema definitions
 definitions:
   Authentication:
