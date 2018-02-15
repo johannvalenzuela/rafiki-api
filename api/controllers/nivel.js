@@ -184,7 +184,7 @@ function updateNivel(request, response) {
             estado: "500"
           })
           return response.status(400).json({ errors: Error })
-         
+
         }
         else {
 
