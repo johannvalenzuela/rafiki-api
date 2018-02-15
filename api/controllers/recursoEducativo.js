@@ -26,27 +26,14 @@ exports.getRecursosEducativos = (req, res) => {
                 link: req.url,
                 estado: "500"
             })
-            return res.json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
 
-        if (!recursosEducativos) {
-
-            Error.push({
-                titulo: "No existen Recursos Educativos",
-                detalle: "La base de datos se encuentra sin recursos educativos",
-                link: req.url,
-                estado: "404"
-            });
-            return res.json({ errors: Error });
-        } else {
-
-            return res.status(200).json({
-                link: req.url,
-                data: recursosEducativos,
-                type: "recursos educativos"
-            });
-
-        }
+        return res.status(200).json({
+            link: req.url,
+            data: recursosEducativos,
+            type: "recursos educativos"
+        });
 
     });
 }
@@ -76,7 +63,7 @@ exports.getRecursoEducativo = (req, res) => {
                 link: req.url,
                 estado: "500"
             })
-            return res.json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
 
         if (!recursoEducativo) {
@@ -87,13 +74,13 @@ exports.getRecursoEducativo = (req, res) => {
                 link: req.url,
                 estado: "404"
             });
-            return res.json({ errors: Error });
+            return res.status(400).json({ errors: Error });
         }
         else {
 
-            res.json({
+            return res.status(200).json({
                 link: req.url,
-                data: recursoEducativo,
+                data: [recursoEducativo],
                 type: "recursos educativos"
             });
 
@@ -126,7 +113,7 @@ exports.deleteRecursoEducativo = (req, res) => {
                 link: req.url,
                 estado: "404"
             });
-            return res.json({ errors: Error });
+            return res.status(400).json({ errors: Error });
         }
 
         recursoEducativo.remove(idRecursoEducativo, function (err, recursoEducativo) {
@@ -138,10 +125,10 @@ exports.deleteRecursoEducativo = (req, res) => {
                     link: req.url,
                     estado: "500"
                 })
-                return res.json({ errors: Error })
+                return res.status(400).json({ errors: Error })
             }
             else
-                res.status(200).json({ link: req.url });
+                return res.status(200).json({ link: req.url });
         });
     });
 }
@@ -163,9 +150,6 @@ exports.updateRecursoEducativo = (req, res) => {
 
     ModelRecursoEducativo.findById(idRecursoEducativo, function (err, recursoEducativo) {
 
-
-
-
         if (!recursoEducativo) {
 
             Error.push({
@@ -174,7 +158,7 @@ exports.updateRecursoEducativo = (req, res) => {
                 link: req.url,
                 estado: "404"
             });
-            return res.json({ errors: Error });
+            return res.status(400).json({ errors: Error });
         }
 
         recursoEducativo = Object.assign(recursoEducativo, req.body);
@@ -188,10 +172,10 @@ exports.updateRecursoEducativo = (req, res) => {
                     link: req.url,
                     estado: "500"
                 })
-                return res.json({ errors: Error })
+                return res.status(400).json({ errors: Error })
             }
             else
-                res.status(201).json({ link: req.url });
+                return res.status(201).json({ link: req.url });
         });
     });
 }
@@ -258,7 +242,7 @@ exports.postRecursoEducativo = (req, res) => {
                 link: req.url,
                 estado: "400"
             })
-            return res.json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
 
         recursoEducativo.save(function (err) {
@@ -270,10 +254,10 @@ exports.postRecursoEducativo = (req, res) => {
                     link: req.url,
                     estado: "500"
                 })
-                return res.json({ errors: Error })
+                return res.status(400).json({ errors: Error })
             }
-
-            res.status(201).json({ link: req.url });
+            else
+                return res.status(201).json({ link: req.url });
 
         })
     });
