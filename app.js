@@ -12,7 +12,6 @@ require('./api/models/curso');
 require('./api/models/asignatura');
 require('./api/models/nivel');
 require('./api/models/actividad');
-require('./api/models/planEstudio');
 
 module.exports = app; // for testing
 

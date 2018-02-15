@@ -259,11 +259,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/ResponseAsignatura"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir una nueva asignatura
       operationId: postAsignatura
@@ -283,7 +283,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /organizaciones:
     # our controller name
     x-swagger-router-controller: organizacion
@@ -335,11 +335,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/ResponseAsignatura"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una asignatura
       operationId: updateAsignatura
@@ -363,7 +363,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar una Asignatura
       operationId: deleteAsignatura
@@ -377,7 +377,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/Errors"
   /cursos:
     # our controller name
     x-swagger-router-controller: cursos
@@ -981,7 +981,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ObjAprendizaje"
+            $ref: "#/definitions/ResponseObjAprendizaje"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar un objetivos de aprendizaje
       # movie info to be stored
@@ -1001,43 +1005,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
-  /recursosEducativos:
-    # our controller name
-    x-swagger-router-controller: recursoEducativo
-    get:
-      description: Obtener la lista de recursos educativos
-      operationId: getRecursosEducativos
-      # define the type of response for Success "200" and Error
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/RecursoEducativo"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-    post:
-      description: Añadir un nuevo recurso educativo
-      operationId: postRecursoEducativo
-      # movie info to be stored
-      parameters:
-        - name: data
-          description: Atributos del Recurso educativo
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/RecursoEducativo"     
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/RecursoEducativo"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /aprendizajes/{id}:
     # our controller name
     x-swagger-router-controller: objAprendizaje
@@ -1054,11 +1022,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ObjAprendizaje"
+            $ref: "#/definitions/ResponseObjAprendizaje"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar un Objetivo de Aprendizaje
       operationId: updateObjAprendizaje
@@ -1083,7 +1051,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: un Objetivo de Aprendizaje
       operationId: deleteObjAprendizaje
@@ -1102,72 +1070,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
-  /recursosEducativos/{id}:
-    # our controller name
-    x-swagger-router-controller: recursoEducativo
-    get:
-      description: Obtener un recurso educativo
-      operationId: getRecursoEducativoId
-      # define the type of response for Success "200" and Error
-      parameters:
-        - name: id
-          type: string
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/RecursoEducativo"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-    put:
-      description: Actualizar un recurso educativo
-      operationId: updateRecursoEducativo
-      # define the parameters
-      parameters:
-        - name: id
-          description: Id del recurso educativo
-          type: string
-          in: path
-          required: true
-        - name: data
-          description: Atributos del recurso educativo
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/RecursoEducativo"
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/RecursoEducativo"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"        
-    delete:
-      description: Eliminar recurso educativo
-      operationId: deleteRecursoEducativo
-      # define the parameters
-      parameters:
-        - name: id
-          description: Id del recurso educativo
-          type: string
-          in: path
-          required: true
-      responses:
-        "200":
-          description: Success
-          schema:
-            $ref: "#/definitions/RecursoEducativo"
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
 # complex objects have schema definitions
 definitions:
   Authentication:
@@ -1550,61 +1453,46 @@ definitions:
       descripcion:
         type: string
         description: Informacion respecto a que apunta el objetivo de aprendizaje
-  PlanEstudio:
+  Errors:
     type: object
     properties:
-      nombre:
-        type: string
-        description: Nombre del plan de estudio
-      asignaturas:
+      errors:
         type: array
-        items: 
+        items:
           type: object
-          properties:
-            nombre:
+          properties:  
+            titulo:
               type: string
-              description: Nombre de la asignatura
-            horasMensuales:
-                type: number
-                description: Cantidad de horas mensuales
-            horasAnuales:
-                type: number
-                description: Cantidad de horas anuales
-      tipo:
-        type: string
-        description: Tipo de jornada ('Con JEC', 'Sin JEC')
-      horasLibreDisposicion:
-        type: number
-        description: Cantidad de horas de libre disposicion
-      totalTiempoMinFG:
-        type: number
-        description: Tiempo total de Formacion General
-      totalTiempoMinFD:
-        type: number
-        description: Tiempo total de Formacion Diferenciada
-  RecursoEducativo:
+            detalle:
+              type: string
+            link:
+              type: string
+            estado:
+              type: string
+  Response:
     type: object
     properties:
-      titulo:
+      link:
         type: string
-        description: Titulo del recurso educativo
-      descripcion:
+  ResponseObjAprendizaje:
+    type: object
+    properties:
+      link:
         type: string
-        description: Descripcion del recurso educativo
-      asignatura:
-        type: string
-        description: Nombre de la asignatura a la que alude el recurso educativo
-      nivel:
-        type: string
-        description: Nivel al que corresponde el recurso educativo
-      tipoRecurso:
-        type: string
-        description: Tipo de recurso educativo
-      autor:
-        type: string
-        description: Nombre del autor del recurso educativo
-      links:
+      data:
         type: array
         items: 
-          type: string
-        description: Enlaces a las partes que componen el recurso educativo
+          $ref: "#/definitions/ObjAprendizaje"
+      type:
+        type: string
+  ResponseAsignatura:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/ObjAprendizaje"
+      type:
+        type: string
