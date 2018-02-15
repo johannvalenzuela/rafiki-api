@@ -109,7 +109,6 @@ function getNivelId(request, response) {
   }
 }
 
-
 /** 
  * Función para insertar un objeto nivel
  *
@@ -122,26 +121,36 @@ function getNivelId(request, response) {
 function createNivel(request, response) {
   let Error = [];
   ModelNivel.create(request.body, function (err, nivel) {
-    nivel.save(function (err) {
-      if (err) {
-        Error.push({
-          titulo: "Error interno del servidor",
-          detalle: "falló comunicación con la BD",
-          link: request.url,
-          estado: "500"
-        })
-        return response.status(400).json({ errors: Error })
-      }
-      else
-        return response.status(200).json({
-          link: request.url,
-          data: nivel,
-          type: "niveles"
-        });
-      console.log(nivel);
+    if (nivel.grado < 1) {
+      Error.push({
+        titulo: "Valor de atributo inválido",
+        detalle: "El grado no puede ser cero o negativo",
+        link: request.url,
+        estado: "400"
+      })
+      return response.status(400).json({ errors: Error })
+
+    } else
+      nivel.save(function (err) {
+        if (err) {
+          Error.push({
+            titulo: "Error interno del servidor",
+            detalle: "falló comunicación con la BD",
+            link: request.url,
+            estado: "500"
+          })
+          return response.status(400).json({ errors: Error })
+        }
+        else
+          return response.status(200).json({
+            link: request.url,
+            data: nivel,
+            type: "niveles"
+          });
+        console.log(nivel);
 
 
-    })
+      })
   });
 }
 /** 
