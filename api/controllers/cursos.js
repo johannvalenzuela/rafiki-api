@@ -9,7 +9,8 @@ var ModelCurso = require('../../api/models/curso');
  * @exports getCursos GET /cursos
  * @param req Petición HTTP
  * @param res | 200 Cursos | 404 No hay cursos | 500 Error al buscar |
- * @return {[cursos]} JSON con un objeto que contiene arreglo de Objetos Curso
+ * @return {object} JSON con un objeto que contiene arreglo de Objetos Curso
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.getCursos = (req, res) => {
 
@@ -43,7 +44,8 @@ exports.getCursos = (req, res) => {
  * @exports getCurso GET /cursos/{id}
  * @param req Petición HTTP, id de curso en path
  * @param res | 200 Curso encontrado | 404 Curso no existe | 500 Error al buscar |
- * @return {curso: curso} JSON con un Objeto Curso
+ * @return {object} JSON con objeto Curso
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.getCurso = (req, res) => {
 
@@ -90,7 +92,8 @@ exports.getCurso = (req, res) => {
  * @exports deleteCurso DELETE /cursos/{id}
  * @param req Petición HTTP, id de curso en Path
  * @param res | 200 curso eliminado | 500 Error al buscar | 404 El curso no existe |
- * @return {message:mensaje} JSON con mensaje
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.deleteCurso = (req, res) => {
 
@@ -144,7 +147,8 @@ exports.deleteCurso = (req, res) => {
  * @exports updateCurso PUT /cursos/{id}
  * @param req Petición HTTP, id de curso en path
  * @param res | 200 Curso encontrado | 404 Evaluación no existe | 500 Error al buscar |
- * @return {curso} JSON con Objeto Curso
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.updateCurso = (req, res) => {
 
@@ -202,7 +206,8 @@ exports.updateCurso = (req, res) => {
  * @exports postcurso POST /cursos
  * @param req Petición HTTP, JSON con Objeto curso en Body
  * @param res | 201 Curso creado | 500 Error al buscar |
- * @return {curso} JSON con Objeto Curso
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.postCurso = (req, res) => {
 
