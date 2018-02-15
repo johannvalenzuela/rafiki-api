@@ -19,7 +19,8 @@ module.exports = {
  * @exports get_niveles GET /niveles
  * @param request Petición HTTP
  * @param response | 200 niveles | 404 No hay niveles | 500 Error al buscar |
- * @return {[niveles]} JSON con un objeto que contiene arreglo de Objetos nivel
+ * @return {[object]} JSON con un objeto que contiene arreglo de Objetos 
+ * @return { errors: Error } JSON con un objeto Error
  */
 function get_niveles(request, response) {
   let Error = [];
@@ -61,7 +62,8 @@ function get_niveles(request, response) {
  * @exports getNivelId GET /niveles/{id}
  * @param request Petición HTTP, id de nivel en path
  * @param response | 200 existe nivel | 404 No hay nivel | 500 Error al buscar |
- * @return {[nivel: nivel]} JSON con un objeto nivel
+ * @return {[object]} JSON con un objeto array
+ * @return { errors: Error } JSON con un objeto Error
  */
 function getNivelId(request, response) {
 
@@ -116,7 +118,8 @@ function getNivelId(request, response) {
  * @exports createNivel POST /niveles
  * @param request Petición HTTP, objeto nivel JSON en Body
  * @param response | 200 nivel creado | 500 Error al buscar |
- * @return {nivel} JSON con un objeto nivel
+ * @return {object} JSON con un objeto
+ * @return { errors: Error } JSON con un objeto Error
  */
 function createNivel(request, response) {
   let Error = [];
@@ -160,7 +163,8 @@ function createNivel(request, response) {
  * @exports updateNivel PUT /niveles/{id}
  * @param request Petición HTTP, id del objeto nivel en path
  * @param response | 200 nivel creado | 404 no existe nivel | 500 Error al buscar |
- * @return {nivel} JSON con un objeto nivel
+ * @return {object} JSON con un objeto
+ * @return { errors: Error } JSON con un objeto Error
  */
 function updateNivel(request, response) {
   let id = request.swagger.params.id.value;
@@ -219,6 +223,7 @@ function updateNivel(request, response) {
  * @param request Petición HTTP, id del objeto nivel en path
  * @param response | 200 nivel eliminado | 404 no existe nivel | 500 Error al buscar |
  * @return {message:mensaje} JSON con mensaje
+ * @return { errors: Error } JSON con un objeto Error
  */
 function deleteNivel(request, response) {
   let id = request.swagger.params.id.value;
