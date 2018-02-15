@@ -24,28 +24,14 @@ exports.getCursos = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
 
-    if (!cursos) {
-
-      Error.push({
-        titulo: "No existen Cursos",
-        detalle: "La base de datos se encuentra sin cursos",
-        link: req.url,
-        estado: "404"
-      });
-      return res.json({ errors: Error });
-    }
-    else {
-      return res.status(200).json({
-        link: req.url,
-        data: cursos,
-        type: "cursos"
-      });
-    }
-
-
+    return res.status(200).json({
+      link: req.url,
+      data: cursos,
+      type: "cursos"
+    });
 
   });
 }
@@ -73,7 +59,7 @@ exports.getCurso = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
 
     if (!curso) {
@@ -84,12 +70,12 @@ exports.getCurso = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
     else {
       return res.status(200).json({
         link: req.url,
-        data: curso,
+        data: [curso],
         type: "cursos"
       });
     }
@@ -120,7 +106,7 @@ exports.deleteCurso = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
 
     if (!curso) {
@@ -131,7 +117,7 @@ exports.deleteCurso = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
 
     curso.remove(idCurso, function (err, curso) {
@@ -143,10 +129,10 @@ exports.deleteCurso = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       else
-        res.status(200).json({ link: req.url });
+        return res.status(200).json({ link: req.url });
     });
   });
 }
@@ -176,7 +162,7 @@ exports.updateCurso = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
 
     if (!curso) {
@@ -187,7 +173,7 @@ exports.updateCurso = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
 
     curso = Object.assign(curso, req.body);
@@ -201,10 +187,10 @@ exports.updateCurso = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       else
-        res.status(200).json({ link: req.url });
+        return res.status(200).json({ link: req.url });
     });
   });
 }
@@ -215,7 +201,7 @@ exports.updateCurso = (req, res) => {
  * @author Samuel Carrasco Fuentes
  * @exports postcurso POST /cursos
  * @param req Petición HTTP, JSON con Objeto curso en Body
- * @param res | 200 Curso creado | 500 Error al buscar |
+ * @param res | 201 Curso creado | 500 Error al buscar |
  * @return {curso} JSON con Objeto Curso
  */
 exports.postCurso = (req, res) => {
@@ -279,10 +265,10 @@ exports.postCurso = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       else
-        res.status(201).json({ link: req.url });
+        return res.status(201).json({ link: req.url });
     })
   });
 }
