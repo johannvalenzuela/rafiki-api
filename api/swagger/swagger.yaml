@@ -299,7 +299,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir una nueva organizacion
       operationId: createOrganizacion
@@ -434,7 +434,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una organizacion
       operationId: updateOrganizacion
