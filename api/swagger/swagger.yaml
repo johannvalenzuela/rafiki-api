@@ -192,7 +192,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete: 
       description: eliminar el nivel ingresado por id
       operationId: deleteNivel
@@ -228,11 +228,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GetUsersListResponse"
+            $ref: "#/definitions/Nivel"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir un nuevo nivel
       operationId: createNivel
