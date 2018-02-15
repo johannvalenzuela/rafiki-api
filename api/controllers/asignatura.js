@@ -11,14 +11,35 @@ const Responses = require('../helpers/responses');
  * @exports getAsignaturas GET /asignaturas
  * @param req Petición HTTP
  * @param res | 200 Asignaturas | 404 No hay Asignaturas | 500 Error al buscar |
- * @return {Asignaturas} JSON con un objeto que contiene arreglo de Objeto de Asignaturas
+ * @return {asignaturas} JSON con un objeto que contiene arreglo de Objeto de Asignaturas
  */
 exports.getAsignaturas = (req, res) => {
-  ModelAsignatura.find({}, (err, Asignaturas) => {
+  let Error = [];
+  ModelAsignatura.find({}, (err, asignaturas) => {
 
-    if (err) return res.status(500).send({ message: "Error al realizar peticion: ${err}" });
-    if (!Asignaturas) return res.status(404).send({ message: 'No existe ninguna asignatura' });
-    res.status(200).send({ Asignaturas });
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
+    }
+
+    if (asignaturas.length == 0) {
+      return res.status(200).json({ 
+        link: req.url,
+        data: [],
+        type: "asignaturas"
+      });
+    } else {
+      return res.status(200).json({
+        link: req.url,
+        data: asignaturas,
+        type: "asignaturas"
+      });
+    }
   });
 }
 
@@ -32,16 +53,38 @@ exports.getAsignaturas = (req, res) => {
  * @return {asignatura} JSON Objeto asignatura
  */
 exports.postAsignatura = (req, res) => {
-  ModelAsignatura.create(req.body, function (err, asignatura) {
-
+  let Error = [];
+  ModelAsignatura.create(request.body, function (err, asignatura) {
     asignatura.save(function (err) {
       if (err) {
-        res.status(500).send(Responses.getError({ message: err.message }));
-        return;
+        Error.push({
+          titulo: "Error interno del servidor",
+          detalle: "falló comunicación con la BD",
+          link: request.url,
+          estado: "500"
+        })
+        response.status(400).json({ errors: Error })
       }
-      res.status(200).json(asignatura);
+      else
+        return response.status(200).json({
+          link: request.url,
+          data: asignatura,
+          type: "asignaturas"
+        });
+      console.log(asignatura);
     })
   });
+  // let Error = [];
+  // ModelAsignatura.create(req.body, function (err, asignatura) {
+  //   if (err) return res.status(400).json({ Error })
+  //   asignatura.save(function (err) {
+  //     if (err) {
+  //       res.status(500).send(Responses.getError({ message: err.message }));
+  //       return;
+  //     }
+  //     res.status(200).json(asignatura);
+  //   })
+  // });
 }
 
 /** 
@@ -55,12 +98,33 @@ exports.postAsignatura = (req, res) => {
  */
 exports.getAsignatura = (req, res) => {
   let id = req.swagger.params.id.value
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
   ModelAsignatura.findById(id, (err, asignatura) => {
-
-      if (err) return res.status(500).send({ message: 'Error al realizar peticion: ${err}' });
-      if (!asignatura) return res.status(404).send({ message: 'La asignatura no existe' });
-      res.status(200).send({ asignatura: asignatura });
-
+    if (err && !asignatura) {
+      Error.push({
+        titulo: "ID no encontrada",
+        detalle: "La ID no existe",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
+    }
+    res.json({
+      link: req.url,
+      data: [asignatura],
+      type: "asignaturas"
+    });
   });
 }
 
@@ -75,24 +139,42 @@ exports.getAsignatura = (req, res) => {
  */
 exports.updateAsignatura = (req, res) => {
   let id = req.swagger.params.id.value;
-  ModelAsignatura.findById(id, (err, asignatura) => {
+  let Error = [];
 
-      if (err) {
-          res.status(500).send(Responses.getError({ message: err.message }));
-          return;
-      }
-      if (!asignatura) {
-          res.status(404).send(Responses.getError({ message: 'La asignatura ${id} no existe' }));
-          return;
-      }
-      asignatura = Object.assign(asignatura, req.body);
-      asignatura.save(id, (err, asignatura) => {
-          if (err) {
-              res.status(500).send(Responses.getError({ message: err.message }));
-              return;
-          }
-          res.json(asignatura);
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelAsignatura.findById(id, (err, asignatura) => {
+    if (err && !asignatura) {
+      Error.push({
+        titulo: "ID no encontrada",
+        detalle: "La ID no existe",
+        link: req.url,
+        estado: "404"
       });
+      return res.status(400).json({ errors: Error });
+    }
+    asignatura = Object.assign(asignatura, req.body);
+    asignatura.save(id, (err, asignatura) => {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
+      }
+      // res.json(asignatura); en caso de...
+      res.status(200).json({ link: req.url });
+    });
 
   });
 }
@@ -108,20 +190,32 @@ exports.updateAsignatura = (req, res) => {
  */
 exports.deleteAsignatura = (req, res) => {
   let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
   ModelAsignatura.findById(id, (err, asignatura) => {
 
-      if (err) return res.status(500).json({ message: `Error al borrar la asignatura. Error: ${err}` });
-      if (!asignatura) {
-          res.status(404).send(Responses.getError({ message: `La asignatura de ID ${id} no existe` }));
-          return;
+    if (err) return res.status(500).json({ message: `Error al borrar la asignatura. Error: ${err}` });
+    if (!asignatura) {
+      res.status(404).send(Responses.getError({ message: `La asignatura de ID ${id} no existe` }));
+      return;
+    }
+    asignatura.remove(id, function (err, asignatura) {
+      if (err) {
+        res.status(500).send(Responses.getError({ message: err.message }));
+        return;
       }
-      asignatura.remove(id, function (err, asignatura) {
-          if (err) {
-              res.status(500).send(Responses.getError({ message: err.message }));
-              return;
-          }
-          res.status(200).json(Responses.getSuccess({ message: `La asignatura ${id} ha sido eliminada` }));
-      });
+      res.status(200).json(Responses.getSuccess({ message: `La asignatura ${id} ha sido eliminada` }));
+    });
 
   });
 }

@@ -14,11 +14,32 @@ const Responses = require('../helpers/responses');
  * @return {[objAprendizajes]} JSON con un objeto que contiene arreglo de Objeto objetivo de aprendizaje
  */
 exports.getObjAprendizajes = (req, res) => {
+    let Error = [];
     ModelAprendizaje.find({}, (err, objAprendizajes) => {
 
-        if (err) return res.status(500).send({ message: "Error al realizar peticion: ${err}" });
-        if (!objAprendizajes) return res.status(404).send({ message: 'No existe ningun objetivo de aprendizaje' });
-        res.status(200).send({ objAprendizajes });
+        if (err) {
+            Error.push({
+                titulo: "Error Interno en el Servidor",
+                detalle: "Ocurrio algun error al realizar peticion",
+                link: req.url,
+                estado: "500"
+            })
+            return res.status(400).json({ errors: Error })
+        }
+
+        if (objAprendizajes.length == 0) {
+            return res.status(200).json({
+                link: req.url,
+                data: [],
+                type: "aprendizajes"
+            });
+        } else {
+            return res.status(200).json({
+                link: req.url,
+                data: objAprendizajes,
+                type: "aprendizajes"
+            });
+        }
     });
 }
 
@@ -33,13 +54,39 @@ exports.getObjAprendizajes = (req, res) => {
  */
 exports.getObjAprendizaje = (req, res) => {
     let id = req.swagger.params.id.value
+    let Error = [];
+    if (id.length < 24 || id.length > 24) {
+        Error.push({
+            titulo: "ID no es valida",
+            detalle: "Se esperaba ID valida",
+            link: req.url,
+            estado: "404"
+        });
+        return res.json({ errors: Error });
+    }
     ModelAprendizaje.findById(id, (err, objAprendizaje) => {
-
-        if (err) return res.status(500).send({ message: 'Error al realizar peticion: ${err}' });
-        if (!objAprendizaje) return res.status(404).send({ message: 'El objetivo de aprendizaje no existe' });
-        res.status(200).send({ objAprendizaje: objAprendizaje });
-
+        if (err && !objAprendizaje) {
+            Error.push({
+                titulo: "ID no encontrada",
+                detalle: "La ID no existe",
+                link: req.url,
+                estado: "404"
+            });
+            return res.status(400).json({ errors: Error });
+        }
+        res.json({
+            link: req.url,
+            data: [objAprendizaje],
+            type: "aprendizajes"
+        });
     });
+    // ModelAprendizaje.findById(id, (err, objAprendizaje) => {
+
+    //     if (err) return res.status(500).send({ message: 'Error al realizar peticion: ${err}' });
+    //     if (!objAprendizaje) return res.status(404).send({ message: 'El objetivo de aprendizaje no existe' });
+    //     res.status(200).send({ objAprendizaje: objAprendizaje });
+
+    // });
 }
 
 /** 
@@ -53,8 +100,20 @@ exports.getObjAprendizaje = (req, res) => {
  */
 exports.deleteObjAprendizaje = (req, res) => {
     let id = req.swagger.params.id.value;
+    let Error = [];
+
+    if (id.length < 24 || id.length > 24) {
+        Error.push({
+            titulo: "ID no es valida",
+            detalle: "Se esperaba ID valida",
+            link: req.url,
+            estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+    }
+
     ModelAprendizaje.findById(id, (err, objAprendizaje) => {
-  
+
         if (err) return res.status(500).json({ message: `Error al borrar el objetivo de aprendizaje. Error: ${err}` });
         if (!objAprendizaje) {
             res.status(404).send(Responses.getError({ message: `EL objetivo de aprendizaje de ID ${id} no existe` }));
@@ -67,9 +126,9 @@ exports.deleteObjAprendizaje = (req, res) => {
             }
             res.status(200).json(Responses.getSuccess({ message: `El objetivo de aprendizaje ${id} ha sido eliminada` }));
         });
-  
+
     });
-  }
+}
 
 /** 
  * Función para actualizar un objetivo de aprendizaje.
@@ -83,24 +142,58 @@ exports.deleteObjAprendizaje = (req, res) => {
 // Arreglar
 exports.updateObjAprendizaje = (req, res) => {
     let id = req.swagger.params.id.value;
+    let Error = [];
+
+    if (id.length < 24 || id.length > 24) {
+        Error.push({
+            titulo: "ID no es valida",
+            detalle: "Se esperaba ID valida",
+            link: req.url,
+            estado: "404"
+        });
+        return res.status(200).json({ errors: Error });
+    }
+
     ModelAprendizaje.findById(id, (err, objAprendizaje) => {
 
-        if (err) {
-            res.status(500).send(Responses.getError({ message: err.message }));
-            return;
-        }
-        if (!objAprendizaje) {
-            res.status(404).send(Responses.getError({ message: 'El objetivo de aprendizaje ${id} no existe' }));
-            return;
+        // if (err) {
+        //     res.status(500).send(Responses.getError({ message: err.message }));
+        //     return;
+        // }
+        // if (!objAprendizaje) {
+        //     res.status(404).send(Responses.getError({ message: 'El objetivo de aprendizaje ${id} no existe' }));
+        //     return;
+        // }
+        if (err || !objAprendizaje) {
+            Error.push({
+                titulo: "ID no encontrada",
+                detalle: "La ID no existe",
+                link: req.url,
+                estado: "404"
+            });
+            return res.status(200).json({ errors: Error });
         }
         objAprendizaje = Object.assign(objAprendizaje, req.body);
         objAprendizaje.save(id, (err, objAprendizaje) => {
             if (err) {
-                res.status(500).send(Responses.getError({ message: err.message }));
-                return;
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
             }
-            res.json(objAprendizaje);
+            // res.json(asignatura); en caso de...
+            res.status(200).json({ link: req.url });
         });
+        // objAprendizaje.save(id, (err, objAprendizaje) => {
+        //     if (err) {
+        //         res.status(500).send(Responses.getError({ message: err.message }));
+        //         return;
+        //     }
+        //     res.json(objAprendizaje);
+        // });
 
     });
 }
@@ -115,16 +208,55 @@ exports.updateObjAprendizaje = (req, res) => {
  * @return {objAprendizaje} JSON Objeto objetivo de aprendizaje
  */
 exports.postObjAprendizaje = (req, res) => {
-    ModelAprendizaje.create(req.body, function (err, objAprendizaje) {
+    let id = req.swagger.params.id.value;
+    let Error = [];
 
-        objAprendizaje.save(function (err) {
+    if (id.length < 24 || id.length > 24) {
+        Error.push({
+            titulo: "ID no es valida",
+            detalle: "Se esperaba ID valida",
+            link: req.url,
+            estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+    }
 
+    ModelAprendizaje.findById(id, (err, objAprendizaje) => {
+        if (err && !objAprendizaje) {
+            Error.push({
+                titulo: "ID no encontrada",
+                detalle: "La ID no existe",
+                link: req.url,
+                estado: "404"
+            });
+            return res.status(400).json({ errors: Error });
+        }
+        objAprendizaje = Object.assign(objAprendizaje, req.body);
+        objAprendizaje.save(id, (err, objAprendizaje) => {
             if (err) {
-                res.status(500).send(Responses.getError({ message: err.message }));
-                return;
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
             }
-            res.status(200).json(objAprendizaje);
+            // res.json(asignatura); en caso de...
+            res.status(200).json({ link: req.url });
+        });
 
-        })
     });
+    // ModelAprendizaje.create(req.body, function (err, objAprendizaje) {
+
+    //     objAprendizaje.save(function (err) {
+
+    //         if (err) {
+    //             res.status(500).send(Responses.getError({ message: err.message }));
+    //             return;
+    //         }
+    //         res.status(200).json(objAprendizaje);
+
+    //     })
+    // });
 }

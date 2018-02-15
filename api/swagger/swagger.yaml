@@ -82,7 +82,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     put:
       description: Actualizar una actividad
-      operationId: updateObjAprendizaje
+      operationId: updateActividad
       # define the parameters
       parameters:
         - name: id
@@ -259,11 +259,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/ResponseAsignatura"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir una nueva asignatura
       operationId: postAsignatura
@@ -283,7 +283,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /organizaciones:
     # our controller name
     x-swagger-router-controller: organizacion
@@ -335,11 +335,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/ResponseAsignatura"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una asignatura
       operationId: updateAsignatura
@@ -363,7 +363,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar una Asignatura
       operationId: deleteAsignatura
@@ -377,7 +377,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/Errors"
   /cursos:
     # our controller name
     x-swagger-router-controller: cursos
@@ -783,11 +783,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ObjAprendizaje"
+            $ref: "#/definitions/ResponseObjAprendizaje"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar un objetivos de aprendizaje
       # movie info to be stored
@@ -807,7 +807,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /aprendizajes/{id}:
     # our controller name
     x-swagger-router-controller: objAprendizaje
@@ -824,11 +824,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ObjAprendizaje"
+            $ref: "#/definitions/ResponseObjAprendizaje"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar un Objetivo de Aprendizaje
       operationId: updateObjAprendizaje
@@ -853,7 +853,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: un Objetivo de Aprendizaje
       operationId: deleteObjAprendizaje
@@ -872,7 +872,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
 # complex objects have schema definitions
 definitions:
   Authentication:
@@ -1204,3 +1204,46 @@ definitions:
       descripcion:
         type: string
         description: Informacion respecto a que apunta el objetivo de aprendizaje
+  Errors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+          properties:  
+            titulo:
+              type: string
+            detalle:
+              type: string
+            link:
+              type: string
+            estado:
+              type: string
+  Response:
+    type: object
+    properties:
+      link:
+        type: string
+  ResponseObjAprendizaje:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/ObjAprendizaje"
+      type:
+        type: string
+  ResponseAsignatura:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/ObjAprendizaje"
+      type:
+        type: string
