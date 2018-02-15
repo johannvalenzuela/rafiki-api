@@ -12,7 +12,8 @@ const Responses = require('../helpers/responses');
  * @exports getActividades GET /actividades
  * @param req Petición HTTP
  * @param res | 200 Actividades | 404 No hay actividades | 500 Error al buscar |
- * @return {[actividades]} JSON con un objeto que contiene arreglo de Objetos Actividad
+ * @return {object} JSON con un objeto que contiene arreglo de Objetos Actividad
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.getActividades = (req, res) => {
 
@@ -58,7 +59,8 @@ exports.getActividades = (req, res) => {
  * @exports getActividad GET /actividades/{id}
  * @param req Petición HTTP, id de actividad en path
  * @param res | 200 Actividad encontrada | 404 Actividad no existe | 500 Error al buscar |
- * @return {actividad: actividad} JSON con objeto Actividad
+ * @return {object} JSON con objeto Actividad
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 
 exports.getActividad = (req, res) => {
@@ -79,7 +81,7 @@ exports.getActividad = (req, res) => {
       })
       return res.status(400).json({ errors: Error })
     }
-    
+
     return res.status(200).json({
       link: req.url,
       data: [actividad],
@@ -98,7 +100,8 @@ exports.getActividad = (req, res) => {
  * @exports deleteActividad DELETE /actividades/{id}
  * @param req Petición HTTP, id de Actividad en Path
  * @param res | 200 Actividad eliminada | 500 Error al buscar | 404 La Actividad no existe |
- * @return {message: mensaje} JSON con mensaje
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.deleteActividad = (req, res) => {
 
@@ -152,7 +155,8 @@ exports.deleteActividad = (req, res) => {
  * @exports updateActividad PUT /actividades/{id}
  * @param req Petición HTTP, id de Actividad en path
  * @param res | 200 Actividad encontrada | 404 Actividad no existe | 500 Error al buscar |
- * @return {actividad} JSON Objeto Actividad
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.updateActividad = (req, res) => {
 
@@ -208,8 +212,9 @@ exports.updateActividad = (req, res) => {
  * @author Samuel Carrasco Fuentess
  * @exports postActividad  POST /actividades
  * @param req Petición HTTP, JSON Objeto Actividad en Body
- * @param res | 200 Actividad creada | 500 Error al buscar | 400 Bad Request
- * @return {actividad} JSON Objeto Actividad 
+ * @param res | 201 Actividad creada | 500 Error al buscar | 400 Bad Request
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 
 exports.postActividad = (req, res) => {
