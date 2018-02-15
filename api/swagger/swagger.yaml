@@ -916,11 +916,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/ResponseRecursoEducativo"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir un nuevo recurso educativo
       operationId: postRecursoEducativo
@@ -936,11 +936,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /aprendizajes/{id}:
     # our controller name
     x-swagger-router-controller: objAprendizaje
@@ -1011,7 +1011,7 @@ paths:
     x-swagger-router-controller: recursoEducativo
     get:
       description: Obtener un recurso educativo
-      operationId: getRecursoEducativoId
+      operationId: getRecursoEducativo
       # define the type of response for Success "200" and Error
       parameters:
         - name: id
@@ -1022,11 +1022,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/ResponseRecursoEducativo"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar un recurso educativo
       operationId: updateRecursoEducativo
@@ -1047,11 +1047,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"        
+            $ref: "#/definitions/Errors"        
     delete:
       description: Eliminar recurso educativo
       operationId: deleteRecursoEducativo
@@ -1066,11 +1066,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
 # complex objects have schema definitions
 definitions:
   Authentication:
@@ -1481,6 +1481,17 @@ definitions:
     properties:
       link:
         type: string
+  ResponseRecursoEducativo:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/RecursoEducativo"    
+      type:
+        type: string 
   ResponseActividad:
     type: object
     properties:
@@ -1488,10 +1499,10 @@ definitions:
         type: string
       data:
         type: array
-        items: 
-          $ref: "#/definitions/Actividad"
+        items:
+          $ref: "#/definitions/Actividad"    
       type:
-        type: string
+        type: string     
   ResponseCurso:
     type: object
     properties:
@@ -1499,9 +1510,9 @@ definitions:
         type: string
       data:
         type: array
-        items: 
-          $ref: "#/definitions/Curso"
+        items:
+          $ref: "#/definitions/Curso"    
       type:
-        type: string
+        type: string   
 
 
