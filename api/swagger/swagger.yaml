@@ -393,7 +393,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir un nuevo curso
       operationId: postCurso
@@ -413,7 +413,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /organizaciones/{id}:
     # our controller name
     x-swagger-router-controller: organizacion
@@ -499,7 +499,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar un curso
       operationId: updateCurso
@@ -524,7 +524,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"        
+            $ref: "#/definitions/Errors"        
     delete:
       description: Eliminar curso
       operationId: deleteCurso
@@ -543,7 +543,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /users:
     # our controller name
     x-swagger-router-controller: users
