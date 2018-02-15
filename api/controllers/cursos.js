@@ -1,6 +1,5 @@
 var util = require('util');
 var ModelCurso = require('../../api/models/curso');
-const Responses = require('../helpers/responses');
 
 
 /** 
@@ -14,13 +13,40 @@ const Responses = require('../helpers/responses');
  */
 exports.getCursos = (req, res) => {
 
+  let Error = [];
+
   ModelCurso.find({}, (err, cursos) => {
 
-    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.json({ errors: Error })
+    }
 
-    if (!cursos) return res.status(404).send({ message: 'No existe ningún curso' });
+    if (!cursos) {
 
-    res.status(200).send({ cursos });
+      Error.push({
+        titulo: "No existen Cursos",
+        detalle: "La base de datos se encuentra sin cursos",
+        link: req.url,
+        estado: "404"
+      });
+      return res.json({ errors: Error });
+    }
+    else {
+      return res.status(200).json({
+        link: req.url,
+        data: cursos,
+        type: "cursos"
+      });
+    }
+
+
+
   });
 }
 
@@ -35,15 +61,38 @@ exports.getCursos = (req, res) => {
  */
 exports.getCurso = (req, res) => {
 
+  let Error = [];
   let idCurso = req.swagger.params.id.value
 
   ModelCurso.findById(idCurso, (err, curso) => {
 
-    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.json({ errors: Error })
+    }
 
-    if (!curso) return res.status(404).send({ message: 'El curso no existe' });
+    if (!curso) {
 
-    res.status(200).send({ curso: curso });
+      Error.push({
+        titulo: "El Curso no existe",
+        detalle: "El id ingresado no corresponde a un curso",
+        link: req.url,
+        estado: "404"
+      });
+      return res.json({ errors: Error });
+    }
+    else {
+      return res.status(200).json({
+        link: req.url,
+        data: curso,
+        type: "cursos"
+      });
+    }
 
   });
 }
@@ -59,24 +108,45 @@ exports.getCurso = (req, res) => {
  */
 exports.deleteCurso = (req, res) => {
 
+  let Error = [];
   let idCurso = req.swagger.params.id.value;
 
   ModelCurso.findById(idCurso, (err, curso) => {
 
-    if (err) return res.status(500).json({ message: `Error al borrar el curso. Error: ${err}` });
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.json({ errors: Error })
+    }
 
     if (!curso) {
-      res.status(404).send(Responses.getError({ message: `El curso de ID ${idCurso} no existe` }));
-      return;
+
+      Error.push({
+        titulo: "El Curso no existe",
+        detalle: "El id ingresado no corresponde a un curso",
+        link: req.url,
+        estado: "404"
+      });
+      return res.json({ errors: Error });
     }
 
     curso.remove(idCurso, function (err, curso) {
-      if (err) {
-        res.status(500).send(Responses.getError({ message: err.message }));
-        return;
-      }
 
-      res.status(200).json(Responses.getSuccess({ message: `El curso ${idCurso} ha sido eliminado` }));
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.json({ errors: Error })
+      }
+      else
+        res.status(200).json({ link: req.url });
     });
   });
 }
@@ -92,7 +162,7 @@ exports.deleteCurso = (req, res) => {
  */
 exports.updateCurso = (req, res) => {
 
-
+  let Error = [];
   let idCurso = req.swagger.params.id.value;
 
 
@@ -100,13 +170,24 @@ exports.updateCurso = (req, res) => {
 
 
     if (err) {
-      res.status(500).send(Responses.getError({ message: err.message }));
-      return;
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.json({ errors: Error })
     }
 
     if (!curso) {
-      res.status(404).send(Responses.getError({ message: `El Curso ${idCurso} no existe` }));
-      return;
+
+      Error.push({
+        titulo: "El Curso no existe",
+        detalle: "El id ingresado no corresponde a un curso",
+        link: req.url,
+        estado: "404"
+      });
+      return res.json({ errors: Error });
     }
 
     curso = Object.assign(curso, req.body);
@@ -114,11 +195,16 @@ exports.updateCurso = (req, res) => {
     curso.save(idCurso, function (err, curso) {
 
       if (err) {
-        res.status(500).send(Responses.getError({ message: err.message }));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.json({ errors: Error })
       }
-
-      res.json(curso);
+      else
+        res.status(200).json({ link: req.url });
     });
   });
 }
@@ -134,16 +220,69 @@ exports.updateCurso = (req, res) => {
  */
 exports.postCurso = (req, res) => {
 
+  let Error = [];
+
+  if (!req.body.idCurso) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'idCurso'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.nivel) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'nivel'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.asignatura) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'asignatura'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.profesorJefe) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'profesorJefe'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.salaCurso) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'salaCurso'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.totalAlumnos) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'totalAlumnos'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (Error.length > 0) {
+    return res.status(400).json({ errors: Error });
+  }
+
   ModelCurso.create(req.body, function (err, curso) {
 
     curso.save(function (err) {
 
       if (err) {
-        res.status(500).send(Responses.getError({ message: err.message }));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.json({ errors: Error })
       }
-
-      res.status(200).json(curso);
+      else
+        res.status(201).json({ link: req.url });
     })
   });
 }
