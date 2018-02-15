@@ -100,7 +100,7 @@ function getNivelId(request, response) {
         else {
           return response.status(200).json({
             link: request.url,
-            data: nivel,
+            data: [nivel],
             type: "niveles"
           });
           console.log(nivel);
