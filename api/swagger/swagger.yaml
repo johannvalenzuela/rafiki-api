@@ -295,11 +295,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir una nueva organizacion
       operationId: createOrganizacion
@@ -314,11 +314,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /asignaturas/{id}:
     # our controller name
     x-swagger-router-controller: asignatura
@@ -430,11 +430,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/ResponseOrganizacion"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una organizacion
       operationId: updateOrganizacion
@@ -455,11 +455,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar organizacion
       operationId: deleteOrganizacion
@@ -474,11 +474,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"                
+            $ref: "#/definitions/Errors"                
   /cursos/{id}:
     # our controller name
     x-swagger-router-controller: cursos
@@ -655,11 +655,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/ResponseEvaluacion"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar una evaluación
       # movie info to be stored
@@ -675,11 +675,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /evaluaciones/{id}:
     # our controller name
     x-swagger-router-controller: evaluacion
@@ -696,11 +696,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/ResponseEvaluacion"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una evaluacion
       operationId: updateEvaluacion
@@ -721,11 +721,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar una evaluacion
       operationId: deleteEvaluacion
@@ -740,11 +740,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /planEstudio:
     # our controller name
     x-swagger-router-controller: planEstudio
@@ -756,11 +756,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/ResponsePlanEstudio"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar un plan de estudio
       # movie info to be stored
@@ -776,11 +776,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /planEstudio/{id}:
     # our controller name
     x-swagger-router-controller: planEstudio
@@ -797,13 +797,13 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/ResponsePlanEstudio"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
-      description: Actualizar un plan de evaluacion
+      description: Actualizar un plan de estudio
       operationId: updatePlanEstudio
       # define the parameters
       parameters:
@@ -822,11 +822,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar un plan de estudio
       operationId: deletePlanEstudio
@@ -841,11 +841,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse" 
+            $ref: "#/definitions/Errors" 
   /hello:
     # binds a127 app logic to a route
     x-swagger-router-controller: hello_world
@@ -1460,4 +1460,57 @@ definitions:
         items: 
           type: string
         description: Enlaces a las partes que componen el recurso educativo
-
+  Errors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+          properties:  
+            titulo:
+              type: string
+            detalle:
+              type: string
+            link:
+              type: string
+            estado:
+              type: string
+  Response:
+    type: object
+    properties:
+      link:
+        type: string
+  ResponseOrganizacion:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/Organizacion"
+      type:
+        type: string
+  ResponsePlanEstudio:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/PlanEstudio"
+      type:
+        type: string
+  ResponseEvaluacion:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/Evaluacion"
+      type:
+        type: string
