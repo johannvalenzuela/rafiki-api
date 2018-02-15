@@ -31,7 +31,7 @@ function getOrientaciones(request, response) {
         link: request.url,
         estado: "500"
       })
-      return response.json({ errors: Error })
+      return response.status(400).json({ errors: Error })
     }
     if (orientacion.length == 0) {
       Error.push({
@@ -40,7 +40,7 @@ function getOrientaciones(request, response) {
         link: request.url,
         estado: "404"
       })
-      return response.json({ errors: Error })
+      return response.status(400).json({ errors: Error })
     }
     else {
 
@@ -76,7 +76,7 @@ function getOrientacionId(request, response) {
       link: request.url,
       estado: "404"
     })
-    return response.json({ errors: Error })
+    return response.status(400).json({ errors: Error })
   }
   ModelOrientacion.findById(id, function (err, orientacion) {
 
@@ -87,7 +87,7 @@ function getOrientacionId(request, response) {
         link: request.url,
         estado: "404"
       })
-      return response.json({ errors: Error })
+      return response.status(400).json({ errors: Error })
     } else
       if (err) {
         Error.push({
@@ -96,7 +96,7 @@ function getOrientacionId(request, response) {
           link: request.url,
           estado: "500"
         })
-        return response.json({ errors: Error })
+        return response.status(400).json({ errors: Error })
       }
     return response.status(200).json({
       link: request.url,
@@ -130,7 +130,7 @@ function createOrientacion(request, response) {
           link: request.url,
           estado: "500"
         })
-        response.json({ errors: Error })
+        return response.status(400).json({ errors: Error })
       }
       else
         return response.status(200).json({
@@ -163,7 +163,7 @@ function updateOrientacion(request, response) {
       link: request.url,
       estado: "404"
     })
-    return response.json({ errors: Error })
+    return response.status(400).json({ errors: Error })
   } else
 
     ModelOrientacion.findById(id, function (err, orientacion) {
@@ -174,7 +174,7 @@ function updateOrientacion(request, response) {
           link: request.url,
           estado: "404"
         })
-        return response.json({ errors: Error })
+        return response.status(400).json({ errors: Error })
       } else
         if (err) {
           Error.push({
@@ -183,7 +183,7 @@ function updateOrientacion(request, response) {
             link: request.url,
             estado: "500"
           })
-          return response.json({ errors: Error })
+          return response.status(400).json({ errors: Error })
         }
         else {
 
@@ -220,7 +220,7 @@ function deleteOrientacion(request, response) {
       link: request.url,
       estado: "404"
     })
-    return response.json({ errors: Error })
+    return response.status(400).json({ errors: Error })
   } else
 
     ModelOrientacion.findById(id, function (err, orientacion) {
@@ -232,7 +232,7 @@ function deleteOrientacion(request, response) {
           link: request.url,
           estado: "404"
         })
-        return response.json({ errors: Error })
+        return response.status(400).json({ errors: Error })
       } else
 
         if (!orientacion) {
@@ -242,7 +242,7 @@ function deleteOrientacion(request, response) {
             link: request.url,
             estado: "404"
           })
-          return response.json({ errors: Error })
+          return response.status(400).json({ errors: Error })
         } else
           if (err) {
             Error.push({
@@ -251,7 +251,7 @@ function deleteOrientacion(request, response) {
               link: request.url,
               estado: "500"
             })
-            return response.json({ errors: Error })
+            return response.status(400).json({ errors: Error })
           } else {
 
             orientacion.remove(id, function (err, orientacion) {
