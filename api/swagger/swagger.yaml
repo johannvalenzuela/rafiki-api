@@ -916,7 +916,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/ResponseRecursoEducativo"
         default:
           description: Error
           schema:
@@ -936,7 +936,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -1022,7 +1022,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/ResponseRecursoEducativo"
         default:
           description: Error
           schema:
@@ -1047,7 +1047,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -1066,7 +1066,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -1480,6 +1480,17 @@ definitions:
     type: object
     properties:
       link:
+        type: string
+  ResponseRecursoEducativo:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/RecursoEducativo"
+      type:
         type: string
 
 
