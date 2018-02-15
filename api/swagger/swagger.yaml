@@ -34,11 +34,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/ResponseActividad"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir una nueva actividad
       operationId: postActividad
@@ -54,17 +54,17 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /actividades/{id}:
     # our controller name
     x-swagger-router-controller: actividad
     get:
       description: Obtener una actividad
-      operationId: getActividadId
+      operationId: getActividad
       # define the type of response for Success "200" and Error
       parameters:
         - name: id
@@ -75,11 +75,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/ResponseActividad"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una actividad
       operationId: updateActividad
@@ -100,11 +100,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"        
+            $ref: "#/definitions/Errors"        
     delete:
       description: Eliminar actividad
       operationId: deleteActividad
@@ -119,11 +119,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /login/{role}:
     x-swagger-router-controller: login
     post:
@@ -1481,6 +1481,17 @@ definitions:
     properties:
       link:
         type: string
+  ResponseActividad
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/Actividad"
+      type:
+        type: string
   ResponseCurso:
     type: object
     properties:
@@ -1492,3 +1503,5 @@ definitions:
           $ref: "#/definitions/Curso"
       type:
         type: string
+
+
