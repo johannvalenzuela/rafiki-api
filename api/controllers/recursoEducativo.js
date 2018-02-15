@@ -11,7 +11,8 @@ const Responses = require('../helpers/responses');
  * @exports getRecursosEducativos GET /recursosEducativos
  * @param req Petición HTTP
  * @param res | 200 Recursos Educativos | 404 No hay Recursos Educativos | 500 Error al buscar |
- * @return {[evaluaciones]} JSON con un objeto que contiene arreglo de Objetos Recurso Educativo
+ * @return {object} JSON con un objeto que contiene arreglo de Objetos Recurso Educativo
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.getRecursosEducativos = (req, res) => {
 
@@ -45,7 +46,8 @@ exports.getRecursosEducativos = (req, res) => {
  * @exports getRecursoEducativo GET /recursosEducativos/{id}
  * @param req Petición HTTP, id de Recurso educativo en path
  * @param res | 200 Recurso educativo encontrado | 404  Recurso educativo no existe | 500 Error al buscar |
- * @return {recursoEducativo} JSON con Objeto Recurso Educativo
+ * @return {object} JSON con objeto Recurso Educativo
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.getRecursoEducativo = (req, res) => {
 
@@ -96,7 +98,8 @@ exports.getRecursoEducativo = (req, res) => {
  * @exports deleteRecursoEducativo DELETE /recursosEducativos/{id}
  * @param req Petición HTTP, id de Recurso educativo en Path
  * @param res | 200 Recurso educativo eliminado | 500 Error al buscar | 404 El Recurso educativo no existe |
- * @return {message:mensaje} JSON con mensaje
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.deleteRecursoEducativo = (req, res) => {
 
@@ -141,7 +144,8 @@ exports.deleteRecursoEducativo = (req, res) => {
  * @exports updateRecursoEducativo PUT /recursosEducativos/{id}
  * @param req Petición HTTP, id de evaluación en path
  * @param res | 200 Recurso educativo encontrado | 404 Recurso educativo no existe | 500 Error al buscar |
- * @return {recursoEducativo} JSON con Objeto Recurso Educativo
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.updateRecursoEducativo = (req, res) => {
 
@@ -188,7 +192,8 @@ exports.updateRecursoEducativo = (req, res) => {
  * @exports postEvaluacion POST /recursosEducativos
  * @param req Petición HTTP, JSON Objeto Recurso Educativo en Body
  * @param res | 201 Recurso educativo creado | 500 Error al buscar | 400 Solicitud incorrecta |
- * @return {recursoEducativo} JSON con Objeto Recurso Educativo
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.postRecursoEducativo = (req, res) => {
 
