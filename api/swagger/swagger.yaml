@@ -389,7 +389,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Curso"
+            $ref: "#/definitions/ResponseCurso"
         default:
           description: Error
           schema:
@@ -409,7 +409,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Curso"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -495,7 +495,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Curso"
+            $ref: "#/definitions/ResponseCurso"
         default:
           description: Error
           schema:
@@ -520,7 +520,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Curso"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -539,7 +539,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Curso"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -1481,4 +1481,14 @@ definitions:
     properties:
       link:
         type: string
-
+  ResponseCurso:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/Curso"
+      type:
+        type: string
