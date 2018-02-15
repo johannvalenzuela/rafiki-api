@@ -21,7 +21,7 @@ exports.getListOrganizaciones = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(500).json({ errors: Error })
     }
     if (organizacion.length == 0) {
       return res.status(200).json({ message: 'No existe ninguna organizacion' });
@@ -53,20 +53,29 @@ exports.getOrganizacion = (req, res) => {
       link: req.url,
       estado: "404"
     });
-    return res.json({ errors: Error });
+    return res.status(404).json({ errors: Error });
   }
 
   ModelOrganizacion.findById(organizacionID, function (err, organizacion) {
-    if (err && !organizacion) {
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(500).json({ errors: Error })
+    }
+    if (!organizacion) {
       Error.push({
         titulo: "ID no encontrada",
         detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(404).json({ errors: Error });
     }
-    res.json({
+    res.status(200).json({
       link: req.url,
       data: [organizacion],
       type: "organizaciones"
@@ -95,18 +104,27 @@ exports.updateOrganizacion = (req, res) => {
       link: req.url,
       estado: "404"
     });
-    return res.json({ errors: Error });
+    return res.status(404).json({ errors: Error });
   }
 
   ModelOrganizacion.findById(id, function (err, organizacion) {
-    if (err && !organizacion) {
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(500).json({ errors: Error })
+    }
+    if (!organizacion) {
       Error.push({
         titulo: "ID no encontrada",
         detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(404).json({ errors: Error });
     }
     organizacion = Object.assign(organizacion, req.body);
     organizacion.save(id, function (err, organizacion) {
@@ -117,7 +135,7 @@ exports.updateOrganizacion = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return res.status(500).json({ errors: Error })
       }
       res.status(201).json({ link: req.url });
     });
@@ -143,18 +161,27 @@ exports.deleteOrganizacion = (req, res) => {
       link: req.url,
       estado: "404"
     });
-    return res.json({ errors: Error });
+    return res.status(404).json({ errors: Error });
   }
 
   ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
-    if (err && !organizacion) {
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(500).json({ errors: Error })
+    }
+    if (!organizacion) {
       Error.push({
         titulo: "ID no encontrada",
         detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(404).json({ errors: Error });
     }
     //Elimina la organizacion si se encontró el id
     organizacion.remove(organizacionID, function (err, organizacion) {
@@ -165,7 +192,7 @@ exports.deleteOrganizacion = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return res.status(500).json({ errors: Error })
       }
       res.status(200).json({ link: req.url });
     });
@@ -240,20 +267,40 @@ exports.createOrganizacion = (req, res) => {
   });
 
   if (Error.length > 0) {
-    return res.status(400).json({ errors: Error });
+    return res.status(417).json({ errors: Error });
   }
-  
+
   ModelOrganizacion.create(req.body, function (err, organizacion) {
-    if (err) return res.status(400).json({ errors: Error });
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(500).json({ errors: Error })
+    }
+    if (!organizacion) {
+      Error.push({
+        titulo: "Peticion Erronea",
+        detalle: "El JSON que se envió no es valido",
+        link: req.url,
+        estado: "404"
+      })
+      return res.status(404).json({ errors: Error })
+    }
     if (organizacion) {
       organizacion.save((err) => {
-        if (err) Error.push({
-          titulo: "Ocurrio un error al guardar en la BD",
-          estado: "500"
-        })
-        return res.status(200).json(
-          { link: req.url }
-        );
+        if (err) {
+          Error.push({
+            titulo: "Error Interno en el Servidor",
+            detalle: "Ocurrio algun error al realizar peticion",
+            link: req.url,
+            estado: "500"
+          })
+          return res.status(500).json({ errors: Error })
+        }
+        res.status(200).json({ link: req.url });
       });
     }
   })
