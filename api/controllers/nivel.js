@@ -12,95 +12,244 @@ module.exports = {
   deleteNivel: deleteNivel
 
 };
-/** GET: Función que retorna la lista de niveles existentes en la BD */
-function get_niveles (req, res){
+/** 
+ * Función para obtener un arreglo de niveles
+ *
+ * @author Héctor Astorga Terraza
+ * @exports get_niveles GET /niveles
+ * @param request Petición HTTP
+ * @param response | 200 niveles | 404 No hay niveles | 500 Error al buscar |
+ * @return {[niveles]} JSON con un objeto que contiene arreglo de Objetos nivel
+ */
+function get_niveles(request, response) {
+  let Error = [];
   ModelNivel.find({}, (err, nivel) => {
-      if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
-      if(!nivel) return res.status(400).send({message: 'No existe ningún nivel'});
 
-      /** Si no existe error se retonan los niveles con status 200: OK */
-      res.status(200).json(nivel)
-      console.log(nivel);
+    if (err) {
+      Error.push({
+        titulo: "error interno del servidor",
+        detalle: "ocurrió un error interno al realizar petición",
+        link: request.url,
+        estado: "500"
+      })
+      return response.json({ errors: Error })
+    } else
+      if (nivel.length == 0) {
+        Error.push({
+          titulo: "No se ha encontrado elementos",
+          detalle: "No existen niveles",
+          link: request.url,
+          estado: "404"
+        })
+        return response.json({ errors: Error })
+      } else {
+        return response.status(200).json({
+          link: request.url,
+          data: nivel,
+          type: "niveles"
+        });
+        console.log(nivel);
+      }
+
   });
 
 }
-/** GET/ID: Se retorna un nivel al recibir por PATH el id del mismo. */
-function getNivelId(req, res) {
+/** 
+ * Función para obtener un objeto nivel
+ *
+ * @author Héctor Astorga Terraza
+ * @exports getNivelId GET /niveles/{id}
+ * @param request Petición HTTP, id de nivel en path
+ * @param response | 200 existe nivel | 404 No hay nivel | 500 Error al buscar |
+ * @return {[nivel: nivel]} JSON con un objeto nivel
+ */
+function getNivelId(request, response) {
 
-  let id = req.swagger.params.id.value;
-   /** FindById, busca dentro de la BD el nivel que se desea conseguir*/
-  ModelNivel.findById(id, function(err, nivel){
-      /** Si existe un error interno del servidor se retorna error 500 */
-    if (err) return res.status(500).send(Responses.getError({message: err.message}));
+  let id = request.swagger.params.id.value;
+  let Error = [];
 
-    /** Si no existe el nivel se retorna error 404 */
-    if (!nivel) return res.status(404).send(Responses.getError({message: `nivel ${id} not found.`}));
-
-    res.json(nivel);
-});
+  if (id.length != 24) {
+    Error.push({
+      titulo: "ID no valida",
+      detalle: "No se introdujo una ID valida",
+      link: request.url,
+      estado: "404"
+    })
+    return response.json({ errors: Error })
+  }
+  else {
+    ModelNivel.findById(id, function (err, nivel) {
+      if (!nivel) {
+        Error.push({
+          titulo: "No existe el elemento buscado",
+          detalle: "No se introdujo un ID de algún nivel",
+          link: request.url,
+          estado: "404"
+        })
+        return response.json({ errors: Error })
+      } else
+        if (err) {
+          Error.push({
+            titulo: "Error interno del servidor",
+            detalle: "falló comunicación con la BD",
+            link: request.url,
+            estado: "500"
+          })
+          return response.json({ errors: Error })
+        }
+        else {
+          return response.status(200).json({
+            link: request.url,
+            data: nivel,
+            type: "niveles"
+          });
+          console.log(nivel);
+        }
+    });
+  }
 }
-  
 
-/** POST: Función que crea un nivel. */
+
+/** 
+ * Función para insertar un objeto nivel
+ *
+ * @author Héctor Astorga Terraza
+ * @exports createNivel POST /niveles
+ * @param request Petición HTTP, objeto nivel JSON en Body
+ * @param response | 200 nivel creado | 500 Error al buscar |
+ * @return {nivel} JSON con un objeto nivel
+ */
 function createNivel(request, response) {
+  let Error = [];
   ModelNivel.create(request.body, function (err, nivel) {
-    nivel.save(function(err){
-
-      /** Si existe un error interno del servidor se retorna error 500 */
-      if (err) return response.status(500).send(Responses.getError({message: err.message}));
+    nivel.save(function (err) {
+      if (err) {
+        Error.push({
+          titulo: "Error interno del servidor",
+          detalle: "falló comunicación con la BD",
+          link: request.url,
+          estado: "500"
+        })
+        response.json({ errors: Error })
+      }
+      else
+        return response.status(200).json({
+          link: request.url,
+          data: nivel,
+          type: "niveles"
+        });
       console.log(nivel);
 
-      /** Se crea el nuevo nivel con los atributos requeridos */
-      response.status(200).json({ 
-        sigla : nivel.sigla,
-        tipo_nivel : nivel.tipo_nivel,
-        grado : nivel.grado,
-        descripcion : nivel.descripcion,
-        decreto : nivel.decreto
-      });
+
     })
   });
 }
-/** PUT: Función que actualiza un nivel. */
+/** 
+ * Función para actualizar un objeto nivel
+ *
+ * @author Héctor Astorga Terraza
+ * @exports updateNivel PUT /niveles/{id}
+ * @param request Petición HTTP, id del objeto nivel en path
+ * @param response | 200 nivel creado | 404 no existe nivel | 500 Error al buscar |
+ * @return {nivel} JSON con un objeto nivel
+ */
 function updateNivel(request, response) {
   let id = request.swagger.params.id.value;
-  /** FindById, busca dentro de la BD el nivel que se desea actualizar */
-  ModelNivel.findById(id, function(err, nivel) {
-    /** Si existe un error interno del servidor se retorna error 500 */
-    if (err) return response.status(500).send(Responses.getError({message: err.message}));
-      
-    
-    /** Si el id no está asociado a algún nivel en la BD, se retorna un error 404 */
-    if (!nivel) return response.status(404).send(Responses.getError({message: `nivel ${id} not found.`}));
-      
-    /** Object.assign copia los valores del request.body al objeto nivel */
-    nivel = Object.assign(nivel, request.body);
-    nivel.save(id, function (err, nivel) {
-      /** si hay error al guardar se muestra un error 500 */
-      if (err) return response.status(500).send(Responses.getError({message: err.message}));
-      
-      /** Se muestra el nivel actualizado */
-      response.json(nivel);
+  let Error = [];
+
+  if (id.length != 24) {
+    Error.push({
+      titulo: "ID no valida",
+      detalle: "No se introdujo una ID valida",
+      link: request.url,
+      estado: "404"
+    })
+    return response.json({ errors: Error })
+  } else {
+    ModelNivel.findById(id, function (err, nivel) {
+      if (!nivel) {
+        Error.push({
+          titulo: "No existe el elemento buscado",
+          detalle: "No se introdujo un ID de un nivel",
+          link: request.url,
+          estado: "404"
+        })
+        return response.json({ errors: Error })
+      } else
+        if (err) {
+          Error.push({
+            titulo: "Error interno del servidor",
+            detalle: "falló comunicación con la BD",
+            link: request.url,
+            estado: "500"
+          })
+          return response.json({ errors: Error })
+        }
+        else {
+
+          nivel = Object.assign(nivel, request.body);
+          nivel.save(id, function (err, nivel) {
+
+            return response.status(200).json({
+              link: request.url,
+              data: nivel,
+              type: "niveles"
+            });
+            console.log(nivel);
+          });
+        }
     });
-  });
+  }
 }
-/** DELETE: Función que elimina un nivel. */
-function deleteNivel(request, response){
+/** 
+ * Función para eliminar un objeto nivel
+ *
+ * @author Héctor Astorga Terraza
+ * @exports deleteNivel DELETE /niveles/{id}
+ * @param request Petición HTTP, id del objeto nivel en path
+ * @param response | 200 nivel eliminado | 404 no existe nivel | 500 Error al buscar |
+ * @return {message:mensaje} JSON con mensaje
+ */
+function deleteNivel(request, response) {
   let id = request.swagger.params.id.value;
-  ModelNivel.findById(id, function(err, nivel) {
-    if (err) return response.status(500).send(Responses.getError({message: err.message}));
-      
-    
-    /** Si el id no está asociado a algún nivel en la BD, se retorna un error 404 */
-    if (!nivel) return response.status(404).send(Responses.getError({message:  `El nivel ${id} no ha sido encontrado.`}));
-      
-    /** Se elimina de la BD el nivel asociado al id ingresado. */
-    nivel.remove(id, function (err, nivel) {
-      if (err) return response.status(500).send(Responses.getError({message: err.message}));
-     /* Si no hay error se elimina y se muestra un mensaje de que el nivel ha sido borrado */ 
-      response.status(200).json(Responses.getSuccess({message: `Nivel ${id} eliminado.`}));
+  let Error = [];
+  if (id.length != 24) {
+    Error.push({
+      titulo: "ID no valida",
+      detalle: "No se introdujo una ID valida",
+      link: request.url,
+      estado: "404"
+    })
+    return response.json({ errors: Error })
+  } else {
+
+    ModelNivel.findById(id, function (err, nivel) {
+      if (err) {
+        Error.push({
+          titulo: "Error interno del servidor",
+          detalle: "falló comunicación con la BD",
+          link: request.url,
+          estado: "500"
+        })
+        return response.json({ errors: Error })
+      }
+      else
+        if (!nivel) {
+          Error.push({
+            titulo: "No existe el elemento buscado",
+            detalle: "No se introdujo un ID de un nivel",
+            link: request.url,
+            estado: "404"
+          })
+          return response.json({ errors: Error })
+        } else {
+
+          nivel.remove(id, function (err, nivel) {
+            response.status(200).json({ link: request.url });
+          });
+        }
     });
-  });
+  }
 }
 
 
