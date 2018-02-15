@@ -168,7 +168,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put: 
       description: Actualizar nivel ingresado por id
       operationId: updateNivel
