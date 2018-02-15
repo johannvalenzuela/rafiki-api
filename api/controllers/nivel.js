@@ -118,7 +118,7 @@ function getNivelId(request, response) {
  * @exports createNivel POST /niveles
  * @param request Petición HTTP, objeto nivel JSON en Body
  * @param response | 200 nivel creado | 500 Error al buscar |
- * @return {object} JSON con un objeto
+ * @return { request.url } JSON con un objeto
  * @return { errors: Error } JSON con un objeto Error
  */
 function createNivel(request, response) {
@@ -145,11 +145,7 @@ function createNivel(request, response) {
           return response.status(400).json({ errors: Error })
         }
         else
-          return response.status(200).json({
-            link: request.url,
-            data: nivel,
-            type: "niveles"
-          });
+          return response.status(200).json({ link: request.url });
         console.log(nivel);
 
 
@@ -163,7 +159,7 @@ function createNivel(request, response) {
  * @exports updateNivel PUT /niveles/{id}
  * @param request Petición HTTP, id del objeto nivel en path
  * @param response | 200 nivel creado | 404 no existe nivel | 500 Error al buscar |
- * @return {object} JSON con un objeto
+ * @return { request.url } JSON con un objeto
  * @return { errors: Error } JSON con un objeto Error
  */
 function updateNivel(request, response) {
@@ -204,11 +200,7 @@ function updateNivel(request, response) {
           nivel = Object.assign(nivel, request.body);
           nivel.save(id, function (err, nivel) {
 
-            return response.status(200).json({
-              link: request.url,
-              data: nivel,
-              type: "niveles"
-            });
+            return response.status(200).json({ link: request.url });
             console.log(nivel);
           });
         }
@@ -222,7 +214,7 @@ function updateNivel(request, response) {
  * @exports deleteNivel DELETE /niveles/{id}
  * @param request Petición HTTP, id del objeto nivel en path
  * @param response | 200 nivel eliminado | 404 no existe nivel | 500 Error al buscar |
- * @return {message:mensaje} JSON con mensaje
+ * @return { request.url } JSON con mensaje
  * @return { errors: Error } JSON con un objeto Error
  */
 function deleteNivel(request, response) {

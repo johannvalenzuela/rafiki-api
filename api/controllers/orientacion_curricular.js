@@ -19,7 +19,8 @@ module.exports = {
  * @exports getOrientaciones GET /orientaciones
  * @param request Petición HTTP
  * @param response | 200 hay orientaciones | 404 No hay orientaciones | 500 Error al buscar |
- * @return {[orientaciones]} JSON con un objeto que contiene arreglo de Objetos orientacion_curricular
+ * @return {[object]} JSON con un objeto que contiene arreglo de Objetos
+ * @return { errors: Error } JSON con un objeto Error
  */
 function getOrientaciones(request, response) {
   let Error = [];
@@ -64,6 +65,7 @@ function getOrientaciones(request, response) {
  * @param request Petición HTTP, id de la orientación curricular en path
  * @param response | 200 existe orientacion curricular | 404 No hay orientación curricular | 500 Error al buscar |
  * @return {[orientacion_curricular: orientacion_curricular]} JSON con un objeto orientacion_curricular
+ * @return { errors: Error } JSON con un objeto Error
  */
 function getOrientacionId(request, response) {
   let Error = [];
@@ -115,7 +117,8 @@ function getOrientacionId(request, response) {
  * @exports createOrientacion POST /orientacion
  * @param request Petición HTTP, objeto orientacion_curricular JSON en Body
  * @param response | 200 objeto orientacion_curricular creado | 500 Error al buscar |
- * @return {orientacion_curricular} JSON con un objeto orientacion_curricular
+ * @return { request.url } JSON con un objeto orientacion_curricular
+ * @return { errors: Error } JSON con un objeto Error
  */
 function createOrientacion(request, response) {
   let Error = [];
@@ -134,9 +137,7 @@ function createOrientacion(request, response) {
       }
       else
         return response.status(200).json({
-          link: request.url,
-          data: orientacion,
-          type: "orientaciones"
+          link: request.url
         });
       console.log(orientacion);
     })
@@ -150,7 +151,8 @@ function createOrientacion(request, response) {
  * @exports updateNivel PUT /orientaciones/{id}
  * @param request Petición HTTP, id del objeto orientacion_curricular en path
  * @param response | 200 orientación curricular creada | 404 no existe orientación curricular | 500 Error al buscar |
- * @return {orientacion_curricular} JSON con un objeto orientacion_curricular
+ * @return { request.url } JSON con un objeto
+ * @return { errors: Error } JSON con un objeto Error
  */
 function updateOrientacion(request, response) {
   let id = request.swagger.params.id.value;
@@ -190,11 +192,7 @@ function updateOrientacion(request, response) {
           orientacion = Object.assign(orientacion, request.body);
           orientacion.save(id, function (err, orientacion) {
 
-            return response.status(200).json({
-              link: request.url,
-              data: orientacion,
-              type: "orientaciones"
-            });
+            return response.status(200).json({ link: request.url });
             console.log(orientacion);
           });
         }
@@ -207,7 +205,8 @@ function updateOrientacion(request, response) {
  * @exports deleteNivel DELETE /orientaciones/{id}
  * @param request Petición HTTP, id del objeto orientacion_curricular en path
  * @param response | 200 orientacion eliminada | 404 no existe la orientación curricular | 500 Error al buscar |
- * @return {message:mensaje} JSON con mensaje
+ * @return { request.url } JSON con mensaje
+ * @return { errors: Error } JSON con un objeto Error
  */
 function deleteOrientacion(request, response) {
   let id = request.swagger.params.id.value;
