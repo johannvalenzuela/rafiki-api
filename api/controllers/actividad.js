@@ -27,7 +27,7 @@ exports.getActividades = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
 
     if (!actividades) {
@@ -38,7 +38,7 @@ exports.getActividades = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
     else {
       return res.status(200).json({
@@ -77,27 +77,15 @@ exports.getActividad = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
+    
+    return res.status(200).json({
+      link: req.url,
+      data: [actividad],
+      type: "actividades"
+    });
 
-
-    if (!actividad) {
-
-      Error.push({
-        titulo: "La actividad no existe",
-        detalle: "El id ingresado no corresponde a una actividad",
-        link: req.url,
-        estado: "404"
-      });
-      return res.json({ errors: Error });
-    }
-    else {
-      return res.status(200).json({
-        link: req.url,
-        data: actividad,
-        type: "actividades"
-      });
-    }
 
   });
 }
@@ -126,7 +114,7 @@ exports.deleteActividad = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
 
     if (!actividad) {
@@ -137,7 +125,7 @@ exports.deleteActividad = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
 
     actividad.remove(idActividad, function (err, actividad) {
@@ -149,7 +137,7 @@ exports.deleteActividad = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       else
         res.status(200).json({ link: req.url });
@@ -181,7 +169,7 @@ exports.updateActividad = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
 
     if (!actividad) {
@@ -192,9 +180,9 @@ exports.updateActividad = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
-    
+
     actividad = Object.assign(actividad, req.body);
 
     actividad.save(idActividad, function (err, Actividad) {
@@ -206,10 +194,10 @@ exports.updateActividad = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       else
-        res.status(200).json({ link: req.url });
+        return res.status(200).json({ link: req.url });
     });
   });
 }
@@ -341,7 +329,7 @@ exports.postActividad = (req, res) => {
         link: req.url,
         estado: "404"
       })
-      return res.json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
 
     actividad.save(function (err) {
@@ -353,10 +341,10 @@ exports.postActividad = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       else
-        res.status(200).json({ link: req.url });
+        res.status(201).json({ link: req.url });
 
     })
   });
