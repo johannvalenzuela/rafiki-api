@@ -17,35 +17,35 @@ module.exports = {
  *
  * @author Héctor Astorga Terraza
  * @exports getOrientaciones GET /orientaciones
- * @param req Petición HTTP
- * @param res | 200 hay orientaciones | 404 No hay orientaciones | 500 Error al buscar |
+ * @param request Petición HTTP
+ * @param response | 200 hay orientaciones | 404 No hay orientaciones | 500 Error al buscar |
  * @return {[orientaciones]} JSON con un objeto que contiene arreglo de Objetos orientacion_curricular
  */
-function getOrientaciones(req, res) {
+function getOrientaciones(request, response) {
   let Error = [];
   ModelOrientacion.find({}, (err, orientacion) => {
     if (err) {
       Error.push({
         titulo: "error interno del servidor",
         detalle: "ocurrió un error interno al realizar petición",
-        link: req.url,
+        link: request.url,
         estado: "500"
       })
-      return res.json({ errors: Error })
+      return response.json({ errors: Error })
     }
     if (orientacion.length == 0) {
       Error.push({
         titulo: "No se ha encontrado elementos",
         detalle: "No existen orientaciones curriculares",
-        link: req.url,
+        link: request.url,
         estado: "404"
       })
-      return res.json({ errors: Error })
+      return response.json({ errors: Error })
     }
     else {
 
-      return res.status(200).json({
-        link: req.url,
+      return response.status(200).json({
+        link: request.url,
         data: orientacion,
         type: "orientaciones"
       });
@@ -61,22 +61,22 @@ function getOrientaciones(req, res) {
  *
  * @author Héctor Astorga Terraza
  * @exports getOrientacionId GET /orientaciones/{id}
- * @param req Petición HTTP, id de la orientación curricular en path
- * @param res | 200 existe orientacion curricular | 404 No hay orientación curricular | 500 Error al buscar |
+ * @param request Petición HTTP, id de la orientación curricular en path
+ * @param response | 200 existe orientacion curricular | 404 No hay orientación curricular | 500 Error al buscar |
  * @return {[orientacion_curricular: orientacion_curricular]} JSON con un objeto orientacion_curricular
  */
-function getOrientacionId(req, res) {
+function getOrientacionId(request, response) {
   let Error = [];
-  let id = req.swagger.params.id.value;
+  let id = request.swagger.params.id.value;
 
   if (id.length != 24) {
     Error.push({
       titulo: "ID no valida",
       detalle: "No se introdujo una ID valida",
-      link: req.url,
+      link: request.url,
       estado: "404"
     })
-    return res.json({ errors: Error })
+    return response.json({ errors: Error })
   }
   ModelOrientacion.findById(id, function (err, orientacion) {
 
@@ -84,22 +84,22 @@ function getOrientacionId(req, res) {
       Error.push({
         titulo: "No existe el elemento buscado",
         detalle: "No se introdujo una ID de alguna orientación curricular",
-        link: req.url,
+        link: request.url,
         estado: "404"
       })
-      return res.json({ errors: Error })
+      return response.json({ errors: Error })
     } else
       if (err) {
         Error.push({
           titulo: "Error interno del servidor",
           detalle: "falló comunicación con la BD",
-          link: req.url,
+          link: request.url,
           estado: "500"
         })
-        return res.json({ errors: Error })
+        return response.json({ errors: Error })
       }
-    return res.status(200).json({
-      link: req.url,
+    return response.status(200).json({
+      link: request.url,
       data: orientacion,
       type: "orientaciones"
     });
@@ -113,8 +113,8 @@ function getOrientacionId(req, res) {
  *
  * @author Héctor Astorga Terraza 
  * @exports createOrientacion POST /orientacion
- * @param req Petición HTTP, objeto orientacion_curricular JSON en Body
- * @param res | 200 objeto orientacion_curricular creado | 500 Error al buscar |
+ * @param request Petición HTTP, objeto orientacion_curricular JSON en Body
+ * @param response | 200 objeto orientacion_curricular creado | 500 Error al buscar |
  * @return {orientacion_curricular} JSON con un objeto orientacion_curricular
  */
 function createOrientacion(request, response) {
@@ -127,14 +127,14 @@ function createOrientacion(request, response) {
         Error.push({
           titulo: "Error interno del servidor",
           detalle: "falló comunicación con la BD",
-          link: req.url,
+          link: request.url,
           estado: "500"
         })
-        res.json({ errors: Error })
+        response.json({ errors: Error })
       }
       else
-        return res.status(200).json({
-          link: req.url,
+        return response.status(200).json({
+          link: request.url,
           data: orientacion,
           type: "orientaciones"
         });
@@ -148,8 +148,8 @@ function createOrientacion(request, response) {
  *
  * @author Héctor Astorga Terraza
  * @exports updateNivel PUT /orientaciones/{id}
- * @param req Petición HTTP, id del objeto orientacion_curricular en path
- * @param res | 200 orientación curricular creada | 404 no existe orientación curricular | 500 Error al buscar |
+ * @param request Petición HTTP, id del objeto orientacion_curricular en path
+ * @param response | 200 orientación curricular creada | 404 no existe orientación curricular | 500 Error al buscar |
  * @return {orientacion_curricular} JSON con un objeto orientacion_curricular
  */
 function updateOrientacion(request, response) {
@@ -160,10 +160,10 @@ function updateOrientacion(request, response) {
     Error.push({
       titulo: "ID no valida",
       detalle: "No se introdujo una ID valida",
-      link: req.url,
+      link: request.url,
       estado: "404"
     })
-    return res.json({ errors: Error })
+    return response.json({ errors: Error })
   } else
 
     ModelOrientacion.findById(id, function (err, orientacion) {
@@ -171,27 +171,27 @@ function updateOrientacion(request, response) {
         Error.push({
           titulo: "No existe el elemento buscado",
           detalle: "No se introdujo una ID de alguna orientación curricular",
-          link: req.url,
+          link: request.url,
           estado: "404"
         })
-        return res.json({ errors: Error })
+        return response.json({ errors: Error })
       } else
         if (err) {
           Error.push({
             titulo: "Error interno del servidor",
             detalle: "falló comunicación con la BD",
-            link: req.url,
+            link: request.url,
             estado: "500"
           })
-          return res.json({ errors: Error })
+          return response.json({ errors: Error })
         }
         else {
 
           orientacion = Object.assign(orientacion, request.body);
           orientacion.save(id, function (err, orientacion) {
 
-            return res.status(200).json({
-              link: req.url,
+            return response.status(200).json({
+              link: request.url,
               data: orientacion,
               type: "orientaciones"
             });
@@ -205,8 +205,8 @@ function updateOrientacion(request, response) {
  *
  * @author Héctor Astorga Terraza
  * @exports deleteNivel DELETE /orientaciones/{id}
- * @param req Petición HTTP, id del objeto orientacion_curricular en path
- * @param res | 200 orientacion eliminada | 404 no existe la orientación curricular | 500 Error al buscar |
+ * @param request Petición HTTP, id del objeto orientacion_curricular en path
+ * @param response | 200 orientacion eliminada | 404 no existe la orientación curricular | 500 Error al buscar |
  * @return {message:mensaje} JSON con mensaje
  */
 function deleteOrientacion(request, response) {
@@ -217,10 +217,10 @@ function deleteOrientacion(request, response) {
     Error.push({
       titulo: "ID no valida",
       detalle: "No se introdujo una ID valida",
-      link: req.url,
+      link: request.url,
       estado: "404"
     })
-    return res.json({ errors: Error })
+    return response.json({ errors: Error })
   } else
 
     ModelOrientacion.findById(id, function (err, orientacion) {
@@ -229,33 +229,33 @@ function deleteOrientacion(request, response) {
         Error.push({
           titulo: "ID no valida",
           detalle: "No se introdujo una ID valida",
-          link: req.url,
+          link: request.url,
           estado: "404"
         })
-        return res.json({ errors: Error })
+        return response.json({ errors: Error })
       } else
 
         if (!orientacion) {
           Error.push({
             titulo: "No existe el elemento buscado",
             detalle: "No se introdujo una ID de alguna orientación curricular",
-            link: req.url,
+            link: request.url,
             estado: "404"
           })
-          return res.json({ errors: Error })
+          return response.json({ errors: Error })
         } else
           if (err) {
             Error.push({
               titulo: "Error interno del servidor",
               detalle: "falló comunicación con la BD",
-              link: req.url,
+              link: request.url,
               estado: "500"
             })
-            return res.json({ errors: Error })
+            return response.json({ errors: Error })
           } else {
 
             orientacion.remove(id, function (err, orientacion) {
-              res.status(200).json({ link: req.url });
+              response.status(200).json({ link: request.url });
             });
 
           }
