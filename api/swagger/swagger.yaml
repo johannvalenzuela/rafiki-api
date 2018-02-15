@@ -1481,7 +1481,7 @@ definitions:
     properties:
       link:
         type: string
-  ResponseActividad
+  ResponseActividad:
     type: object
     properties:
       link:
