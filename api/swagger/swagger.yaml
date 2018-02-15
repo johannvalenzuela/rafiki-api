@@ -38,7 +38,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir una nueva actividad
       operationId: postActividad
@@ -58,7 +58,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /actividades/{id}:
     # our controller name
     x-swagger-router-controller: actividad
@@ -79,7 +79,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una actividad
       operationId: updateActividad
@@ -104,7 +104,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"        
+            $ref: "#/definitions/Errors"        
     delete:
       description: Eliminar actividad
       operationId: deleteActividad
@@ -123,7 +123,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /login/{role}:
     x-swagger-router-controller: login
     post:
