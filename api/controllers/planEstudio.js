@@ -25,7 +25,13 @@ exports.getPlanEstudios = (req, res) => {
             return res.status(500).json({ errors: Error })
         }
         if (planEstudio.length == 0) {
-            return res.status(200).json({ message: 'No existe ningun plan de estudio' });
+            Error.push({
+                titulo: "No hay planes de estudio",
+                detalle: "No existen planes de estudios guardados en la Base de Datos",
+                link: req.url,
+                estado: "404"
+            })
+            return res.status(404).json({ errors: Error })
         } else {
             return res.status(200).json({
                 link: req.url,

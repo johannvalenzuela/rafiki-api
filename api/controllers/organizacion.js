@@ -24,7 +24,13 @@ exports.getListOrganizaciones = (req, res) => {
       return res.status(500).json({ errors: Error })
     }
     if (organizacion.length == 0) {
-      return res.status(200).json({ message: 'No existe ninguna organizacion' });
+      Error.push({
+        titulo: "No hay organizaciones",
+        detalle: "No existen organizaciones guardadas en la Base de Datos",
+        link: req.url,
+        estado: "404"
+      })
+      return res.status(404).json({ message: Error });
     } else {
       return res.status(200).json({
         link: req.url,
