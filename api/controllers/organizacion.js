@@ -21,21 +21,13 @@ exports.getListOrganizaciones = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.status(500).json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
-    if (organizacion.length == 0) {
-      Error.push({
-        titulo: "No hay organizaciones",
-        detalle: "No existen organizaciones guardadas en la Base de Datos",
-        link: req.url,
-        estado: "404"
-      })
-      return res.status(404).json({ message: Error });
-    } else {
+    if (organizacion || organizacion.length == 0) {
       return res.status(200).json({
         link: req.url,
         data: organizacion,
-        type: "organizaciones"
+        type: "organizacion"
       });
     }
   });
@@ -59,7 +51,7 @@ exports.getOrganizacion = (req, res) => {
       link: req.url,
       estado: "404"
     });
-    return res.status(404).json({ errors: Error });
+    return res.status(400).json({ errors: Error });
   }
 
   ModelOrganizacion.findById(organizacionID, function (err, organizacion) {
@@ -79,7 +71,7 @@ exports.getOrganizacion = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.status(404).json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
     res.status(200).json({
       link: req.url,
@@ -110,7 +102,7 @@ exports.updateOrganizacion = (req, res) => {
       link: req.url,
       estado: "404"
     });
-    return res.status(404).json({ errors: Error });
+    //res.status(400).json({ errors: Error });
   }
 
   ModelOrganizacion.findById(id, function (err, organizacion) {
@@ -121,7 +113,7 @@ exports.updateOrganizacion = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.status(500).json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
     if (!organizacion) {
       Error.push({
@@ -130,7 +122,7 @@ exports.updateOrganizacion = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.status(404).json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
     organizacion = Object.assign(organizacion, req.body);
     organizacion.save(id, function (err, organizacion) {
@@ -141,7 +133,7 @@ exports.updateOrganizacion = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.status(500).json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       res.status(201).json({ link: req.url });
     });
@@ -167,7 +159,7 @@ exports.deleteOrganizacion = (req, res) => {
       link: req.url,
       estado: "404"
     });
-    return res.status(404).json({ errors: Error });
+    return res.status(400).json({ errors: Error });
   }
 
   ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
@@ -187,7 +179,7 @@ exports.deleteOrganizacion = (req, res) => {
         link: req.url,
         estado: "404"
       });
-      return res.status(404).json({ errors: Error });
+      return res.status(400).json({ errors: Error });
     }
     //Elimina la organizacion si se encontró el id
     organizacion.remove(organizacionID, function (err, organizacion) {
@@ -198,7 +190,7 @@ exports.deleteOrganizacion = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        return res.status(500).json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       res.status(200).json({ link: req.url });
     });
@@ -273,7 +265,7 @@ exports.createOrganizacion = (req, res) => {
   });
 
   if (Error.length > 0) {
-    return res.status(417).json({ errors: Error });
+    return res.status(400).json({ errors: Error });
   }
 
   ModelOrganizacion.create(req.body, function (err, organizacion) {
@@ -284,7 +276,7 @@ exports.createOrganizacion = (req, res) => {
         link: req.url,
         estado: "500"
       })
-      return res.status(500).json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
     if (!organizacion) {
       Error.push({
@@ -293,7 +285,7 @@ exports.createOrganizacion = (req, res) => {
         link: req.url,
         estado: "404"
       })
-      return res.status(404).json({ errors: Error })
+      return res.status(400).json({ errors: Error })
     }
     if (organizacion) {
       organizacion.save((err) => {
@@ -304,7 +296,7 @@ exports.createOrganizacion = (req, res) => {
             link: req.url,
             estado: "500"
           })
-          return res.status(500).json({ errors: Error })
+          return res.status(400).json({ errors: Error })
         }
         res.status(200).json({ link: req.url });
       });

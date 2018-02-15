@@ -22,17 +22,9 @@ exports.getPlanEstudios = (req, res) => {
                 link: req.url,
                 estado: "500"
             })
-            return res.status(500).json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
-        if (planEstudio.length == 0) {
-            Error.push({
-                titulo: "No hay planes de estudio",
-                detalle: "No existen planes de estudios guardados en la Base de Datos",
-                link: req.url,
-                estado: "404"
-            })
-            return res.status(404).json({ errors: Error })
-        } else {
+        if (planEstudio || planEstudio.length == 0) {
             return res.status(200).json({
                 link: req.url,
                 data: planEstudio,
@@ -60,7 +52,7 @@ exports.getPlanEstudio = (req, res) => {
             link: req.url,
             estado: "404"
         });
-        return res.status(404).json({ errors: Error });
+        return res.status(400).json({ errors: Error });
     }
     ModelPlanEstudio.findById(planEstudioID, function (err, planEstudio) {
         if (err) {
@@ -70,7 +62,7 @@ exports.getPlanEstudio = (req, res) => {
                 link: req.url,
                 estado: "500"
             })
-            return res.status(500).json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
         if (!planEstudio) {
             Error.push({
@@ -79,7 +71,7 @@ exports.getPlanEstudio = (req, res) => {
                 link: req.url,
                 estado: "404"
             });
-            return res.status(404).json({ errors: Error });
+            return res.status(400).json({ errors: Error });
         }
         res.status(200).json({
             link: req.url,
@@ -139,7 +131,7 @@ exports.postPlanEstudio = (req, res) => {
     });
 
     if (Error.length > 0) {
-        return res.status(417).json({ errors: Error });
+        return res.status(400).json({ errors: Error });
     }
 
     ModelPlanEstudio.create(req.body, function (err, planEstudio) {
@@ -150,7 +142,7 @@ exports.postPlanEstudio = (req, res) => {
                 link: req.url,
                 estado: "500"
             })
-            return res.status(500).json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
         if (!planEstudio) {
             Error.push({
@@ -159,7 +151,7 @@ exports.postPlanEstudio = (req, res) => {
                 link: req.url,
                 estado: "404"
             })
-            return res.status(404).json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
         if (planEstudio) {
             planEstudio.save(function (err) {
@@ -170,7 +162,7 @@ exports.postPlanEstudio = (req, res) => {
                         link: req.url,
                         estado: "500"
                     })
-                    return res.status(500).json({ errors: Error })
+                    return res.status(400).json({ errors: Error })
                 }
                 res.status(200).json({ link: req.url });
             });
@@ -197,7 +189,7 @@ exports.updatePlanEstudio = (req, res) => {
             link: req.url,
             estado: "404"
         });
-        return res.status(404).json({ errors: Error });
+        return res.status(400).json({ errors: Error });
     }
 
     ModelPlanEstudio.findById(id, function (err, planEstudio) {
@@ -208,7 +200,7 @@ exports.updatePlanEstudio = (req, res) => {
                 link: req.url,
                 estado: "500"
             })
-            return res.status(500).json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
         if (!planEstudio) {
             Error.push({
@@ -217,7 +209,7 @@ exports.updatePlanEstudio = (req, res) => {
                 link: req.url,
                 estado: "404"
             });
-            return res.status(404).json({ errors: Error });
+            return res.status(400).json({ errors: Error });
         }
 
         planEstudio = Object.assign(planEstudio, req.body);
@@ -229,7 +221,7 @@ exports.updatePlanEstudio = (req, res) => {
                     link: req.url,
                     estado: "500"
                 })
-                return res.status(500).json({ errors: Error })
+                return res.status(400).json({ errors: Error })
             }
             res.status(201).json({ link: req.url });
         });
@@ -255,7 +247,7 @@ exports.deletePlanEstudio = (req, res) => {
             link: req.url,
             estado: "404"
         });
-        return res.status(404).json({ errors: Error });
+        return res.status(400).json({ errors: Error });
     }
 
     ModelPlanEstudio.findById(planEstudioID, (err, planEstudio) => {
@@ -266,7 +258,7 @@ exports.deletePlanEstudio = (req, res) => {
                 link: req.url,
                 estado: "500"
             })
-            return res.status(500).json({ errors: Error })
+            return res.status(400).json({ errors: Error })
         }
         if (!planEstudio) {
             Error.push({
@@ -275,7 +267,7 @@ exports.deletePlanEstudio = (req, res) => {
                 link: req.url,
                 estado: "404"
             });
-            return res.status(404).json({ errors: Error });
+            return res.status(400).json({ errors: Error });
         }
 
         //Elimina un plan de estudio si se encontró el id
@@ -287,7 +279,7 @@ exports.deletePlanEstudio = (req, res) => {
                     link: req.url,
                     estado: "500"
                 })
-                return res.status(500).json({ errors: Error })
+                return res.status(400).json({ errors: Error })
             }
             res.status(200).json({ link: req.url });
         });
