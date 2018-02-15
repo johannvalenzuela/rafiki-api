@@ -3,12 +3,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const objAprendizajeSchema = new Schema ({
-    numero: Number,
+    numero:{
+        type: Number
+    },
     tipo: {
         type: String, 
         enum: ['Habilidad', 'Conocimiento', 'Actitud']
     },
-    descripcion: String
+    descripcion:{
+        type: String
+    },
 });
 
 module.exports = mongoose.model('objaprendizajes', objAprendizajeSchema);
