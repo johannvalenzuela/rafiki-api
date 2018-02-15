@@ -100,7 +100,7 @@ function getOrientacionId(request, response) {
       }
     return response.status(200).json({
       link: request.url,
-      data: orientacion,
+      data: [orientacion],
       type: "orientaciones"
     });
     console.log(orientacion);
