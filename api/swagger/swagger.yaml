@@ -210,7 +210,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /niveles:
     # our controller name
     x-swagger-router-controller: nivel
