@@ -12,6 +12,7 @@ const Responses = require('../helpers/responses');
  * @param req Petición HTTP
  * @param res | 200 Asignaturas | 404 No hay Asignaturas | 500 Error al buscar |
  * @return {asignaturas} JSON con un objeto que contiene arreglo de Objeto de Asignaturas
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.getAsignaturas = (req, res) => {
   let Error = [];
@@ -50,7 +51,8 @@ exports.getAsignaturas = (req, res) => {
  * @exports postAsignatura POST /asignaturas
  * @param req Petición HTTP, JSON Objeto asignatura en Body
  * @param res | 200 asignatura creado | 500 Error al buscar |
- * @return {asignatura} JSON Objeto asignatura
+ * @return {link: req.url} JSON con un Objeto
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.postAsignatura = (req, res) => {
   let Error = [];
@@ -95,6 +97,7 @@ exports.postAsignatura = (req, res) => {
  * @param req Petición HTTP, id de asignatura en path
  * @param res | 200 objetivo de asignatura encontrada | 404 objetivo de asignatura no existe | 500 Error al buscar |
  * @return {asignatura: asignatura} JSON con una variable de valor Objeto asignatura
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.getAsignatura = (req, res) => {
   let id = req.swagger.params.id.value
@@ -135,7 +138,8 @@ exports.getAsignatura = (req, res) => {
  * @exports updateAsignatura PUT /asignaturas/{id}
  * @param req Petición HTTP, id de objetivo de asignatura en path
  * @param res | 200 asignatura encontrada | 404 asignatura no existe | 500 Error al buscar |
- * @return {asignatura} JSON Objeto asignatura
+ * @return {link: req.url} JSON con un Objeto
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.updateAsignatura = (req, res) => {
   let id = req.swagger.params.id.value;
@@ -186,7 +190,8 @@ exports.updateAsignatura = (req, res) => {
  * @exports deleteAsignatura DELETE /asignaturas/{id}
  * @param req Petición HTTP, id de asignatura en Path
  * @param res | 200 asignatura eliminada | 500 Error al buscar | 404 La asignatura no existe |
- * @return {message:mensaje} JSON con mensaje
+ * @return {link: req.url} JSON con un objeto
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.deleteAsignatura = (req, res) => {
   let id = req.swagger.params.id.value;

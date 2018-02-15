@@ -12,6 +12,7 @@ const Responses = require('../helpers/responses');
  * @param req Petición HTTP
  * @param res | 200 objetivo de aprendizaje | 404 No hay objetivo de aprendizaje | 500 Error al buscar |
  * @return {[objAprendizajes]} JSON con un objeto que contiene arreglo de Objeto objetivo de aprendizaje
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.getObjAprendizajes = (req, res) => {
     let Error = [];
@@ -51,6 +52,7 @@ exports.getObjAprendizajes = (req, res) => {
  * @param req Petición HTTP, id de objAprendizaje en path
  * @param res | 200 objetivo de aprendizaje encontrada | 404 objetivo de aprendizaje no existe | 500 Error al buscar |
  * @return {objAprendizaje: objAprendizaje} JSON con una variable de valor Objeto objAprendizaje
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.getObjAprendizaje = (req, res) => {
     let id = req.swagger.params.id.value
@@ -96,7 +98,8 @@ exports.getObjAprendizaje = (req, res) => {
  * @exports deleteObjAprendizaje DELETE /aprendizajes/{id}
  * @param req Petición HTTP, id de objetivo de aprendizaje en Path
  * @param res | 200 Objetivo de aprendizaje eliminada | 500 Error al buscar | 404 El objetivo de aprendizaje no existe |
- * @return {message:mensaje} JSON con mensaje
+ * @return {link: req.url} JSON con un objeto
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.deleteObjAprendizaje = (req, res) => {
     let id = req.swagger.params.id.value;
@@ -137,7 +140,8 @@ exports.deleteObjAprendizaje = (req, res) => {
  * @exports updateObjAprendizaje PUT /aprendizajes/{id}
  * @param req Petición HTTP, id de objetivo de aprendizaje en path
  * @param res | 200 Objetivo de aprendizaje encontrada | 404 Objetivo de aprendizaje no existe | 500 Error al buscar |
- * @return {objAprendizaje} JSON Objeto objetivo de aprendizaje
+ * @return {link: req.url} JSON Objeto objetivo
+ * @return {errors: Error} JSON con un objeto Error
  */
 // Arreglar
 exports.updateObjAprendizaje = (req, res) => {
@@ -205,7 +209,8 @@ exports.updateObjAprendizaje = (req, res) => {
  * @exports postObjAprendizaje POST /aprendizajes
  * @param req Petición HTTP, JSON Objeto objetivo de aprendizaje en Body
  * @param res | 200 Objetivo de aprendizaje creado | 500 Error al buscar |
- * @return {objAprendizaje} JSON Objeto objetivo de aprendizaje
+ * @return {link: req.url} JSON Objeto objetivo
+ * @return {errors: Error} JSON con un objeto Error
  */
 exports.postObjAprendizaje = (req, res) => {
     let id = req.swagger.params.id.value;
