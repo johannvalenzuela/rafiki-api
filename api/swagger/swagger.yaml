@@ -192,7 +192,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete: 
       description: eliminar el nivel ingresado por id
       operationId: deleteNivel
@@ -228,11 +228,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/GetUsersListResponse"
+            $ref: "#/definitions/Nivel"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir un nuevo nivel
       operationId: createNivel
@@ -762,7 +762,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar una evaluación
       # movie info to be stored
@@ -782,7 +782,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
             
             
   /orientaciones/{id}:
@@ -830,7 +830,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar una orientación
       operationId: deleteOrientacion
@@ -1229,6 +1229,28 @@ definitions:
             asignatura: 
               type: string
               description: hola
+              
+  Errors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+          properties:
+            titulo:
+              type: string
+            detalle:
+              type: string
+            link:
+              type: string
+            estado:
+              type: string
+  Response:
+    type: object
+    properties:
+      link:
+        type: string
               
 
 
