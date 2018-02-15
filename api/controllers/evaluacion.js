@@ -25,6 +25,15 @@ exports.getEvaluaciones = (req, res) => {
             })
             return res.status(400).json({ errors: Error })
         }
+        if (!evaluaciones) {
+            Error.push({
+                titulo: "No existen evaluaciones",
+                detalle: "La base de datos se encuentra sin evaluaciones",
+                link: req.url,
+                estado: "404"
+            })
+            return res.status(400).json({ errors: Error })
+        }
         if (evaluaciones || evaluaciones.length == 0) {
             console.log(evaluaciones);
             return res.status(200).json({
