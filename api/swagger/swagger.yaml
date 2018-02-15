@@ -760,7 +760,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar un plan de estudio
       # movie info to be stored
@@ -776,11 +776,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /planEstudio/{id}:
     # our controller name
     x-swagger-router-controller: planEstudio
@@ -801,7 +801,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar un plan de evaluacion
       operationId: updatePlanEstudio
@@ -822,11 +822,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar un plan de estudio
       operationId: deletePlanEstudio
@@ -841,11 +841,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse" 
+            $ref: "#/definitions/Errors" 
   /hello:
     # binds a127 app logic to a route
     x-swagger-router-controller: hello_world
