@@ -34,7 +34,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/ResponseActividad"
         default:
           description: Error
           schema:
@@ -54,7 +54,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -75,7 +75,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/ResponseActividad"
         default:
           description: Error
           schema:
@@ -100,7 +100,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -119,7 +119,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -1480,5 +1480,16 @@ definitions:
     type: object
     properties:
       link:
+        type: string
+  ResponseActividad:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/Actividad"
+      type:
         type: string
 
