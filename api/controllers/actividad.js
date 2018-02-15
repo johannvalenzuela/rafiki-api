@@ -16,15 +16,37 @@ const Responses = require('../helpers/responses');
  */
 exports.getActividades = (req, res) => {
 
+  let Error = [];
+
   ModelActividad.find({}, (err, actividades) => {
 
-    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.json({ errors: Error })
+    }
 
-    if (!actividades) return res.status(404).send({ message: 'No existe ningún Actividad' });
-    
-    console.log(actividades);
+    if (!actividades) {
 
-    res.status(200).send({ actividades });
+      Error.push({
+        titulo: "No existen Actividades",
+        detalle: "La base de datos se encuentra sin actividades",
+        link: req.url,
+        estado: "404"
+      });
+      return res.json({ errors: Error });
+    }
+    else {
+      return res.status(200).json({
+        link: req.url,
+        data: actividades,
+        type: "actividades"
+      });
+    }
   });
 }
 
@@ -41,19 +63,41 @@ exports.getActividades = (req, res) => {
 
 exports.getActividad = (req, res) => {
 
-
+  let Error = [];
   let idActividad = req.swagger.params.id.value
 
-  
+
   ModelActividad.findById(idActividad, (err, actividad) => {
 
- 
-    if (err) return res.status(500).send({ message: `Error al realizar peticion: ${err}` });
+
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.json({ errors: Error })
+    }
 
 
-    if (!actividad) return res.status(404).send({ message: `La Actividad no existe` });
+    if (!actividad) {
 
-    res.status(200).send({ actividad: actividad });
+      Error.push({
+        titulo: "La actividad no existe",
+        detalle: "El id ingresado no corresponde a una actividad",
+        link: req.url,
+        estado: "404"
+      });
+      return res.json({ errors: Error });
+    }
+    else {
+      return res.status(200).json({
+        link: req.url,
+        data: actividad,
+        type: "actividades"
+      });
+    }
 
   });
 }
@@ -70,23 +114,45 @@ exports.getActividad = (req, res) => {
  */
 exports.deleteActividad = (req, res) => {
 
+  let Error = [];
   let idActividad = req.swagger.params.id.value;
 
   ModelActividad.findById(idActividad, (err, actividad) => {
 
-    if (err) return res.status(500).json({ message: `Error al borrar la Actividad. Error: ${err}` });
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.json({ errors: Error })
+    }
 
     if (!actividad) {
-      res.status(404).send(Responses.getError({ message: `La Actividad de ID ${idActividad} no existe` }));
-      return;
+
+      Error.push({
+        titulo: "La actividad no existe",
+        detalle: "El id ingresado no corresponde a una actividad",
+        link: req.url,
+        estado: "404"
+      });
+      return res.json({ errors: Error });
     }
 
     actividad.remove(idActividad, function (err, actividad) {
+
       if (err) {
-        res.status(500).send(Responses.getError({ message: err.message }));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.json({ errors: Error })
       }
-      res.status(200).json(Responses.getSuccess({ message: `La Actividad ${idActividad} ha sido eliminada` }));
+      else
+        res.status(200).json({ link: req.url });
     });
   });
 }
@@ -102,33 +168,48 @@ exports.deleteActividad = (req, res) => {
  */
 exports.updateActividad = (req, res) => {
 
-
+  let Error = [];
   let idActividad = req.swagger.params.id.value;
 
   ModelActividad.findById(idActividad, function (err, actividad) {
 
 
     if (err) {
-      res.status(500).send(Responses.getError({ message: err.message }));
-      return;
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.json({ errors: Error })
     }
 
- 
     if (!actividad) {
-      res.status(404).send(Responses.getError({ message: `La Actividad ${idActividad} no existe` }));
-      return;
-    }
 
+      Error.push({
+        titulo: "La actividad no existe",
+        detalle: "El id ingresado no corresponde a una actividad",
+        link: req.url,
+        estado: "404"
+      });
+      return res.json({ errors: Error });
+    }
+    
     actividad = Object.assign(actividad, req.body);
 
     actividad.save(idActividad, function (err, Actividad) {
 
       if (err) {
-        res.status(500).send(Responses.getError({ message: err.message }));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.json({ errors: Error })
       }
-
-      res.json(actividad);
+      else
+        res.status(200).json({ link: req.url });
     });
   });
 }
@@ -145,21 +226,137 @@ exports.updateActividad = (req, res) => {
 
 exports.postActividad = (req, res) => {
 
+  let Error = [];
+
+  if (!req.body.profesorAutor) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'profesorAutor'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.anhoAcademico) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'anhoAcademico'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.semestre) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'semestre'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.nivelDificultad) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'nivelDificultad'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.nivelAprendizaje) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'nivelAprendizaje'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.tipoPregunta) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'tipoPregunta'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.asignatura) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'asignatura'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.tema) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'tema'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.subTema) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'subTema'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.preguntaEnunciado) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'preguntaEnunciado'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.preguntaAlternativas) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'preguntaAlternativas'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.respuesta) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'respuesta'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.respuestaVerdaderoFalso) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'respuestaVerdaderoFalso'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.respuestaAlternativas) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'respuestaAlternativas'",
+    link: req.url,
+    estado: "417"
+  });
+
+
+  if (Error.length > 0) {
+    return res.status(400).json({ errors: Error });
+  }
+
+
   ModelActividad.create(req.body, function (err, actividad) {
 
     if (err) {
-      res.status(400).send(Responses.getError({ message: err.message }));
-      return;
+      Error.push({
+        titulo: "Solicitud incorrecta",
+        detalle: "El valor de un atributo es incorrecto",
+        link: req.url,
+        estado: "404"
+      })
+      return res.json({ errors: Error })
     }
 
     actividad.save(function (err) {
 
       if (err) {
-        res.status(500).send(Responses.getError({ message: err.message }));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.json({ errors: Error })
       }
-
-      res.status(200).json(actividad);
+      else
+        res.status(200).json({ link: req.url });
 
     })
   });
