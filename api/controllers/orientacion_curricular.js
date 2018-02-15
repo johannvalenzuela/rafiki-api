@@ -43,7 +43,12 @@ function getOrientaciones(req, res) {
       return res.json({ errors: Error })
     }
     else {
-      res.status(200).json({ orientacion });
+
+      return res.status(200).json({
+        link: req.url,
+        data: orientacion,
+        type: "orientaciones"
+      });
       console.log(orientacion);
 
     }
@@ -93,9 +98,12 @@ function getOrientacionId(req, res) {
         })
         return res.json({ errors: Error })
       }
-
-
-    res.status(200).json(orientacion);
+    return res.status(200).json({
+      link: req.url,
+      data: orientacion,
+      type: "orientaciones"
+    });
+    console.log(orientacion);
   });
 }
 
@@ -125,7 +133,12 @@ function createOrientacion(request, response) {
         res.json({ errors: Error })
       }
       else
-        response.status(200).json(orientacion);
+        return res.status(200).json({
+          link: req.url,
+          data: orientacion,
+          type: "orientaciones"
+        });
+      console.log(orientacion);
     })
   });
 }
@@ -177,7 +190,12 @@ function updateOrientacion(request, response) {
           orientacion = Object.assign(orientacion, request.body);
           orientacion.save(id, function (err, orientacion) {
 
-            response.status(200).json(orientacion);
+            return res.status(200).json({
+              link: req.url,
+              data: orientacion,
+              type: "orientaciones"
+            });
+            console.log(orientacion);
           });
         }
     });
@@ -206,13 +224,43 @@ function deleteOrientacion(request, response) {
   } else
 
     ModelOrientacion.findById(id, function (err, orientacion) {
-      if (err) return response.status(500).send(Responses.getError({ message: err.message }));
-      if (!orientacion) return response.status(404).send(Responses.getError({ message: `El orientacion ${id} no ha sido encontrado.` }));
 
-      orientacion.remove(id, function (err, orientacion) {
-        if (err) return response.status(500).send(Responses.getError({ message: err.message }));
-        response.status(200).json(Responses.getSuccess({ message: `orientacion ${id} eliminado.` }));
-      });
+      if (id.length != 24) {
+        Error.push({
+          titulo: "ID no valida",
+          detalle: "No se introdujo una ID valida",
+          link: req.url,
+          estado: "404"
+        })
+        return res.json({ errors: Error })
+      } else
+
+        if (!orientacion) {
+          Error.push({
+            titulo: "No existe el elemento buscado",
+            detalle: "No se introdujo una ID de alguna orientación curricular",
+            link: req.url,
+            estado: "404"
+          })
+          return res.json({ errors: Error })
+        } else
+          if (err) {
+            Error.push({
+              titulo: "Error interno del servidor",
+              detalle: "falló comunicación con la BD",
+              link: req.url,
+              estado: "500"
+            })
+            return res.json({ errors: Error })
+          } else {
+
+            orientacion.remove(id, function (err, orientacion) {
+              res.status(200).json({ link: req.url });
+            });
+
+          }
+
+
     });
 }
 
