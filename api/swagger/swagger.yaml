@@ -1460,4 +1460,25 @@ definitions:
         items: 
           type: string
         description: Enlaces a las partes que componen el recurso educativo
+  Errors:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+          properties:
+            titulo:
+              type: string
+            detalle:
+              type: string
+            link:
+              type: string
+            estado:
+              type: string
+  Response:
+    type: object
+    properties:
+      link:
+        type: string
 
