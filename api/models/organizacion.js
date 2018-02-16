@@ -3,44 +3,110 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const OrganizacionSchema = new Schema ({
-    nombre : String,
-    rbd: Number, // Codigo de cada establecimiento
-    descripcion: String, 
-    reconocimientoOficial: String, // Fecha
-    dependencia: String, // Subvencionado, Municipal, etc
-    sostenedor: String, // Corporacion o Sociedad sostenedora
-    orientacionReligiosa: String,
+const OrganizacionSchema = new Schema({
+    nombre: {
+        type: String,
+    },
+
+    // Rol BD de cada establecimiento
+    rbd: {
+        type: Number,
+        min: 0
+    },
+
+    descripcion: {
+        type: String,
+    },
+
+    // Fecha
+    reconocimientoOficial: {
+        type: String,
+    },
+
+    // Subvencionado, Municipal, etc
+    dependencia: {
+        type: String,
+    },
+
+    // Corporacion o Sociedad sostenedora
+    sostenedor: {
+        type: String,
+    },
+
+    orientacionReligiosa: {
+        type: String,
+    },
+
+
     direccion: {
-        calle: String,
-        region: String,
-        comuna: String
+        calle: {
+            type: String
+        },
+        region: {
+            type: String
+        },
+        comuna: {
+            type: String
+        }
     },
-    correo: String,
-    telefono: String,
-    web: String,
-    director: String,
-    numVacantes: Number,
-    fechaPostulacion:{
-        inicio: String,
-        cierre: String
+
+    orientacionReligiosa: {
+        type: String,
     },
-    mensualidad: Number,
-    totalAlumnosMatriculados: Number,
-    promAlumnosCurso: Number,
-    puntajeSimce: Number,
+
+    correo: {
+        type: String,
+    },
+
+    telefono: {
+        type: String,
+    },
+
+    web: {
+        type: String,
+    },
+
+    director: {
+        type: String,
+    },
+
+    numVacantes: {
+        type: Number,
+        min: 0
+    },
+
+    fechaPostulacion: {
+        inicio: {
+            type: String
+        },
+        cierre: {
+            type: String
+        }
+    },
+
+    mensualidad: {
+        type: Number,
+        min: 0
+    },
+
+    totalAlumnosMatriculados: {
+        type: Number,
+        min: 0
+    },
+
+    promAlumnosCurso: {
+        type: Number,
+        min: 0
+    },
+
+    puntajeSimce: {
+        type: Number,
+        min: 0
+    },
     //proyectosEducativos: Array,
     //nivelEnsenanza: [], // Media, Basica, PreKinder, etc
     //usuarios: [],
     //cursos: []
-
-
-    /*En Swagger en la definicion de Organizacion
-          proyectosEducativos:
-            type: array
-            items: 
-                type: string 
-          */
 });
 
 module.exports = mongoose.model('organizaciones', OrganizacionSchema);

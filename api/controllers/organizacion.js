@@ -1,163 +1,315 @@
 'use strict';
 
 var util = require('util');
-
-module.exports = {
-  getListOrganizaciones: getListOrganizaciones,
-  getOrganizacion: getOrganizacion,
-  createOrganizacion: createOrganizacion,
-  updateOrganizacion: updateOrganizacion,
-  deleteOrganizacion: deleteOrganizacion
-};
-
 const ModelOrganizacion = require('../../api/models/organizacion');
-const Responses = require('../helpers/responses');
 
-/*
-  Funcion que obtiene una lista de todas las organizaciones
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function getListOrganizaciones(req, res) {
+/** 
+ * @name getListOrganizaciones getListOrganizaciones GET /organizaciones
+ * @description Funcion que obtiene una lista de organizaciones
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Organizacion} JSON Objeto Organizacion
+ */
+exports.getListOrganizaciones = (req, res) => {
+  let Error = [];
   ModelOrganizacion.find({}, (err, organizacion) => {
-    console.log(organizacion.length);
-    if(err) return res.status(500).json({message: `Error al realizar peticion: ${err}`});
-    if(!organizacion) return res.status(400).json({message: 'No existe ninguna organizacion'});
-
-    res.status(200).json({organizacion});
-  });
-}
-
-/*
-  Funcion que obtiene una organizacion en especifico por medio de la ID
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function getOrganizacion(req, res) {
-  let organizacionID = req.swagger.params.id.value;
-  ModelOrganizacion.findById(organizacionID, function(err, organizacion){
-    // console.log(organizacion);
-    if (err){
-      res.status(500).send(Responses.getError({message: err.message}));
-      return;
-    }
-    if (!organizacion){
-      res.status(404).send(Responses.getError({message: `La organizacion con ID ${organizacionID} no existe.`}));
-      return;
-    }
-    res.json({organizacion});
-  });
-}
-
-/*
-  Funcion que actualiza los atributos modificados de una organizacion en especifico por medio de la ID
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function updateOrganizacion(request, response) {
-  let id = request.swagger.params.id.value;
-  
-  if(id.length < 24 || id.length > 24){
-    return response.status(400).send(Responses.getError({message: 'Se ingresó una ID no valida'}));
-  }
-
-  ModelOrganizacion.findById(id, function(err, organizacion) {
     if (err) {
-      response.status(500).send(Responses.getError({message: err.message}));
-      return;
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
     }
     if (!organizacion) {
-      response.status(404).send(Responses.getError({message: `La organización con ID ${id} no se ha encontrado.`}));
-      return;
+      Error.push({
+        titulo: "No existen organizaciones",
+        detalle: "La base de datos se encuentra sin organizaciones",
+        link: req.url,
+        estado: "404"
+      })
+      return res.status(400).json({ errors: Error })
     }
-    organizacion = Object.assign(organizacion, request.body);
+    if (organizacion || organizacion.length == 0) {
+      return res.status(200).json({
+        link: req.url,
+        data: organizacion,
+        type: "organizacion"
+      });
+    }
+  });
+}
+
+/** 
+ * @name getOrganizacion getOrganizacion GET /organizaciones
+ * @description Funcion que obtiene una organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Organizacion} JSON Objeto Organizacion
+ */
+exports.getOrganizacion = (req, res) => {
+  let organizacionID = req.swagger.params.id.value;
+  let Error = [];
+  if (organizacionID.length < 24 || organizacionID.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelOrganizacion.findById(organizacionID, function (err, organizacion) {
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(500).json({ errors: Error })
+    }
+    if (!organizacion) {
+      Error.push({
+        titulo: "ID no encontrada",
+        detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
+    }
+    res.status(200).json({
+      link: req.url,
+      data: [organizacion],
+      type: "organizaciones"
+    });
+
+  });
+
+}
+
+/**
+ * @name updateOrganizacion updateOrganizacion PUT /organizaciones
+ * @description Funcion que modifica una  organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Organizacion} JSON Objeto Organizacion
+ */
+exports.updateOrganizacion = (req, res) => {
+  let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+      link: req.url,
+      estado: "404"
+    });
+    //res.status(400).json({ errors: Error });
+  }
+
+  ModelOrganizacion.findById(id, function (err, organizacion) {
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
+    }
+    if (!organizacion) {
+      Error.push({
+        titulo: "ID no encontrada",
+        detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
+    }
+    organizacion = Object.assign(organizacion, req.body);
     organizacion.save(id, function (err, organizacion) {
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
       }
-      response.json(organizacion);
+      res.status(201).json({ link: req.url });
     });
   });
 }
 
+/** 
+ * @name deleteOrganizacion createOrganizacion DELETE /organizaciones
+ * @description Funcion que elimina una organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return JSON con una respuesta
+ */
+exports.deleteOrganizacion = (req, res) => {
+  let organizacionID = req.swagger.params.id.value;
+  let Error = [];
 
-/*
-  Funcion que elimina una organizacion en especifico por medio de la ID
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function deleteOrganizacion(request, response) {
-  let organizacionID = request.swagger.params.id.value;
-  console.log(organizacionID);
-
-  if(organizacionID.length < 24 || organizacionID.length > 24){
-    return response.status(400).send(Responses.getError({message: 'Se ingresó una ID no valida'}));
+  if (organizacionID.length < 24 || organizacionID.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
   }
 
   ModelOrganizacion.findById(organizacionID, (err, organizacion) => {
-    if(err) return response.status(500).json({message: `Error al borrar la organizacion: ${err}`});
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(500).json({ errors: Error })
+    }
     if (!organizacion) {
-      response.status(404).send(Responses.getError({message:  `La organizacion de ID ${organizacionID} no existe.`}));
-      return;
+      Error.push({
+        titulo: "ID no encontrada",
+        detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
     }
     //Elimina la organizacion si se encontró el id
     organizacion.remove(organizacionID, function (err, organizacion) {
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
       }
-      response.status(200).json(Responses.getSuccess({message: `La organizacion ${organizacionID} ha sido borrada.`}));
+      res.status(200).json({ link: req.url });
     });
   });
 }
 
+/** 
+ * @name createOrganizacion createOrganizacion POST /organizaciones
+ * @description Funcion que crea una nueva organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Organizacion} JSON Objeto Organizacion
+ */
+exports.createOrganizacion = (req, res) => {
+  let Error = [];
 
-/*
-  Funcion que crea una organizacion
-
-  Param 1: una identificacion de solicitud de un objeto
-  Param 2: una identificacion de respuesta de un objeto
-*/
-function createOrganizacion(req, res) {
-  ModelOrganizacion.create(req.body, function (err, organizacion) {
-    organizacion.save(function(err){
-      if (err){
-        res.status(500).send(Responses.getError({message: err.message}));
-        return;
-      }
-      console.log(organizacion);
-
-      res.status(200).json({ 
-        nombre: organizacion.nombre,
-        rbd: organizacion.rbd,
-        descripcion: organizacion.descripcion, 
-        reconocimientoOficial: organizacion.reconocimientoOficial, 
-        dependencia: organizacion.dependencia, 
-        sostenedor: organizacion.sostenedor,
-        orientacionReligiosa: organizacion.orientacionReligiosa,
-        direccion: {
-            calle: organizacion.direccion.calle,
-            region: organizacion.direccion.region,
-            comuna: organizacion.direccion.comuna
-        },
-        correo: organizacion.correo,
-        telefono: organizacion.telefono,
-        web: organizacion.web,
-        director: organizacion.director,
-        numVacantes: organizacion.numVacantes,
-        fechaPostulacion:{
-            inicio: organizacion.fechaPostulacion.inicio,
-            cierre: organizacion.fechaPostulacion.cierre
-        },
-        mensualidad: organizacion.mensualidad,
-        totalAlumnosMatriculados: organizacion.totalAlumnosMatriculados,
-        promAlumnosCurso: organizacion.promAlumnosCurso,
-        puntajeSimce: organizacion.puntajeSimce,
-        proyectosEducativos: [organizacion.proyectosEducativos],
-      });
-    })
+  /* Verificando si existe cada atributo que realmente sea requerido y necesario */
+  if (!req.body.nombre) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba el atributo 'nombre', pero no hubo exito",
+    link: req.url,
+    estado: "417"
   });
+  if (!req.body.rbd) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba el atributo 'rbd', pero no hubo exito",
+    link: req.url,
+    estado: "417"
+  });
+  if (!req.body.reconocimientoOficial) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba el atributo 'reconocimientoOficial', pero no hubo exito",
+    link: req.url,
+    estado: "417"
+  });
+  if (!req.body.correo) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba el atributo 'correo', pero no hubo exito",
+    link: req.url,
+    estado: "417"
+  });
+  if (!req.body.dependencia) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba el atributo 'dependencia', pero no hubo exito",
+    link: req.url,
+    estado: "417"
+  });
+  if (!req.body.telefono) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba un atributo 'telefono', pero no hubo exito",
+    link: req.url,
+    estado: "417"
+  });
+  if (!req.body.mensualidad) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba un atributo 'mensualidad', pero no hubo exito",
+    link: req.url,
+    estado: "417"
+  });
+  if (!req.body.direccion) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba un objeto 'direccion', pero no hubo exito",
+    link: req.url,
+    estado: "417"
+  });
+  if (!req.body.fechaPostulacion) Error.push({
+    titulo: "Peticion Incompleta",
+    detalle: "Se esperaba un objeto 'fechaPostulacion', pero no hubo exito",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (Error.length > 0) {
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelOrganizacion.create(req.body, function (err, organizacion) {
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
+    }
+    if (!organizacion) {
+      Error.push({
+        titulo: "Peticion Erronea",
+        detalle: "El JSON que se envió no es valido",
+        link: req.url,
+        estado: "404"
+      })
+      return res.status(400).json({ errors: Error })
+    }
+    if (organizacion) {
+      organizacion.save((err) => {
+        if (err) {
+          Error.push({
+            titulo: "Error Interno en el Servidor",
+            detalle: "Ocurrio algun error al realizar peticion",
+            link: req.url,
+            estado: "500"
+          })
+          return res.status(400).json({ errors: Error })
+        }
+        res.status(200).json({ link: req.url });
+      });
+    }
+  })
 }
+

@@ -14,13 +14,34 @@ const Responses = require('../helpers/responses');
  * @return {[evaluaciones]} JSON con un objeto que contiene arreglo de Objeto evaluacion
  */
 exports.getEvaluaciones = (req, res) => {
+    let Error = [];
     Model.find({}, (err, evaluaciones) => {
-        if (err) return res.status(500).send({ message: "Error al realizar peticion: ${err}" });
-
-        if (!evaluaciones) return res.status(404).send({ message: 'No existe ninguna evaluacion' });
-
-        console.log(evaluaciones);
-        res.status(200).send({ evaluaciones });
+        if (err) {
+            Error.push({
+                titulo: "Error Interno en el Servidor",
+                detalle: "Ocurrio algun error al realizar peticion",
+                link: req.url,
+                estado: "500"
+            })
+            return res.status(400).json({ errors: Error })
+        }
+        if (!evaluaciones) {
+            Error.push({
+                titulo: "No existen evaluaciones",
+                detalle: "La base de datos se encuentra sin evaluaciones",
+                link: req.url,
+                estado: "404"
+            })
+            return res.status(400).json({ errors: Error })
+        }
+        if (evaluaciones || evaluaciones.length == 0) {
+            console.log(evaluaciones);
+            return res.status(200).json({
+                link: req.url,
+                data: evaluaciones,
+                type: "evaluacion"
+            });
+        }
     });
 }
 
@@ -34,13 +55,42 @@ exports.getEvaluaciones = (req, res) => {
  * @return {evaluacion: evaluacion} JSON con una variable de valor Objeto evaluacion
  */
 exports.getEvaluacion = (req, res) => {
-    let id = req.swagger.params.id.value
+    let id = req.swagger.params.id.value;
+    let Error = [];
+
+    if (id.length < 24 || id.length > 24) {
+        Error.push({
+            titulo: "ID no es valida",
+            detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+            link: req.url,
+            estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+    }
     Model.findById(id, (err, evaluacion) => {
-
-        if (err) return res.status(500).send({ message: 'Error al realizar peticion: ${err}' });
-        if (!evaluacion) return res.status(404).send({ message: 'La evaluacion no existe' });
-        res.status(200).send({ evaluacion: evaluacion });
-
+        if (err) {
+            Error.push({
+                titulo: "Error Interno en el Servidor",
+                detalle: "Ocurrio algun error al realizar peticion",
+                link: req.url,
+                estado: "500"
+            })
+            return res.status(400).json({ errors: Error })
+        }
+        if (!evaluacion) {
+            Error.push({
+                titulo: "ID no encontrada",
+                detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+                link: req.url,
+                estado: "404"
+            });
+            return res.status(400).json({ errors: Error });
+        }
+        res.status(200).json({
+            link: req.url,
+            data: [evaluacion],
+            type: "evaluacion"
+        });
     });
 }
 
@@ -55,19 +105,50 @@ exports.getEvaluacion = (req, res) => {
  */
 exports.deleteEvaluacion = (req, res) => {
     let id = req.swagger.params.id.value;
-    Model.findById(id, (err, evaluacion) => {
+    let Error = [];
 
-        if (err) return res.status(500).json({ message: `Error al borrar la evaluación. Error: ${err}` });
-        if (!evaluacion) {
-            res.status(404).send(Responses.getError({ message: `La evaluación de ID ${id} no existe` }));
-            return;
+    if (id.length < 24 || id.length > 24) {
+        Error.push({
+            titulo: "ID no es valida",
+            detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+            link: req.url,
+            estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+    }
+
+    Model.findById(id, (err, evaluacion) => {
+        if (err) {
+            Error.push({
+                titulo: "Error Interno en el Servidor",
+                detalle: "Ocurrio algun error al realizar peticion",
+                link: req.url,
+                estado: "500"
+            })
+            return res.status(400).json({ errors: Error })
         }
+
+        if (!evaluacion) {
+            Error.push({
+                titulo: "ID no encontrada",
+                detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+                link: req.url,
+                estado: "404"
+            });
+            return res.status(400).json({ errors: Error });
+        }
+
         evaluacion.remove(id, function (err, evaluacion) {
             if (err) {
-                res.status(500).send(Responses.getError({ message: err.message }));
-                return;
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
             }
-            res.status(200).json(Responses.getSuccess({ message: `La Actividad ${id} ha sido eliminada` }));
+            res.status(200).json({ link: req.url });
         });
 
     });
@@ -84,23 +165,50 @@ exports.deleteEvaluacion = (req, res) => {
  */
 exports.updateEvaluacion = (req, res) => {
     let id = req.swagger.params.id.value;
-    Model.findById(id, (err, evaluacion) => {
+    let Error = [];
 
+    if (id.length < 24 || id.length > 24) {
+        Error.push({
+            titulo: "ID no es valida",
+            detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+            link: req.url,
+            estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+    }
+
+    Model.findById(id, (err, evaluacion) => {
         if (err) {
-            res.status(500).send(Responses.getError({ message: err.message }));
-            return;
+            Error.push({
+                titulo: "Error Interno en el Servidor",
+                detalle: "Ocurrio algun error al realizar peticion",
+                link: req.url,
+                estado: "500"
+            })
+            return res.status(400).json({ errors: Error })
         }
         if (!evaluacion) {
-            res.status(404).send(Responses.getError({ message: 'La evaluacion ${id} no existe' }));
-            return;
+            Error.push({
+                titulo: "ID no encontrada",
+                detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+                link: req.url,
+                estado: "404"
+            });
+            return res.status(400).json({ errors: Error });
         }
+
         evaluacion = Object.assign(evaluacion, req.body);
         evaluacion.save(id, (err, evaluacion) => {
             if (err) {
-                res.status(500).send(Responses.getError({ message: err.message }));
-                return;
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
             }
-            res.json(evaluacion);
+            res.status(201).json({ link: req.url });
         });
 
     });
@@ -116,16 +224,72 @@ exports.updateEvaluacion = (req, res) => {
  * @return {evaluacion} JSON Objeto evaluación
  */
 exports.postEvaluacion = (req, res) => {
+    let Error = [];
+
+    /* Verificando si existe cada atributo que realmente sea requerido y necesario */
+    if (!req.body.profesorAutor) Error.push({
+        titulo: "Peticion Incompleta",
+        detalle: "Se esperaba el atributo 'profesorAutor', pero no hubo exito",
+        link: req.url,
+        estado: "417"
+    });
+    if (!req.body.nivelAprendizaje) Error.push({
+        titulo: "Peticion Incompleta",
+        detalle: "Se esperaba el atributo 'nivelAprendizaje', pero no hubo exito",
+        link: req.url,
+        estado: "417"
+    });
+    if (!req.body.tipoEjecucion) Error.push({
+        titulo: "Peticion Incompleta",
+        detalle: "Se esperaba el atributo 'tipoEjecucion', pero no hubo exito",
+        link: req.url,
+        estado: "417"
+    });
+    if (!req.body.asignatura) Error.push({
+        titulo: "Peticion Incompleta",
+        detalle: "Se esperaba el atributo 'asignatura', pero no hubo exito",
+        link: req.url,
+        estado: "417"
+    });
+
+
+    if (Error.length > 0) {
+        return res.status(400).json({ errors: Error });
+    }
+
     Model.create(req.body, function (err, evaluacion) {
+        if (err) {
+            Error.push({
+                titulo: "Error Interno en el Servidor",
+                detalle: "Ocurrio algun error al realizar peticion",
+                link: req.url,
+                estado: "500"
+            })
+            return res.status(400).json({ errors: Error })
+        }
+        if (!evaluacion) {
+            Error.push({
+                titulo: "Peticion Erronea",
+                detalle: "El JSON que se envió no es valido",
+                link: req.url,
+                estado: "404"
+            })
+            return res.status(400).json({ errors: Error })
+        }
 
-        evaluacion.save(function (err) {
-
-            if (err) {
-                res.status(500).send(Responses.getError({ message: err.message }));
-                return;
-            }
-            res.status(200).json(evaluacion);
-
-        })
+        if(evaluacion) {
+            evaluacion.save(function (err) {
+                if (err) {
+                    Error.push({
+                        titulo: "Error Interno en el Servidor",
+                        detalle: "Ocurrio algun error al realizar peticion",
+                        link: req.url,
+                        estado: "500"
+                    })
+                    return res.status(400).json({ errors: Error })
+                }
+                res.status(200).json({ link: req.url });
+            })
+        }
     });
 }
