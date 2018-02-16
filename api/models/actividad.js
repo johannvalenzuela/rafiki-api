@@ -20,6 +20,7 @@ const ActividadSchema = new Schema ({
 
     nivelDificultad: {
         type: String, 
+        enum: ['Alta','Media','Baja']
     },
 
     nivelAprendizaje: {
