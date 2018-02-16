@@ -1005,8 +1005,7 @@ paths:
         default:
           description: Error
           schema:
-<<<<<<< HEAD
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /recursosEducativos:
     # our controller name
     x-swagger-router-controller: recursoEducativo
@@ -1042,8 +1041,6 @@ paths:
         default:
           description: Error
           schema:
-=======
->>>>>>> pr/31
             $ref: "#/definitions/Errors"
   /aprendizajes/{id}:
     # our controller name
@@ -1109,8 +1106,7 @@ paths:
         default:
           description: Error
           schema:
-<<<<<<< HEAD
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /recursosEducativos/{id}:
     # our controller name
     x-swagger-router-controller: recursoEducativo
@@ -1175,8 +1171,6 @@ paths:
         default:
           description: Error
           schema:
-=======
->>>>>>> pr/31
             $ref: "#/definitions/Errors"
 # complex objects have schema definitions
 definitions:
@@ -1257,6 +1251,32 @@ definitions:
       horasPedagogicasSinJecSemanal:
         type: number
         description: Numero de horas semanales sin jornada escolar completa
+  RecursoEducativo:
+    type: object
+    properties:
+      titulo:
+        type: string
+        description: Titulo del recurso educativo
+      descripcion:
+        type: string
+        description: Descripcion del recurso educativo
+      asignatura:
+        type: string
+        description: Nombre de la asignatura a la que alude el recurso educativo
+      nivel:
+        type: string
+        description: Nivel al que corresponde el recurso educativo
+      tipoRecurso:
+        type: string
+        description: Tipo de recurso educativo
+      autor:
+        type: string
+        description: Nombre del autor del recurso educativo
+      links:
+        type: array
+        items:
+          type: string
+          description: Enlaces a las partes que componen el recurso educativo
   Organizacion:
     type: object
     properties:
@@ -1542,6 +1562,38 @@ definitions:
               type: string
             estado:
               type: string
+  PlanEstudio:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: Nombre del plan de estudio
+      asignaturas:
+        type: array
+        items:
+          type: object
+          properties:
+            nombre:
+              type: string
+              description: Nombre de la asignatura
+            horasMensuales:
+              type: number
+              description: Cantidad de horas mensuales
+            horasAnuales:
+              type: number
+              description: Cantidad de horas anuales
+      tipo:
+        type: string
+        description: Tipo de jornada ('Con JEC', 'Sin JEC')
+      horasLibreDisposicion:
+        type: number
+        description: Cantidad de horas de libre disposicion
+      totalTiempoMinFG:
+        type: number
+        description: Tiempo total de Formacion General
+      totalTiempoMinFD:
+        type: number
+        description: Tiempo total de Formacion Diferenciada
   Response:
     type: object
     properties:
@@ -1560,27 +1612,6 @@ definitions:
       descripcion:
         type: string
         description: Informacion respecto a que apunta el objetivo de aprendizaje
-  Errors:
-    type: object
-    properties:
-      errors:
-        type: array
-        items:
-          type: object
-          properties:  
-            titulo:
-              type: string
-            detalle:
-              type: string
-            link:
-              type: string
-            estado:
-              type: string
-  Response:
-    type: object
-    properties:
-      link:
-        type: string
   ResponseObjAprendizaje:
     type: object
     properties:
@@ -1600,30 +1631,8 @@ definitions:
       data:
         type: array
         items: 
-<<<<<<< HEAD
           type: string
-        description: Enlaces a las partes que componen el recurso educativo
-  Errors:
-    type: object
-    properties:
-      errors:
-        type: array
-        items:
-          type: object
-          properties:
-            titulo:
-              type: string
-            detalle:
-              type: string
-            link:
-              type: string
-            estado:
-              type: string
-  Response:
-    type: object
-    properties:
-      link:
-        type: string
+          description: Enlaces a las partes que componen el recurso educativo
   ResponseOrganizacion:
     type: object
     properties:
@@ -1690,8 +1699,3 @@ definitions:
           $ref: "#/definitions/Curso"    
       type:
         type: string   
-=======
-          $ref: "#/definitions/ObjAprendizaje"
-      type:
-        type: string
->>>>>>> pr/31
