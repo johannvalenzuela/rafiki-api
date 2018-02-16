@@ -259,11 +259,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/ResponseAsignatura"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir una nueva asignatura
       operationId: postAsignatura
@@ -283,7 +283,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /organizaciones:
     # our controller name
     x-swagger-router-controller: organizacion
@@ -295,11 +295,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Añadir una nueva organizacion
       operationId: createOrganizacion
@@ -314,11 +314,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /asignaturas/{id}:
     # our controller name
     x-swagger-router-controller: asignatura
@@ -335,11 +335,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/ResponseAsignatura"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una asignatura
       operationId: updateAsignatura
@@ -363,7 +363,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar una Asignatura
       operationId: deleteAsignatura
@@ -377,7 +377,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Asignatura"
+            $ref: "#/definitions/Errors"
   /cursos:
     # our controller name
     x-swagger-router-controller: cursos
@@ -430,11 +430,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/ResponseOrganizacion"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una organizacion
       operationId: updateOrganizacion
@@ -455,11 +455,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar organizacion
       operationId: deleteOrganizacion
@@ -474,11 +474,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"                
+            $ref: "#/definitions/Errors"                
   /cursos/{id}:
     # our controller name
     x-swagger-router-controller: cursos
@@ -655,11 +655,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/ResponseEvaluacion"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar una evaluación
       # movie info to be stored
@@ -675,11 +675,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /evaluaciones/{id}:
     # our controller name
     x-swagger-router-controller: evaluacion
@@ -696,11 +696,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/ResponseEvaluacion"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una evaluacion
       operationId: updateEvaluacion
@@ -721,11 +721,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar una evaluacion
       operationId: deleteEvaluacion
@@ -740,11 +740,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse" 
+            $ref: "#/definitions/Errors"
   /orientaciones:
     # our controller name
     x-swagger-router-controller: orientacion_curricular
@@ -853,11 +853,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/ResponsePlanEstudio"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar un plan de estudio
       # movie info to be stored
@@ -873,11 +873,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /planEstudio/{id}:
     # our controller name
     x-swagger-router-controller: planEstudio
@@ -894,13 +894,13 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/ResponsePlanEstudio"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
-      description: Actualizar un plan de evaluacion
+      description: Actualizar un plan de estudio
       operationId: updatePlanEstudio
       # define the parameters
       parameters:
@@ -919,11 +919,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: Eliminar un plan de estudio
       operationId: deletePlanEstudio
@@ -938,11 +938,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse" 
+            $ref: "#/definitions/Errors" 
   /hello:
     # binds a127 app logic to a route
     x-swagger-router-controller: hello_world
@@ -981,7 +981,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ObjAprendizaje"
+            $ref: "#/definitions/ResponseObjAprendizaje"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
     post:
       description: Agregar un objetivos de aprendizaje
       # movie info to be stored
@@ -1001,7 +1005,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /recursosEducativos:
     # our controller name
     x-swagger-router-controller: recursoEducativo
@@ -1054,11 +1058,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ObjAprendizaje"
+            $ref: "#/definitions/ResponseObjAprendizaje"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar un Objetivo de Aprendizaje
       operationId: updateObjAprendizaje
@@ -1083,7 +1087,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     delete:
       description: un Objetivo de Aprendizaje
       operationId: deleteObjAprendizaje
@@ -1102,7 +1106,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /recursosEducativos/{id}:
     # our controller name
     x-swagger-router-controller: recursoEducativo
@@ -1247,6 +1251,32 @@ definitions:
       horasPedagogicasSinJecSemanal:
         type: number
         description: Numero de horas semanales sin jornada escolar completa
+  RecursoEducativo:
+    type: object
+    properties:
+      titulo:
+        type: string
+        description: Titulo del recurso educativo
+      descripcion:
+        type: string
+        description: Descripcion del recurso educativo
+      asignatura:
+        type: string
+        description: Nombre de la asignatura a la que alude el recurso educativo
+      nivel:
+        type: string
+        description: Nivel al que corresponde el recurso educativo
+      tipoRecurso:
+        type: string
+        description: Tipo de recurso educativo
+      autor:
+        type: string
+        description: Nombre del autor del recurso educativo
+      links:
+        type: array
+        items:
+          type: string
+          description: Enlaces a las partes que componen el recurso educativo
   Organizacion:
     type: object
     properties:
@@ -1532,6 +1562,38 @@ definitions:
               type: string
             estado:
               type: string
+  PlanEstudio:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: Nombre del plan de estudio
+      asignaturas:
+        type: array
+        items:
+          type: object
+          properties:
+            nombre:
+              type: string
+              description: Nombre de la asignatura
+            horasMensuales:
+              type: number
+              description: Cantidad de horas mensuales
+            horasAnuales:
+              type: number
+              description: Cantidad de horas anuales
+      tipo:
+        type: string
+        description: Tipo de jornada ('Con JEC', 'Sin JEC')
+      horasLibreDisposicion:
+        type: number
+        description: Cantidad de horas de libre disposicion
+      totalTiempoMinFG:
+        type: number
+        description: Tiempo total de Formacion General
+      totalTiempoMinFD:
+        type: number
+        description: Tiempo total de Formacion Diferenciada
   Response:
     type: object
     properties:
@@ -1550,84 +1612,59 @@ definitions:
       descripcion:
         type: string
         description: Informacion respecto a que apunta el objetivo de aprendizaje
-  PlanEstudio:
-    type: object
-    properties:
-      nombre:
-        type: string
-        description: Nombre del plan de estudio
-      asignaturas:
-        type: array
-        items: 
-          type: object
-          properties:
-            nombre:
-              type: string
-              description: Nombre de la asignatura
-            horasMensuales:
-                type: number
-                description: Cantidad de horas mensuales
-            horasAnuales:
-                type: number
-                description: Cantidad de horas anuales
-      tipo:
-        type: string
-        description: Tipo de jornada ('Con JEC', 'Sin JEC')
-      horasLibreDisposicion:
-        type: number
-        description: Cantidad de horas de libre disposicion
-      totalTiempoMinFG:
-        type: number
-        description: Tiempo total de Formacion General
-      totalTiempoMinFD:
-        type: number
-        description: Tiempo total de Formacion Diferenciada
-  RecursoEducativo:
-    type: object
-    properties:
-      titulo:
-        type: string
-        description: Titulo del recurso educativo
-      descripcion:
-        type: string
-        description: Descripcion del recurso educativo
-      asignatura:
-        type: string
-        description: Nombre de la asignatura a la que alude el recurso educativo
-      nivel:
-        type: string
-        description: Nivel al que corresponde el recurso educativo
-      tipoRecurso:
-        type: string
-        description: Tipo de recurso educativo
-      autor:
-        type: string
-        description: Nombre del autor del recurso educativo
-      links:
-        type: array
-        items: 
-          type: string
-        description: Enlaces a las partes que componen el recurso educativo
-  Errors:
-    type: object
-    properties:
-      errors:
-        type: array
-        items:
-          type: object
-          properties:
-            titulo:
-              type: string
-            detalle:
-              type: string
-            link:
-              type: string
-            estado:
-              type: string
-  Response:
+  ResponseObjAprendizaje:
     type: object
     properties:
       link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/ObjAprendizaje"
+      type:
+        type: string
+  ResponseAsignatura:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          type: string
+          description: Enlaces a las partes que componen el recurso educativo
+  ResponseOrganizacion:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items:  
+          $ref: "#/definitions/Organizacion"
+      type:
+        type: string
+  ResponsePlanEstudio:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/PlanEstudio"
+      type:
+        type: string
+  ResponseEvaluacion:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/Evaluacion"
+      type:
         type: string
   ResponseRecursoEducativo:
     type: object
@@ -1662,4 +1699,3 @@ definitions:
           $ref: "#/definitions/Curso"    
       type:
         type: string   
-
