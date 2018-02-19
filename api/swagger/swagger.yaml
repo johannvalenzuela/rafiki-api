@@ -1243,13 +1243,10 @@ definitions:
         type: array
         items:
           type: string
-        description: Completar!!!!!!!!
+        description: Nociones y consideraciones básicas
       propositoFormativo:
         type: string
         description: Completar!!!!!!!!
-      createAt:
-        type: string
-        format: date
   RecursoEducativo:
     type: object
     properties:
@@ -1633,9 +1630,6 @@ definitions:
       descripcion:
         type: string
         description: Informacion respecto a que apunta el objetivo de aprendizaje
-      createAt:
-        type: string
-        format: date
   ResponseObjAprendizaje:
     type: object
     properties:
