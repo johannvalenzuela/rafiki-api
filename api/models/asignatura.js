@@ -19,6 +19,10 @@ const AsignaturaSchema = new Schema ({
     },
     propositoFormativo:{
         type: String
+    },
+    createAt: {
+        type: Date,
+        default: Date.now
     }
 });
 
