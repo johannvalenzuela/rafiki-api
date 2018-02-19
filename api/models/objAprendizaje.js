@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const objAprendizajeSchema = new Schema ({
-    numero:{
-        type: Number
+    identificador:{
+        type: String
     },
     tipo: {
         type: String, 
@@ -13,6 +13,10 @@ const objAprendizajeSchema = new Schema ({
     descripcion:{
         type: String
     },
+    createAt: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 module.exports = mongoose.model('objaprendizajes', objAprendizajeSchema);

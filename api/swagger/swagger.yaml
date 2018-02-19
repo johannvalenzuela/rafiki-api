@@ -1624,8 +1624,8 @@ definitions:
   ObjAprendizaje:
     type: object
     properties:
-      numero:
-        type: number
+      identificador:
+        type: string
         description: numero del objetivo de aprendizaje
       tipo:
         type: string
@@ -1633,6 +1633,9 @@ definitions:
       descripcion:
         type: string
         description: Informacion respecto a que apunta el objetivo de aprendizaje
+      createAt:
+        type: string
+        format: date
   ResponseObjAprendizaje:
     type: object
     properties:
