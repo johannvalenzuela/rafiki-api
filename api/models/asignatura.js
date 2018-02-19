@@ -12,18 +12,18 @@ const AsignaturaSchema = new Schema ({
             type: String
         }]
     },
-    horasPedagogicasConJecAnual:{
-        type: Number
+    enfoque:{
+        type: [{
+            type: String
+        }]
     },
-    horasPedagogicasSinJecAnual:{
-        type: Number
+    propositoFormativo:{
+        type: String
     },
-    horasPedagogicasConJecSemanal:{
-        type: Number
-    },
-    horasPedagogicasSinJecSemanal:{
-        type: Number
-    },
+    createAt: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 module.exports = mongoose.model('Asignatura', AsignaturaSchema);

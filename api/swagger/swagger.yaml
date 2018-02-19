@@ -1239,18 +1239,17 @@ definitions:
         items: 
           type: string
         description: Descripcion de lo esperado para la asignatura
-      horasPedagogicasConJecAnual:
-        type: number
-        description: Numero de horas anuales con jornada escolar completa
-      horasPedagogicasSinJecAnual:
-        type: number
-        description: Numero de horas anuales sin jornada escolar completa
-      horasPedagogicasConJecSemanal:
-        type: number
-        description: Numero de horas semanales con jornada escolar completa
-      horasPedagogicasSinJecSemanal:
-        type: number
-        description: Numero de horas semanales sin jornada escolar completa
+      enfoque:
+        type: array
+        items:
+          type: string
+        description: Completar!!!!!!!!
+      propositoFormativo:
+        type: string
+        description: Completar!!!!!!!!
+      createAt:
+        type: string
+        format: date
   RecursoEducativo:
     type: object
     properties:
@@ -1515,7 +1514,7 @@ definitions:
         type: array
         items: 
           type: string
-        description: Enlaces y/o información complementaria para ser entregada como retroalimentación   
+        description: Enlaces y/o información complementaria para ser entregada como retroalimentación
   Orientacion:
     type: object
     properties:
@@ -1589,19 +1588,6 @@ definitions:
           $ref: "#/definitions/Orientacion"
       type:
         type: string
-# Objetivos de Aprendizaje
-  ObjAprendizaje:
-    type: object
-    properties:
-      numero:
-        type: number
-        description: numero del objetivo de aprendizaje
-      tipo:
-        type: string
-        description: Tipo de aprendizaje ('Habilidad', 'Conocimiento', 'Actitud')
-      descripcion:
-        type: string
-        description: Informacion respecto a que apunta el objetivo de aprendizaje
   PlanEstudio:
     type: object
     properties:
@@ -1634,17 +1620,12 @@ definitions:
       totalTiempoMinFD:
         type: number
         description: Tiempo total de Formacion Diferenciada
-  Response:
-    type: object
-    properties:
-      link:
-        type: string
 # Objetivos de Aprendizaje
   ObjAprendizaje:
     type: object
     properties:
-      numero:
-        type: number
+      identificador:
+        type: string
         description: numero del objetivo de aprendizaje
       tipo:
         type: string
@@ -1652,6 +1633,9 @@ definitions:
       descripcion:
         type: string
         description: Informacion respecto a que apunta el objetivo de aprendizaje
+      createAt:
+        type: string
+        format: date
   ResponseObjAprendizaje:
     type: object
     properties:
