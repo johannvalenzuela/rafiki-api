@@ -1247,6 +1247,9 @@ definitions:
       propositoFormativo:
         type: string
         description: Completar!!!!!!!!
+      createAt:
+        type: string
+        format: date
   RecursoEducativo:
     type: object
     properties:
