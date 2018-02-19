@@ -19,7 +19,8 @@ module.exports = {
  * @exports get_niveles GET /niveles
  * @param request Petición HTTP
  * @param response | 200 niveles | 404 No hay niveles | 500 Error al buscar |
- * @return {[niveles]} JSON con un objeto que contiene arreglo de Objetos nivel
+ * @return {[object]} JSON con un objeto que contiene arreglo de Objetos 
+ * @return { errors: Error } JSON con un objeto Error
  */
 function get_niveles(request, response) {
   let Error = [];
@@ -32,7 +33,7 @@ function get_niveles(request, response) {
         link: request.url,
         estado: "500"
       })
-      return response.json({ errors: Error })
+      return response.status(400).json({ errors: Error })
     } else
       if (nivel.length == 0) {
         Error.push({
@@ -41,7 +42,7 @@ function get_niveles(request, response) {
           link: request.url,
           estado: "404"
         })
-        return response.json({ errors: Error })
+        return response.status(400).json({ errors: Error })
       } else {
         return response.status(200).json({
           link: request.url,
@@ -61,7 +62,8 @@ function get_niveles(request, response) {
  * @exports getNivelId GET /niveles/{id}
  * @param request Petición HTTP, id de nivel en path
  * @param response | 200 existe nivel | 404 No hay nivel | 500 Error al buscar |
- * @return {[nivel: nivel]} JSON con un objeto nivel
+ * @return {[object]} JSON con un objeto array
+ * @return { errors: Error } JSON con un objeto Error
  */
 function getNivelId(request, response) {
 
@@ -75,7 +77,7 @@ function getNivelId(request, response) {
       link: request.url,
       estado: "404"
     })
-    return response.json({ errors: Error })
+    return response.status(400).json({ errors: Error })
   }
   else {
     ModelNivel.findById(id, function (err, nivel) {
@@ -86,7 +88,7 @@ function getNivelId(request, response) {
           link: request.url,
           estado: "404"
         })
-        return response.json({ errors: Error })
+        return response.status(400).json({ errors: Error })
       } else
         if (err) {
           Error.push({
@@ -95,12 +97,12 @@ function getNivelId(request, response) {
             link: request.url,
             estado: "500"
           })
-          return response.json({ errors: Error })
+          return response.status(400).json({ errors: Error })
         }
         else {
           return response.status(200).json({
             link: request.url,
-            data: nivel,
+            data: [nivel],
             type: "niveles"
           });
           console.log(nivel);
@@ -109,7 +111,6 @@ function getNivelId(request, response) {
   }
 }
 
-
 /** 
  * Función para insertar un objeto nivel
  *
@@ -117,31 +118,38 @@ function getNivelId(request, response) {
  * @exports createNivel POST /niveles
  * @param request Petición HTTP, objeto nivel JSON en Body
  * @param response | 200 nivel creado | 500 Error al buscar |
- * @return {nivel} JSON con un objeto nivel
+ * @return { request.url } JSON con un objeto
+ * @return { errors: Error } JSON con un objeto Error
  */
 function createNivel(request, response) {
   let Error = [];
   ModelNivel.create(request.body, function (err, nivel) {
-    nivel.save(function (err) {
-      if (err) {
-        Error.push({
-          titulo: "Error interno del servidor",
-          detalle: "falló comunicación con la BD",
-          link: request.url,
-          estado: "500"
-        })
-        response.json({ errors: Error })
-      }
-      else
-        return response.status(200).json({
-          link: request.url,
-          data: nivel,
-          type: "niveles"
-        });
-      console.log(nivel);
+    if (nivel.grado < 1) {
+      Error.push({
+        titulo: "Valor de atributo inválido",
+        detalle: "El grado no puede ser cero o negativo",
+        link: request.url,
+        estado: "400"
+      })
+      return response.status(400).json({ errors: Error })
+
+    } else
+      nivel.save(function (err) {
+        if (err) {
+          Error.push({
+            titulo: "Error interno del servidor",
+            detalle: "falló comunicación con la BD",
+            link: request.url,
+            estado: "500"
+          })
+          return response.status(400).json({ errors: Error })
+        }
+        else
+          return response.status(200).json({ link: request.url });
+        console.log(nivel);
 
 
-    })
+      })
   });
 }
 /** 
@@ -151,7 +159,8 @@ function createNivel(request, response) {
  * @exports updateNivel PUT /niveles/{id}
  * @param request Petición HTTP, id del objeto nivel en path
  * @param response | 200 nivel creado | 404 no existe nivel | 500 Error al buscar |
- * @return {nivel} JSON con un objeto nivel
+ * @return { request.url } JSON con un objeto
+ * @return { errors: Error } JSON con un objeto Error
  */
 function updateNivel(request, response) {
   let id = request.swagger.params.id.value;
@@ -164,7 +173,7 @@ function updateNivel(request, response) {
       link: request.url,
       estado: "404"
     })
-    return response.json({ errors: Error })
+    return response.status(400).json({ errors: Error })
   } else {
     ModelNivel.findById(id, function (err, nivel) {
       if (!nivel) {
@@ -174,7 +183,7 @@ function updateNivel(request, response) {
           link: request.url,
           estado: "404"
         })
-        return response.json({ errors: Error })
+        return response.status(400).json({ errors: Error })
       } else
         if (err) {
           Error.push({
@@ -183,18 +192,15 @@ function updateNivel(request, response) {
             link: request.url,
             estado: "500"
           })
-          return response.json({ errors: Error })
+          return response.status(400).json({ errors: Error })
+
         }
         else {
 
           nivel = Object.assign(nivel, request.body);
           nivel.save(id, function (err, nivel) {
 
-            return response.status(200).json({
-              link: request.url,
-              data: nivel,
-              type: "niveles"
-            });
+            return response.status(200).json({ link: request.url });
             console.log(nivel);
           });
         }
@@ -208,7 +214,8 @@ function updateNivel(request, response) {
  * @exports deleteNivel DELETE /niveles/{id}
  * @param request Petición HTTP, id del objeto nivel en path
  * @param response | 200 nivel eliminado | 404 no existe nivel | 500 Error al buscar |
- * @return {message:mensaje} JSON con mensaje
+ * @return { request.url } JSON con mensaje
+ * @return { errors: Error } JSON con un objeto Error
  */
 function deleteNivel(request, response) {
   let id = request.swagger.params.id.value;
@@ -220,7 +227,7 @@ function deleteNivel(request, response) {
       link: request.url,
       estado: "404"
     })
-    return response.json({ errors: Error })
+    return response.status(400).json({ errors: Error })
   } else {
 
     ModelNivel.findById(id, function (err, nivel) {
@@ -241,7 +248,7 @@ function deleteNivel(request, response) {
             link: request.url,
             estado: "404"
           })
-          return response.json({ errors: Error })
+          return response.status(400).json({ errors: Error })
         } else {
 
           nivel.remove(id, function (err, nivel) {
