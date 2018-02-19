@@ -164,11 +164,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Nivel"
+            $ref: "#/definitions/ResponseNivel"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put: 
       description: Actualizar nivel ingresado por id
       operationId: updateNivel
@@ -210,7 +210,7 @@ paths:
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
   /niveles:
     # our controller name
     x-swagger-router-controller: nivel
@@ -228,7 +228,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Nivel"
+            $ref: "#/definitions/ResponseNivel"
         default:
           description: Error
           schema:
@@ -771,7 +771,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Orientacion"
+            $ref: "#/definitions/ResponseOrientacion"
       responses:
         "200":
           description: Success
@@ -797,11 +797,11 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Orientacion"
+            $ref: "#/definitions/ResponseOrientacion"
         default:
           description: Error
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            $ref: "#/definitions/Errors"
     put:
       description: Actualizar una orientación
       operationId: updateOrientacion
@@ -1562,6 +1562,46 @@ definitions:
               type: string
             estado:
               type: string
+  Response:
+    type: object
+    properties:
+      link:
+        type: string
+  ResponseNivel:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/Nivel"
+      type:
+        type: string
+  ResponseOrientacion:
+    type: object
+    properties:
+      link:
+        type: string
+      data:
+        type: array
+        items: 
+          $ref: "#/definitions/Orientacion"
+      type:
+        type: string
+# Objetivos de Aprendizaje
+  ObjAprendizaje:
+    type: object
+    properties:
+      numero:
+        type: number
+        description: numero del objetivo de aprendizaje
+      tipo:
+        type: string
+        description: Tipo de aprendizaje ('Habilidad', 'Conocimiento', 'Actitud')
+      descripcion:
+        type: string
+        description: Informacion respecto a que apunta el objetivo de aprendizaje
   PlanEstudio:
     type: object
     properties:
