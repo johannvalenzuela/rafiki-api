@@ -1296,11 +1296,50 @@ definitions:
         type: string
         description: Tipo de organizacion (Municipal, Subvencionado, etc)
       sostenedor:
-        type: string
-        description: Nombre del sostenero de la organizacion
+        type: array
+        items:
+          $ref: "#/definitions/User"
       orientacionReligiosa:
         type: string
         description: Nombre de la orientacion religiosa de la organizacion
+      correos:
+        type: array
+        items:
+          type: string
+      telefonos:
+        type: array
+        items: 
+          type: object
+          properties:
+            nombre:
+              type: string
+              description: Nombre de la persona o lugar donde pertenece
+            numero:
+              type: string
+              description: Numero de telefono
+      web:
+        type: string
+        description: Pagina web de la organizacion
+      director:
+        $ref: "#/definitions/User"
+      mensualidad:
+        type: number
+        description: Costo de la mensualidad de la organizacion
+      puntajeSimce:
+        type: number
+        description: Ultimo puntaje SIMCE obtenido por los alumnos en la organizacion
+      fechaPostulacion:
+        type: object
+        description: Objeto que contiene la fecha de inicio y cierre de la organizacion
+        properties:
+          inicio:
+            type: string
+            format: date
+            description: Fecha de inicio para las postulaciones de la organizacion
+          cierre:
+            type: string
+            format: date
+            description: Fecha de cierre para las postulaciones de la organizacion
       direccion:
         type: object
         description: Objeto que contiene la ubicacion de la organizacion
@@ -1314,43 +1353,30 @@ definitions:
           comuna:
             type: string
             description: Nombre de la comuna en donde se ubica la organizacion
-      correo:
-        type: string
-        description: Correo de la organizacion
-      telefono:
-        type: string
-        description: Telefono de la organizacion
-      web:
-        type: string
-        description: Pagina web de la organizacion
-      director:
-        type: string
-        description: Nombre del director de la organizacion
       numVacantes:
         type: number
         description: Numero de vacantes disponibles de la organizacion
-      fechaPostulacion:
-        type: object
-        description: Objeto que contiene la fecha de inicio y cierre de la organizacion
-        properties:
-          inicio:
-            type: string
-            description: Fecha de inicio para las postulaciones de la organizacion
-          cierre:
-            type: string
-            description: Fecha de cierre para las postulaciones de la organizacion
-      mensualidad:
-        type: number
-        description: Costo de la mensualidad de la organizacion
       totalAlumnosMatriculados:
         type: number
         description: Cantidad total de alumnos matriculados en la organizacion
       promAlumnosCurso:
         type: number
         description: Promedio general de alumnos por curso en la organizacion
-      puntajeSimce:
-        type: number
-        description: Ultimo puntaje SIMCE obtenido por los alumnos en la organizacion 
+      cursos:
+        type: array
+        items:
+          $ref: "#/definitions/Curso"
+      profesores:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      alumnos:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      createAt:
+        type: string
+        format: date
   User:
     type: object
     properties:
@@ -1634,24 +1660,19 @@ definitions:
       totalTiempoMinFD:
         type: number
         description: Tiempo total de Formacion Diferenciada
-  Response:
-    type: object
-    properties:
-      link:
-        type: string
 # Objetivos de Aprendizaje
-  ObjAprendizaje:
-    type: object
-    properties:
-      numero:
-        type: number
-        description: numero del objetivo de aprendizaje
-      tipo:
-        type: string
-        description: Tipo de aprendizaje ('Habilidad', 'Conocimiento', 'Actitud')
-      descripcion:
-        type: string
-        description: Informacion respecto a que apunta el objetivo de aprendizaje
+  # ObjAprendizaje:
+  #   type: object
+  #   properties:
+  #     numero:
+  #       type: number
+  #       description: numero del objetivo de aprendizaje
+  #     tipo:
+  #       type: string
+  #       description: Tipo de aprendizaje ('Habilidad', 'Conocimiento', 'Actitud')
+  #     descripcion:
+  #       type: string
+  #       description: Informacion respecto a que apunta el objetivo de aprendizaje
   ResponseObjAprendizaje:
     type: object
     properties:
