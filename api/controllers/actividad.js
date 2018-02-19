@@ -1,212 +1,360 @@
 'use strict';
-/*
- 'use strict' is not required but helpful for turning syntactical errors into true errors in the program flow
- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
-*/
 
-/*
- Modules make it possible to import JavaScript files into your application.  Modules are imported
- using 'require' statements that give you a reference to the module.
-
-  It is a good idea to list the modules that your application depends on in the package.json in the project root
- */
 var util = require('util');
 var ModelActividad = require('../../api/models/actividad');
 const Responses = require('../helpers/responses');
 
-/*const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());*/
 
-/*
- Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
-
- For a controller in a127 (which this is) you should export the functions referenced in your Swagger document by name.
-
- Either:
-  - The HTTP Verb of the corresponding operation (get, put, post, delete, etc)
-  - Or the operationId associated with the operation in your Swagger document
-
-  In the starter/skeleton project the 'get' operation on the '/hello' path has an operationId named 'hello'.  Here,
-  we specify that in the exports of this module that 'hello' maps to the function named 'hello'
+/** 
+ * Función para obtener un arreglo de Actividades
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports getActividades GET /actividades
+ * @param req Petición HTTP
+ * @param res | 200 Actividades | 404 No hay actividades | 500 Error al buscar |
+ * @return {object} JSON con un objeto que contiene arreglo de Objetos Actividad
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
-module.exports = {
-  getActividades: getActividades,
-  getActividadId: getActividadId,
-  updateActividad: updateActividad,
-  deleteActividad: deleteActividad,
-  postActividad: postActividad,
+exports.getActividades = (req, res) => {
 
-};
+  let Error = [];
 
-/*
-  Functions in a127 controllers used for operations should take two parameters:
-
-  Param 1: a handle to the request object
-  Param 2: a handle to the response object
- */
-
- //API REST: GET (Muestra Todas las Actividades)
-
-function getActividades(req, res) {
-
-  /**Se buscan todas las Actividades */
   ModelActividad.find({}, (err, actividades) => {
-    
-    /**En caso de error del servidor, se retorna error 500*/
-    if(err) return res.status(500).send({message: "Error al realizar peticion: ${err}"});
 
-    /**En caso que las Actividades no se encuentren, se retorna un error 404*/ 
-    if(!actividades) return res.status(404).send({message: 'No existe ningún Actividad'});
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
+    }
 
-    /**Se responde todos los Actividads*/
-    console.log(actividades);
-    res.status(200).send({actividades});
-});
-}
+    if (!actividades) {
 
-
-//API REST: GET (Muestra una actividad según Id)
-
-function getActividadId(req, res) {
-  
-  /**Se recibe y guarda el id de la Actividad */
-  let actividadId = req.swagger.params.id.value
-
-  /**Se busca la Actividad mediante id */
-  ModelActividad.findById(actividadId, (err, actividad) => {
-    
-    /**En caso de error del servidor, se retorna error 500*/
-    if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
-
-    /**En caso que la Actividad no se encuentre, se retorna un error 404*/ 
-    if(!actividad) return res.status(404).send({message: 'La Actividad no existe'});
-
-    /**Se responde la Actividad según id */
-    res.status(200).send({actividad : actividad});
-  
+      Error.push({
+        titulo: "No existen Actividades",
+        detalle: "La base de datos se encuentra sin actividades",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
+    }
+    else {
+      return res.status(200).json({
+        link: req.url,
+        data: actividades,
+        type: "actividades"
+      });
+    }
   });
 }
 
 
+/** 
+ * Función para obtener una Actividad.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports getActividad GET /actividades/{id}
+ * @param req Petición HTTP, id de actividad en path
+ * @param res | 200 Actividad encontrada | 404 Actividad no existe | 500 Error al buscar |
+ * @return {object} JSON con objeto Actividad
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
 
-//API REST: DELETE (Elimina una Actividad según Id)
+exports.getActividad = (req, res) => {
 
-function deleteActividad(request, response) {
-  
-  /**Se recibe y guarda el id de la Actividad */
-  let actividadID = request.swagger.params.id.value;
-  
-  /**Se busca la Actividad mediante id */
-  ModelActividad.findById(actividadID, (err, actividad) => {
+  let Error = [];
+  let idActividad = req.swagger.params.id.value
 
-    /**En caso de error del servidor, se retorna error 500*/
-    if(err) return response.status(500).json({message: `Error al borrar la Actividad. Error: ${err}`});
-    
-    /**En caso que la Actividad no se encuentre, se retorna un error 404*/ 
-    if (!actividad) {
-      response.status(404).send(Responses.getError({message:  `La Actividad de ID ${actividadID} no existe`}));
-      return;
+
+  ModelActividad.findById(idActividad, (err, actividad) => {
+
+
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
     }
 
-    /**Se elimina la Actividad */
-    actividad.remove(actividadID, function (err, actividad) {
+    return res.status(200).json({
+      link: req.url,
+      data: [actividad],
+      type: "actividades"
+    });
+
+
+  });
+}
+
+
+/** 
+ * Función para eliminar una Actividad.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports deleteActividad DELETE /actividades/{id}
+ * @param req Petición HTTP, id de Actividad en Path
+ * @param res | 200 Actividad eliminada | 500 Error al buscar | 404 La Actividad no existe |
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.deleteActividad = (req, res) => {
+
+  let Error = [];
+  let idActividad = req.swagger.params.id.value;
+
+  ModelActividad.findById(idActividad, (err, actividad) => {
+
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
+    }
+
+    if (!actividad) {
+
+      Error.push({
+        titulo: "La actividad no existe",
+        detalle: "El id ingresado no corresponde a una actividad",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
+    }
+
+    actividad.remove(idActividad, function (err, actividad) {
+
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
       }
-      response.status(200).json(Responses.getSuccess({message: `La Actividad ${actividadID} ha sido eliminada`}));
+      else
+        res.status(200).json({ link: req.url });
     });
   });
 }
 
-//API REST: PUT (Actualiza una Actividad según Id)
+/** 
+ * Función para actualizar una Actividad.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports updateActividad PUT /actividades/{id}
+ * @param req Petición HTTP, id de Actividad en path
+ * @param res | 200 Actividad encontrada | 404 Actividad no existe | 500 Error al buscar |
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.updateActividad = (req, res) => {
 
-function updateActividad(request, response) {
-  
-  /**Se recibe y guarda el id de la Actividad */
-  let idActividad = request.swagger.params.id.value;
- 
-  /**Se busca la Actividad mediante id */
-  ModelActividad.findById(idActividad, function(err, actividad) {
-    
-    /**En caso de error del servidor, se retorna error 500*/
+  let Error = [];
+  let idActividad = req.swagger.params.id.value;
+
+  ModelActividad.findById(idActividad, function (err, actividad) {
+
+
     if (err) {
-      response.status(500).send(Responses.getError({message: err.message}));
-      return;
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
     }
 
-    /**En caso que la Actividad no se encuentre, se retorna un error 404*/ 
     if (!actividad) {
-      response.status(404).send(Responses.getError({message: 'La Actividad ${idActividad} no existe'}));
-      return;
+
+      Error.push({
+        titulo: "La actividad no existe",
+        detalle: "El id ingresado no corresponde a una actividad",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
     }
-    
-    /**Se copian los valores a la Actividad */
-    actividad = Object.assign(actividad, request.body);
-    
-    /**Se guardan los nuevos valores de la Actividad */
+
+    actividad = Object.assign(actividad, req.body);
+
     actividad.save(idActividad, function (err, Actividad) {
 
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
       }
-
-       /**Se responde json con el contenido actualizado de la Actividad */
-      response.json(actividad);
+      else
+        return res.status(200).json({ link: req.url });
     });
   });
 }
 
-//API REST: POST (Inserta una nueva Actividad)
+/** 
+ * Función para insertar una Actividad.
+ *
+ * @author Samuel Carrasco Fuentess
+ * @exports postActividad  POST /actividades
+ * @param req Petición HTTP, JSON Objeto Actividad en Body
+ * @param res | 201 Actividad creada | 500 Error al buscar | 400 Bad Request
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
 
-function postActividad(request, response) {
+exports.postActividad = (req, res) => {
 
-    /**Se crea una nueva actividad */
-  ModelActividad.create(request.body, function (err, actividad) {
-    
-    /**Se guarda la nueva actividad */
-    actividad.save(function(err){
-      
-      /**En caso de error del servidor, se retorna error 500*/
-      if (err){
-        response.status(500).send(Responses.getError({message: err.message}));
-        return;
+  let Error = [];
+
+  if (!req.body.profesorAutor) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'profesorAutor'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.anhoAcademico) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'anhoAcademico'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.semestre) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'semestre'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.nivelDificultad) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'nivelDificultad'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.nivelAprendizaje) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'nivelAprendizaje'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.tipoPregunta) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'tipoPregunta'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.asignatura) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'asignatura'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.tema) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'tema'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.subTema) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'subTema'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.preguntaEnunciado) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'preguntaEnunciado'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.preguntaAlternativas) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'preguntaAlternativas'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.respuesta) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'respuesta'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.respuestaVerdaderoFalso) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'respuestaVerdaderoFalso'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.respuestaAlternativas) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'respuestaAlternativas'",
+    link: req.url,
+    estado: "417"
+  });
+
+
+  if (Error.length > 0) {
+    return res.status(400).json({ errors: Error });
+  }
+
+
+  ModelActividad.create(req.body, function (err, actividad) {
+
+    if (err) {
+      Error.push({
+        titulo: "Solicitud incorrecta",
+        detalle: "El valor de un atributo es incorrecto",
+        link: req.url,
+        estado: "404"
+      })
+      return res.status(400).json({ errors: Error })
+    }
+
+    actividad.save(function (err) {
+
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
       }
+      else
+        res.status(201).json({ link: req.url });
 
-      /**Se responde un json con el contenido de la actividad*/
-
-      response.status(200).json(actividad);
-
-     
     })
   });
 }
 
-/**Se responde un json con el contenido de la Actividad*/
-
-      /*
-
-      response.status(200).json({ 
-        profesorAutor : actividad.profesorAutor,
-        anhoAcademico: actividad.anhoAcademico,
-        semestre: actividad.semestre,
-        nivelDificultad: actividad.nivelDificultad,
-        nivelAprendizaje: actividad.nivelAprendizaje,
-        tipoPregunta: actividad.tipoPregunta,
-        tema: actividad.tema,
-        subTema: actividad.subTema,
-        preguntaEnunciado: actividad.preguntaEnunciado,
-        preguntaaActividades: actividad.preguntaaActividades,
-        respuesta: actividad.respuesta, 
-        respuestaVerdaderoFalso: actividad.respuestaVerdaderoFalso, 
-        respuestaAlternativas: actividad.respuestaAlternativas, 
-        puntajeTotal: actividad.puntajeTotal,
-        retroalimentacion: actividad.retroalimentacion
-      });*/
 
 
 

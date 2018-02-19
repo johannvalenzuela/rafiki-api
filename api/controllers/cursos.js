@@ -1,188 +1,279 @@
-'use strict';
-/*
- 'use strict' is not required but helpful for turning syntactical errors into true errors in the program flow
- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
-*/
-
-/*
- Modules make it possible to import JavaScript files into your application.  Modules are imported
- using 'require' statements that give you a reference to the module.
-
-  It is a good idea to list the modules that your application depends on in the package.json in the project root
- */
 var util = require('util');
 var ModelCurso = require('../../api/models/curso');
-const Responses = require('../helpers/responses');
 
-/*const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());*/
 
-/*
- Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
-
- For a controller in a127 (which this is) you should export the functions referenced in your Swagger document by name.
-
- Either:
-  - The HTTP Verb of the corresponding operation (get, put, post, delete, etc)
-  - Or the operationId associated with the operation in your Swagger document
-
-  In the starter/skeleton project the 'get' operation on the '/hello' path has an operationId named 'hello'.  Here,
-  we specify that in the exports of this module that 'hello' maps to the function named 'hello'
+/** 
+ * Función para obtener un arreglo de cursos
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports getCursos GET /cursos
+ * @param req Petición HTTP
+ * @param res | 200 Cursos | 404 No hay cursos | 500 Error al buscar |
+ * @return {object} JSON con un objeto que contiene arreglo de Objetos Curso
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
-module.exports = {
-  getCursos: getCursos,
-  getCursoId: getCursoId,
-  updateCurso: updateCurso,
-  deleteCurso: deleteCurso,
-  postCurso: postCurso,
+exports.getCursos = (req, res) => {
 
-};
+  let Error = [];
 
-/*
-  Functions in a127 controllers used for operations should take two parameters:
-
-  Param 1: a handle to the request object
-  Param 2: a handle to the response object
- */
-
- //API REST: GET (Muestra Todos los cursos)
-
-function getCursos(req, res) {
-
-  /**Se buscan todos los cursos */
   ModelCurso.find({}, (err, cursos) => {
-    
-    /**En caso de error del servidor, se retorna error 500*/
-    if(err) return res.status(500).send({message: "Error al realizar peticion: ${err}"});
 
-    /**En caso que los cursos no se encuentren, se retorna un error 404*/ 
-    if(!cursos) return res.status(404).send({message: 'No existe ningún curso'});
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
+    }
 
-    /**Se responde todos los cursos*/
-    res.status(200).send({cursos});
-});
-}
+    return res.status(200).json({
+      link: req.url,
+      data: cursos,
+      type: "cursos"
+    });
 
-
-//API REST: GET (Muestra un curso según Id)
-
-function getCursoId(req, res) {
-  
-  /**Se recibe y guarda el id del curso */
-  let cursoId = req.swagger.params.id.value
-
-  /**Se busca el curso mediante id */
-  ModelCurso.findById(cursoId, (err, curso) => {
-    
-    /**En caso de error del servidor, se retorna error 500*/
-    if(err) return res.status(500).send({message: 'Error al realizar peticion: ${err}'});
-
-    /**En caso que el curso no se encuentre, se retorna un error 404*/ 
-    if(!curso) return res.status(404).send({message: 'El curso no existe'});
-
-    /**Se responde el curso según id */
-    res.status(200).send({curso : curso});
-  
   });
 }
 
-//API REST: DELETE (Elimina un curso según Id)
+/** 
+ * Función para obtener un curso.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports getCurso GET /cursos/{id}
+ * @param req Petición HTTP, id de curso en path
+ * @param res | 200 Curso encontrado | 404 Curso no existe | 500 Error al buscar |
+ * @return {object} JSON con objeto Curso
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.getCurso = (req, res) => {
 
-function deleteCurso(request, response) {
-  
-  /**Se recibe y guarda el id del curso */
-  let cursoID = request.swagger.params.id.value;
-  
-  /**Se busca el curso mediante id */
-  ModelCurso.findById(cursoID, (err, curso) => {
+  let Error = [];
+  let idCurso = req.swagger.params.id.value
 
-    /**En caso de error del servidor, se retorna error 500*/
-    if(err) return response.status(500).json({message: `Error al borrar el curso. Error: ${err}`});
-    
-    /**En caso que el curso no se encuentre, se retorna un error 404*/ 
-    if (!curso) {
-      response.status(404).send(Responses.getError({message:  `El curso de ID ${cursoID} no existe`}));
-      return;
+  ModelCurso.findById(idCurso, (err, curso) => {
+
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
     }
 
-    /**Se elimina el curso */
-    curso.remove(cursoID, function (err, curso) {
+    if (!curso) {
+
+      Error.push({
+        titulo: "El Curso no existe",
+        detalle: "El id ingresado no corresponde a un curso",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
+    }
+    else {
+      return res.status(200).json({
+        link: req.url,
+        data: [curso],
+        type: "cursos"
+      });
+    }
+
+  });
+}
+
+/** 
+ * Función para eliminar un curso.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports deleteCurso DELETE /cursos/{id}
+ * @param req Petición HTTP, id de curso en Path
+ * @param res | 200 curso eliminado | 500 Error al buscar | 404 El curso no existe |
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.deleteCurso = (req, res) => {
+
+  let Error = [];
+  let idCurso = req.swagger.params.id.value;
+
+  ModelCurso.findById(idCurso, (err, curso) => {
+
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
+    }
+
+    if (!curso) {
+
+      Error.push({
+        titulo: "El Curso no existe",
+        detalle: "El id ingresado no corresponde a un curso",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
+    }
+
+    curso.remove(idCurso, function (err, curso) {
+
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
       }
-      response.status(200).json(Responses.getSuccess({message: `El curso ${cursoID} ha sido eliminado`}));
+      else
+        return res.status(200).json({ link: req.url });
     });
   });
 }
 
-//API REST: PUT (Actualiza un curso según Id)
+/** 
+ * Función para actualizar un curso.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports updateCurso PUT /cursos/{id}
+ * @param req Petición HTTP, id de curso en path
+ * @param res | 200 Curso encontrado | 404 Evaluación no existe | 500 Error al buscar |
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.updateCurso = (req, res) => {
 
-function updateCurso(request, response) {
-  
-  /**Se recibe y guarda el id del curso */
-  let idCurso = request.swagger.params.id.value;
- 
-  /**Se busca el curso mediante id */
-  ModelCurso.findById(idCurso, function(err, curso) {
-    
-    /**En caso de error del servidor, se retorna error 500*/
+  let Error = [];
+  let idCurso = req.swagger.params.id.value;
+
+
+  ModelCurso.findById(idCurso, function (err, curso) {
+
+
     if (err) {
-      response.status(500).send(Responses.getError({message: err.message}));
-      return;
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrió algún error al realizar petición",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
     }
 
-    /**En caso que el curso no se encuentre, se retorna un error 404*/ 
     if (!curso) {
-      response.status(404).send(Responses.getError({message: 'El Curso ${idCurso} no existe'}));
-      return;
+
+      Error.push({
+        titulo: "El Curso no existe",
+        detalle: "El id ingresado no corresponde a un curso",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
     }
-    
-    /**Se copian los valores al curso */
-    curso = Object.assign(curso, request.body);
-    
-    /**Se guardan los nuevos valores del curso */
+
+    curso = Object.assign(curso, req.body);
+
     curso.save(idCurso, function (err, curso) {
 
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
-        return;
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
       }
-
-       /**Se responde json con el contenido actualizado del curso */
-      response.json(curso);
+      else
+        return res.status(200).json({ link: req.url });
     });
   });
 }
 
-//API REST: POST (Inserta un nuevo curso)
+/** 
+ * Función para insertar un curso.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports postcurso POST /cursos
+ * @param req Petición HTTP, JSON con Objeto curso en Body
+ * @param res | 201 Curso creado | 500 Error al buscar |
+ * @return {req.url} JSON con link
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.postCurso = (req, res) => {
 
-function postCurso(request, response) {
+  let Error = [];
 
-  /**Se crea un nuevo curso */
-  ModelCurso.create(request.body, function (err, curso) {
-    
-    /**Se guarda el nuevo curso */
-    curso.save(function(err){
-      
-      /**En caso de error del servidor, se retorna error 500*/
-      if (err){
-        response.status(500).send(Responses.getError({message: err.message}));
-        return;
+  if (!req.body.idCurso) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'idCurso'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.nivel) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'nivel'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.asignatura) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'asignatura'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.profesorJefe) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'profesorJefe'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.salaCurso) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'salaCurso'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (!req.body.totalAlumnos) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'totalAlumnos'",
+    link: req.url,
+    estado: "417"
+  });
+
+  if (Error.length > 0) {
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelCurso.create(req.body, function (err, curso) {
+
+    curso.save(function (err) {
+
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
       }
-
-      /**Se responde un json con el contenido del curso*/
-      response.status(200).json({ 
-        idCurso : curso.idCurso,
-        nivel : curso.nivel,
-        asignatura : curso.asignatura,
-        profesorJefe : curso.profesorJefe,
-        salaCurso : curso.salaCurso,
-        totalAlumnos: curso.totalAlumnos
-      });
+      else
+        return res.status(201).json({ link: req.url });
     })
   });
 }

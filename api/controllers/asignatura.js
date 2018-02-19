@@ -1,139 +1,226 @@
 'use strict';
-/*
- 'use strict' is not required but helpful for turning syntactical errors into true errors in the program flow
- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
-*/
 
-/*
- Modules make it possible to import JavaScript files into your application.  Modules are imported
- using 'require' statements that give you a reference to the module.
-
-  It is a good idea to list the modules that your application depends on in the package.json in the project root
- */
 var util = require('util');
 var ModelAsignatura = require('../../api/models/asignatura');
+const Responses = require('../helpers/responses');
 
-/*
- Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
-
- For a controller in a127 (which this is) you should export the functions referenced in your Swagger document by name.
-
- Either:
-  - The HTTP Verb of the corresponding operation (get, put, post, delete, etc)
-  - Or the operationId associated with the operation in your Swagger document
-
-  In the starter/skeleton project the 'get' operation on the '/hello' path has an operationId named 'hello'.  Here,
-  we specify that in the exports of this module that 'hello' maps to the function named 'hello'
+/** 
+ * Función para obtener un arreglo de asignaturas.
+ *
+ * @author Israel Jasma
+ * @exports getAsignaturas GET /asignaturas
+ * @param req Petición HTTP
+ * @param res | 200 Asignaturas | 404 No hay Asignaturas | 500 Error al buscar |
+ * @return {asignaturas} JSON con un objeto que contiene arreglo de Objeto de Asignaturas
+ * @return {errors: Error} JSON con un objeto Error
  */
-module.exports = {
-  getAsignaturas: getAsignaturas,
-  postAsignatura: postAsignatura,
-  getAsignatura: getAsignatura,
-  updateAsignatura: updateAsignatura,
-  deleteAsignatura: deleteAsignatura
-};
+exports.getAsignaturas = (req, res) => {
+  let Error = [];
+  ModelAsignatura.find({}, (err, asignaturas) => {
 
-/*
-  Functions in a127 controllers used for operations should take two parameters:
+    if (err) {
+      Error.push({
+        titulo: "Error Interno en el Servidor",
+        detalle: "Ocurrio algun error al realizar peticion",
+        link: req.url,
+        estado: "500"
+      })
+      return res.status(400).json({ errors: Error })
+    }
 
-  Param 1: a handle to the request object
-  Param 2: a handle to the response object
- */
-
-//Listar Asignaturas
-function getAsignaturas(req, res) {
-  /** Se buscan todas las asignaturas */
-  ModelAsignatura.find({}, (err, Asignaturas) => {
-    console.log(Asignaturas);
-    /** Existe un error interno del servidor se retorna error 500 */
-    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
-    /** No existe en el servidor se retorna error 404 */
-    if (!Asignaturas) return res.status(404).json({ message: 'No existe ninguna Asignatura' });
-    res.status(200).json({ Asignaturas });
+    if (asignaturas.length == 0) {
+      return res.status(200).json({ 
+        link: req.url,
+        data: [],
+        type: "asignaturas"
+      });
+    } else {
+      return res.status(200).json({
+        link: req.url,
+        data: asignaturas,
+        type: "asignaturas"
+      });
+    }
   });
 }
 
-//Agregar una Asignatura
-function postAsignatura(request, response) {
-  /** Se crea una nueva asignatura */
+/** 
+ * Función para insertar una asignatura.
+ *
+ * @author Israel Jasma
+ * @exports postAsignatura POST /asignaturas
+ * @param req Petición HTTP, JSON Objeto asignatura en Body
+ * @param res | 200 asignatura creado | 500 Error al buscar |
+ * @return {link: req.url} JSON con un Objeto
+ * @return {errors: Error} JSON con un objeto Error
+ */
+exports.postAsignatura = (req, res) => {
+  let Error = [];
   ModelAsignatura.create(request.body, function (err, asignatura) {
-    /** Se guarda la asignatura */
     asignatura.save(function (err) {
-      /** Existe un error interno del servidor se retorna error 500 */
       if (err) {
-        response.status(500).send(Responses.getError({ message: err.message }));
-        return;
+        Error.push({
+          titulo: "Error interno del servidor",
+          detalle: "falló comunicación con la BD",
+          link: request.url,
+          estado: "500"
+        })
+        response.status(400).json({ errors: Error })
       }
-      /** Responde un json con el contenido de la asignatura */
-      response.status(200).json({
-        nombre: asignatura.nombre,
-        enfasis: asignatura.enfasis,
-        horasPedagogicasConJecAnual: asignatura.horasPedagogicasConJecAnual,
-        horasPedagogicasSinJecAnual: asignatura.horasPedagogicasSinJecAnual,
-        horasPedagogicasConJecSemanal: asignatura.horasPedagogicasConJecSemanal,
-        horasPedagogicasSinJecSemanal: asignatura.horasPedagogicasSinJecSemanal
-      });
+      else
+        return response.status(200).json({
+          link: request.url,
+          data: asignatura,
+          type: "asignaturas"
+        });
+      console.log(asignatura);
     })
   });
+  // let Error = [];
+  // ModelAsignatura.create(req.body, function (err, asignatura) {
+  //   if (err) return res.status(400).json({ Error })
+  //   asignatura.save(function (err) {
+  //     if (err) {
+  //       res.status(500).send(Responses.getError({ message: err.message }));
+  //       return;
+  //     }
+  //     res.status(200).json(asignatura);
+  //   })
+  // });
 }
 
-//Listar Asignatura por ID
-function getAsignatura(req, res) {
-  /** Se recibe y guarda el id de la asignatura */
-  let asignaturaID = req.swagger.params.id.value
-  /** Se Busca Asignatura por ID */
-  ModelAsignatura.findById(asignaturaID, (err, asignatura) => {
-    /** Existe un error interno del servidor se retorna error 500 */
-    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
-    /** No existe en el servidor se retorna error 404 */
-    if (!asignatura) return res.status(404).json({ message: 'La asignatura no existe' });
-    res.status(200).json({ asignaturas: asignatura });
-    console.log(asignatura);
+/** 
+ * Función para obtener un Objetivo de asignatura.
+ *
+ * @author Israel Jasma
+ * @exports getObjAprendizaje GET /asignaturas/{id}
+ * @param req Petición HTTP, id de asignatura en path
+ * @param res | 200 objetivo de asignatura encontrada | 404 objetivo de asignatura no existe | 500 Error al buscar |
+ * @return {asignatura: asignatura} JSON con una variable de valor Objeto asignatura
+ * @return {errors: Error} JSON con un objeto Error
+ */
+exports.getAsignatura = (req, res) => {
+  let id = req.swagger.params.id.value
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelAsignatura.findById(id, (err, asignatura) => {
+    if (err && !asignatura) {
+      Error.push({
+        titulo: "ID no encontrada",
+        detalle: "La ID no existe",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
+    }
+    res.json({
+      link: req.url,
+      data: [asignatura],
+      type: "asignaturas"
+    });
   });
 }
 
-//Actualizar una Asignatura por ID
-function updateAsignatura(request, response) {
-  /** Se recibe y guarda el id de la asignatura */
-  let asignaturaID = request.swagger.params.id.value;
-  ModelAsignatura.findById(asignaturaID, function(err, asignatura) {
-    /** Existe un error interno del servidor se retorna error 500 */
-    if (err) {
-      response.status(500).send(Responses.getError({message: err.message}));
-      return;
+/** 
+ * Función para actualizar un objetivo de asignatura.
+ *
+ * @author Israel Jasma
+ * @exports updateAsignatura PUT /asignaturas/{id}
+ * @param req Petición HTTP, id de objetivo de asignatura en path
+ * @param res | 200 asignatura encontrada | 404 asignatura no existe | 500 Error al buscar |
+ * @return {link: req.url} JSON con un Objeto
+ * @return {errors: Error} JSON con un objeto Error
+ */
+exports.updateAsignatura = (req, res) => {
+  let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelAsignatura.findById(id, (err, asignatura) => {
+    if (err && !asignatura) {
+      Error.push({
+        titulo: "ID no encontrada",
+        detalle: "La ID no existe",
+        link: req.url,
+        estado: "404"
+      });
+      return res.status(400).json({ errors: Error });
     }
-    /** No existe en el servidor se retorna error 404 */
-    if (!asignatura) {
-      response.status(404).send(Responses.getError({message: `asignatura ${asignaturaID} no encontrado.`}));
-      return;
-    }
-    //copia los valores del objeto("Object.assign")
-    asignatura = Object.assign(asignatura, request.body);
-    asignatura.save(asignaturaID, function (err, asignatura) {
-      /** Existe un error interno del servidor se retorna error 500 */
+    asignatura = Object.assign(asignatura, req.body);
+    asignatura.save(id, (err, asignatura) => {
       if (err) {
-        response.status(500).send(Responses.getError({message: err.message}));
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
+      }
+      // res.json(asignatura); en caso de...
+      res.status(200).json({ link: req.url });
+    });
+
+  });
+}
+
+/** 
+ * Función para eliminar una asignatura.
+ *
+ * @author Israel Jasma
+ * @exports deleteAsignatura DELETE /asignaturas/{id}
+ * @param req Petición HTTP, id de asignatura en Path
+ * @param res | 200 asignatura eliminada | 500 Error al buscar | 404 La asignatura no existe |
+ * @return {link: req.url} JSON con un objeto
+ * @return {errors: Error} JSON con un objeto Error
+ */
+exports.deleteAsignatura = (req, res) => {
+  let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelAsignatura.findById(id, (err, asignatura) => {
+
+    if (err) return res.status(500).json({ message: `Error al borrar la asignatura. Error: ${err}` });
+    if (!asignatura) {
+      res.status(404).send(Responses.getError({ message: `La asignatura de ID ${id} no existe` }));
+      return;
+    }
+    asignatura.remove(id, function (err, asignatura) {
+      if (err) {
+        res.status(500).send(Responses.getError({ message: err.message }));
         return;
       }
-
-      response.json(asignatura);
+      res.status(200).json(Responses.getSuccess({ message: `La asignatura ${id} ha sido eliminada` }));
     });
-  });
-}
 
-//Eliminar una Asignatura por ID
-function deleteAsignatura(req, res) {
-  /** Se recibe y guarda el id de la asignatura */
-  let asignaturaID = req.swagger.params.id.value
-  //Se Busca Asignatura por ID
-  ModelAsignatura.findById(asignaturaID, (err, asignatura) => {
-    /** Existe un error interno del servidor se retorna error 500 */
-    if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
-
-    asignatura.remove(err => {
-      /** Existe un error interno del servidor se retorna error 500 */
-      if (err) return res.status(500).json({ message: `Error al realizar peticion: ${err}` });
-      res.status(200).json({ message: 'La Asignatura fue eliminada con exito' });
-    });
   });
 }
