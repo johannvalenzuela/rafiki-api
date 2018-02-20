@@ -9,7 +9,17 @@ const NivelSchema = Schema({
     tipo_nivel: String,
     grado: Number,
     descripcion: String,
-    decreto: String
+    decreto: String,
+
+    objetivos_aprendizajes: [{
+        type: Schema.Types.ObjectId, ref: 'objaprendizajes'
+       
+    }], 
+
+    // duda: nivel debería contener un arreglo de asignaturas?
+    asignatura: {
+        type: Schema.Types.ObjectId, ref: 'Asignatura'
+    }
  
 })
 

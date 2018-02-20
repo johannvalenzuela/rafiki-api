@@ -6,16 +6,11 @@ const Schema = mongoose.Schema;
 const OrientacionCurricularSchema = new Schema ({
 
     introduccion: String,
-    asignaturas: {
-        type: [{
-            enfoque: String,
-            enfasis: String,
-            proposito_formativo: String,
-            asignatura: String
-        }]
-    }, 
+    asignaturas: [{
+        type: Schema.Types.ObjectId, ref: 'Asignatura'
+    }], 
    
-    basesCurriculares: String,
+    // el modelo programaEstudio aún no existe, cambiar a type ObjectId posteriormente.
     programaEstudio: String
    
 });
