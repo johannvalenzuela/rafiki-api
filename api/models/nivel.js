@@ -15,8 +15,6 @@ const NivelSchema = Schema({
         type: Schema.Types.ObjectId, ref: 'objaprendizajes'
        
     }], 
-
-    // duda: nivel debería contener un arreglo de asignaturas?
     asignatura: {
         type: Schema.Types.ObjectId, ref: 'Asignatura'
     }
