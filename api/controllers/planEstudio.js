@@ -14,35 +14,37 @@ const ModelPlanEstudio = require('../../api/models/planEstudio');
  */
 exports.getPlanEstudios = (req, res) => {
     let Error = [];
-    ModelPlanEstudio.find({}, (err, planEstudio) => {
-        if (err) {
-            Error.push({
-                titulo: "Error Interno en el Servidor",
-                detalle: "Ocurrio algun error al realizar peticion",
-                link: req.url,
-                estado: "500"
-            })
-            return res.status(400).json({ errors: Error })
-        }
+    ModelPlanEstudio.find({})
+        .populate('asignaturas.nivel')
+        .exec(function (err, planEstudio) {
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
+            }
 
-        if (!planEstudio) {
-            Error.push({
-                titulo: "No existen planes de estudio",
-                detalle: "La base de datos se encuentra sin planes de estudio",
-                link: req.url,
-                estado: "404"
-            })
-            return res.status(400).json({ errors: Error })
-        }
+            if (!planEstudio) {
+                Error.push({
+                    titulo: "No existen planes de estudio",
+                    detalle: "La base de datos se encuentra sin planes de estudio",
+                    link: req.url,
+                    estado: "404"
+                })
+                return res.status(400).json({ errors: Error })
+            }
 
-        if (planEstudio || planEstudio.length == 0) {
-            return res.status(200).json({
-                link: req.url,
-                data: planEstudio,
-                type: "planEstudio"
-            });
-        }
-    });
+            if (planEstudio || planEstudio.length == 0) {
+                return res.status(200).json({
+                    link: req.url,
+                    data: planEstudio,
+                    type: "planEstudio"
+                });
+            }
+        })
 }
 
 /** 
@@ -65,31 +67,34 @@ exports.getPlanEstudio = (req, res) => {
         });
         return res.status(400).json({ errors: Error });
     }
-    ModelPlanEstudio.findById(planEstudioID, function (err, planEstudio) {
-        if (err) {
-            Error.push({
-                titulo: "Error Interno en el Servidor",
-                detalle: "Ocurrio algun error al realizar peticion",
+
+    ModelPlanEstudio.findById(planEstudioID)
+        .populate('asignaturas.nivel')
+        .exec(function (err, planEstudio) {
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
+            }
+            if (!planEstudio) {
+                Error.push({
+                    titulo: "ID no encontrada",
+                    detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+                    link: req.url,
+                    estado: "404"
+                });
+                return res.status(400).json({ errors: Error });
+            }
+            res.status(200).json({
                 link: req.url,
-                estado: "500"
-            })
-            return res.status(400).json({ errors: Error })
-        }
-        if (!planEstudio) {
-            Error.push({
-                titulo: "ID no encontrada",
-                detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
-                link: req.url,
-                estado: "404"
+                data: [planEstudio],
+                type: "planEstudio"
             });
-            return res.status(400).json({ errors: Error });
-        }
-        res.status(200).json({
-            link: req.url,
-            data: [planEstudio],
-            type: "planEstudio"
         });
-    });
 }
 
 /** 
