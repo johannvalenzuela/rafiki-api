@@ -57,9 +57,9 @@ const OrganizacionSchema = new Schema({
         type: String,
     },
 
-    director: {
+    director: [{
         type: Schema.Types.ObjectId, ref: 'Users'
-    },
+    }],
 
     mensualidad: {
         type: Number,
