@@ -16,25 +16,34 @@ exports.getCursos = (req, res) => {
 
   let Error = [];
 
-  ModelCurso.find({}, (err, cursos) => {
+  ModelCurso.find({})
+    .populate('nivel')
+    .populate('profesores')
+    .populate('alumnos')
+    .exec(function (err, cursos) {
 
-    if (err) {
-      Error.push({
-        titulo: "Error Interno en el Servidor",
-        detalle: "Ocurrió algún error al realizar petición",
+      console.log(cursos);
+
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        
+        return res.status(400).json({ errors: Error })
+      }
+
+      return res.status(200).json({
         link: req.url,
-        estado: "500"
-      })
-      return res.status(400).json({ errors: Error })
+        data: cursos,
+        type: "cursos"
+      });
+
     }
+    );
 
-    return res.status(200).json({
-      link: req.url,
-      data: cursos,
-      type: "cursos"
-    });
-
-  });
 }
 
 /** 
@@ -52,37 +61,40 @@ exports.getCurso = (req, res) => {
   let Error = [];
   let idCurso = req.swagger.params.id.value
 
-  ModelCurso.findById(idCurso, (err, curso) => {
+  ModelCurso.findById(idCurso)
+    .populate('nivel')
+    .populate('profesores')
+    .populate('alumnos')
+    .exec(function (err, curso) {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
+      }
 
-    if (err) {
-      Error.push({
-        titulo: "Error Interno en el Servidor",
-        detalle: "Ocurrió algún error al realizar petición",
-        link: req.url,
-        estado: "500"
-      })
-      return res.status(400).json({ errors: Error })
-    }
+      if (!curso) {
 
-    if (!curso) {
+        Error.push({
+          titulo: "El Curso no existe",
+          detalle: "El id ingresado no corresponde a un curso",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      else {
+        return res.status(200).json({
+          link: req.url,
+          data: [curso],
+          type: "cursos"
+        });
+      }
+    });
 
-      Error.push({
-        titulo: "El Curso no existe",
-        detalle: "El id ingresado no corresponde a un curso",
-        link: req.url,
-        estado: "404"
-      });
-      return res.status(400).json({ errors: Error });
-    }
-    else {
-      return res.status(200).json({
-        link: req.url,
-        data: [curso],
-        type: "cursos"
-      });
-    }
-
-  });
 }
 
 /** 
@@ -213,9 +225,9 @@ exports.postCurso = (req, res) => {
 
   let Error = [];
 
-  if (!req.body.idCurso) Error.push({
+  if (!req.body.nombre) Error.push({
     titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'idCurso'",
+    detalle: "Se requiere el campo 'nombre'",
     link: req.url,
     estado: "417"
   });
@@ -227,14 +239,7 @@ exports.postCurso = (req, res) => {
     estado: "417"
   });
 
-  if (!req.body.asignatura) Error.push({
-    titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'asignatura'",
-    link: req.url,
-    estado: "417"
-  });
-
-  if (!req.body.profesorJefe) Error.push({
+  if (!req.body.profesores) Error.push({
     titulo: "Solicitud Incompleta",
     detalle: "Se requiere el campo 'profesorJefe'",
     link: req.url,
@@ -248,7 +253,7 @@ exports.postCurso = (req, res) => {
     estado: "417"
   });
 
-  if (!req.body.totalAlumnos) Error.push({
+  if (!req.body.alumnos) Error.push({
     titulo: "Solicitud Incompleta",
     detalle: "Se requiere el campo 'totalAlumnos'",
     link: req.url,
@@ -260,6 +265,16 @@ exports.postCurso = (req, res) => {
   }
 
   ModelCurso.create(req.body, function (err, curso) {
+
+    if (err) {
+      Error.push({
+        titulo: "Solicitud incorrecta",
+        detalle: "El valor de un atributo es incorrecto",
+        link: req.url,
+        estado: "404"
+      })
+      return res.status(400).json({ errors: Error })
+    }
 
     curso.save(function (err) {
 
