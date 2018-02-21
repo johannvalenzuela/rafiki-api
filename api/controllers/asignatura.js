@@ -29,7 +29,7 @@ exports.getAsignaturas = (req, res) => {
     }
 
     if (asignaturas.length == 0) {
-      return res.status(200).json({ 
+      return res.status(200).json({
         link: req.url,
         data: [],
         type: "asignaturas"
@@ -56,37 +56,42 @@ exports.getAsignaturas = (req, res) => {
  */
 exports.postAsignatura = (req, res) => {
   let Error = [];
-  ModelAsignatura.create(request.body, function (err, asignatura) {
+
+  if (!req.body.nombre) Error.push({
+    titulo: "Solicitud Incompleta",
+    detalle: "Se requiere el campo 'nombre'",
+    link: req.url,
+    estado: "417"
+  });
+
+  // if (!req.body.enfasis) Error.push({
+  //   titulo: "Solicitud Incompleta",
+  //   detalle: "Se requiere el campo 'enfasis'",
+  //   link: req.url,
+  //   estado: "417"
+  // });
+
+  if (Error.length > 0) {
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelAsignatura.create(req.body, function (err, asignatura) {
+
     asignatura.save(function (err) {
+
       if (err) {
         Error.push({
-          titulo: "Error interno del servidor",
-          detalle: "falló comunicación con la BD",
-          link: request.url,
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
           estado: "500"
         })
-        response.status(400).json({ errors: Error })
+        return res.status(400).json({ errors: Error })
       }
       else
-        return response.status(200).json({
-          link: request.url,
-          data: asignatura,
-          type: "asignaturas"
-        });
-      console.log(asignatura);
+        return res.status(201).json({ link: req.url });
     })
   });
-  // let Error = [];
-  // ModelAsignatura.create(req.body, function (err, asignatura) {
-  //   if (err) return res.status(400).json({ Error })
-  //   asignatura.save(function (err) {
-  //     if (err) {
-  //       res.status(500).send(Responses.getError({ message: err.message }));
-  //       return;
-  //     }
-  //     res.status(200).json(asignatura);
-  //   })
-  // });
 }
 
 /** 
