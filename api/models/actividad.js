@@ -6,8 +6,7 @@ const Schema = mongoose.Schema;
 const ActividadSchema = new Schema({
 
     autor: {
-        type: String,
-        //RELACIONAR CON USER
+        type: Schema.Types.ObjectId, ref: 'Users'
     },
 
     dificultad: {
@@ -25,9 +24,9 @@ const ActividadSchema = new Schema({
         enum: ['Enumeracion', 'Conocimiento especifico', 'Ensayo', 'Verdadero y Falso', 'Alternativas',]
     },
 
-    /*asignatura: {
-        type: String 
-    },*/
+    nivel: {
+        type: Schema.Types.ObjectId, ref: 'niveles'
+    },
 
     tema: {
         type: String
