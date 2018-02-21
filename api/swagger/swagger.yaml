@@ -34,7 +34,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseActividad"
+            $ref: "#/definitions/Actividad"
         default:
           description: Error
           schema:
@@ -49,7 +49,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Actividad"     
+            $ref: "#/definitions/RequestActividad"     
       responses:
         "200":
           description: Success
@@ -75,7 +75,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseActividad"
+            $ref: "#/definitions/Actividad"
         default:
           description: Error
           schema:
@@ -95,7 +95,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Actividad"
+            $ref: "#/definitions/RequestActividad"
       responses:
         "200":
           description: Success
@@ -389,7 +389,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseCurso"
+            $ref: "#/definitions/Curso"
         default:
           description: Error
           schema:
@@ -404,7 +404,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Curso"     
+            $ref: "#/definitions/RequestCurso"     
       responses:
         "200":
           description: Success
@@ -495,7 +495,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseCurso"
+            $ref: "#/definitions/Curso"
         default:
           description: Error
           schema:
@@ -511,11 +511,11 @@ paths:
           in: path
           required: true
         - name: name
-          description: Propiedades de User
+          description: Propiedades de Curso
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Curso"
+            $ref: "#/definitions/RequestCurso"
       responses:
         "200":
           description: Success
@@ -1017,7 +1017,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseRecursoEducativo"
+            $ref: "#/definitions/RecursoEducativo"
         default:
           description: Error
           schema:
@@ -1032,7 +1032,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/RecursoEducativo"     
+            $ref: "#/definitions/RequestRecursoEducativo"     
       responses:
         "200":
           description: Success
@@ -1123,7 +1123,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseRecursoEducativo"
+            $ref: "#/definitions/RecursoEducativo"
         default:
           description: Error
           schema:
@@ -1143,7 +1143,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/RecursoEducativo"
+            $ref: "#/definitions/RequestRecursoEducativo"
       responses:
         "200":
           description: Success
@@ -1260,14 +1260,10 @@ definitions:
         type: string
         description: Nombre de la asignatura a la que alude el recurso educativo
       nivel:
-        type: string
-        description: Nivel al que corresponde el recurso educativo
+        $ref: "#/definitions/Nivel"
       tipoRecurso:
         type: string
         description: Tipo de recurso educativo
-      autor:
-        type: string
-        description: Nombre del autor del recurso educativo
       links:
         type: array
         items:
@@ -1442,48 +1438,55 @@ definitions:
   Curso:
     type: object
     properties:
-      idCurso:
+      nombre:
         type: string
-        description: Sigla del curso (Ejemplo 1A)
-      nivel:
-        type: string
-        description: Nivel educacional del curso
-      asignatura:
-        type: string
-        description: Nombre de la asignatura
-      profesorJefe:
-        type: string
-        description: Nombre del profesor jefe del curso
+        description: Nombre del curso
       salaCurso:
         type: string
         description: Sala del curso
-      totalAlumnos:
-        type: number
-        description: Cantidad total de alumnos del curso
+      nivel:
+        $ref: "#/definitions/Nivel"
+      detalles:
+        type: string
+        description: Detalles del curso
+      planificacion:
+        type: array
+        description: Planificación del curso
+        items: 
+          type: object
+          properties:
+            oa: 
+              $ref: "#/definitions/ObjAprendizaje"            
+            detalles: 
+              type: string
+            recursos: 
+              type: array
+              items:
+                $ref: "#/definitions/RecursoEducativo" 
+      profesores:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      alumnos:
+        type: array
+        items:
+          $ref: "#/definitions/User"
   Actividad:
     type: object
     properties:
-      profesorAutor:
+      autor:
+        $ref: "#/definitions/User" 
+      dificultad:
         type: string
-        description: Nombre del autor de la actividad
-      anhoAcademico:
-        type: number
-        description: Año en que se crea la actividad
-      semestre:
-        type: number
-        description: Semestre en que se crea la actividad (1 - 2)
-      nivelDificultad:
-        type: string
-        description: Nivel de dificultad de la actividad
+        description: Nivel de dificultad de la actividad ('Alta' - 'Media' - 'Baja')
       nivelAprendizaje:
         type: string
         description: Nivel de aprendizaje ('Recordar', 'Comprender', 'Aplicar','Analizar','Evaluar', 'Crear')
       tipoPregunta:
         type: string
         description: Tipo de pregunta ('Enumeracion', 'Conocimiento especifico', 'Ensayo','Verdadero y Falso','Alternativas')
-      asignatura:
-        type: string
-        description: Nombre de la asignatura
+      nivel:
+        $ref: "#/definitions/Nivel"   
       tema:
         type: string
         description: Nombre del tema de la actividad
@@ -1493,7 +1496,7 @@ definitions:
       preguntaEnunciado:
         type: string
         description: Enunciado de la pregunta
-      preguntaAlternativas:
+      alternativas:
         type: array
         items: 
           type: string
@@ -1504,11 +1507,6 @@ definitions:
       respuestaVerdaderoFalso:
         type: boolean
         description: Respuesta de referencia para pregunta de Verdadero y Falso (true - false)
-      respuestaAlternativas:
-        type: array
-        items: 
-          type: string
-        description: Respuesta(s) de referencia para pregunta de Alternativas
       puntajeTotal:
         type: number
         description: Puntaje total de la pregunta
@@ -1912,3 +1910,113 @@ definitions:
       createAt:
         type: string
         format: date-time
+  RequestCurso:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: Nombre del curso
+      salaCurso:
+        type: string
+        description: Sala del curso
+      nivel:
+        type: string
+        description: Nivel al que corresponde (ID)
+      detalles:
+        type: string
+        description: Detalles del curso
+      planificacion:
+        type: array
+        description: Planificación del curso
+        items: 
+          type: object
+          properties:
+            oa: 
+              type: string   
+              description: Objetivo de Aprendizaje (ID)        
+            detalles: 
+              type: string
+            recursos: 
+              type: array
+              items:
+                type: string
+                description: Recurso educativo (ID) 
+      profesores:
+        type: array
+        items:
+          type: string
+          description: Alumno (ID)
+      alumnos:
+        type: array
+        items:
+          type: string 
+          description: Profesor (ID)
+  RequestActividad:
+    type: object
+    properties:
+      autor:
+        type: string
+        description: Autor de la actividad (ID)
+      dificultad:
+        type: string
+        description: Nivel de dificultad de la actividad ('Alta' - 'Media' - 'Baja')
+      nivelAprendizaje:
+        type: string
+        description: Nivel de aprendizaje ('Recordar', 'Comprender', 'Aplicar','Analizar','Evaluar', 'Crear')
+      tipoPregunta:
+        type: string
+        description: Tipo de pregunta ('Enumeracion', 'Conocimiento especifico', 'Ensayo','Verdadero y Falso','Alternativas')
+      nivel:
+        type: string  
+        description: Nivel al que corresponde (ID)
+      tema:
+        type: string
+        description: Nombre del tema de la actividad
+      subTema:
+        type: string
+        description: Nombre del subtema de la actividad
+      preguntaEnunciado:
+        type: string
+        description: Enunciado de la pregunta
+      alternativas:
+        type: array
+        items: 
+          type: string
+        description: Alternativas correspondientes al enunciado de la pregunta
+      respuesta:
+        type: string
+        description: Respuesta de referencia 
+      respuestaVerdaderoFalso:
+        type: boolean
+        description: Respuesta de referencia para pregunta de Verdadero y Falso (true - false)
+      puntajeTotal:
+        type: number
+        description: Puntaje total de la pregunta
+      retroalimentacion:
+        type: array
+        items: 
+          type: string
+        description: Enlaces y/o información complementaria para ser entregada como retroalimentación
+  RequestRecursoEducativo:
+    type: object
+    properties:
+      titulo:
+        type: string
+        description: Titulo del recurso educativo
+      descripcion:
+        type: string
+        description: Descripcion del recurso educativo
+      asignatura:
+        type: string
+        description: Nombre de la asignatura a la que alude el recurso educativo
+      nivel:
+        type: string
+        description: Nivel al que corresponde el recurso educativo (ID)
+      tipoRecurso:
+        type: string
+        description: Tipo de recurso educativo
+      links:
+        type: array
+        items:
+          type: string
+          description: Enlaces a las partes que componen el recurso educativo        
