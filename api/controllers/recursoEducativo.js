@@ -1,7 +1,11 @@
 'use strict';
-
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 var util = require('util');
 var ModelRecursoEducativo = require('../../api/models/recursoEducativo');
+var Actividad = mongoose.model('Actividad');
+var ModelNivel = require('../../api/models/nivel');
+
 const Responses = require('../helpers/responses');
 
 /** 
@@ -18,25 +22,29 @@ exports.getRecursosEducativos = (req, res) => {
 
     let Error = [];
 
-    ModelRecursoEducativo.find({}, (err, recursosEducativos) => {
+    ModelRecursoEducativo.find({})
+        .populate('nivel')
+        .exec(function (err, recursosEducativos) {
 
-        if (err) {
-            Error.push({
-                titulo: "Error Interno en el Servidor",
-                detalle: "Ocurrió algún error al realizar petición",
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrió algún error al realizar petición",
+                    link: req.url,
+                    estado: "500"
+                })
+                console.log(err);
+                return res.status(400).json({ errors: Error })
+            }
+
+            return res.status(200).json({
                 link: req.url,
-                estado: "500"
-            })
-            return res.status(400).json({ errors: Error })
+                data: recursosEducativos,
+                type: "recursos educativos"
+            });
+
         }
-
-        return res.status(200).json({
-            link: req.url,
-            data: recursosEducativos,
-            type: "recursos educativos"
-        });
-
-    });
+    );
 }
 
 /** 
@@ -52,43 +60,42 @@ exports.getRecursosEducativos = (req, res) => {
 exports.getRecursoEducativo = (req, res) => {
 
     let Error = [];
-    let idRecursoEducativo = req.swagger.params.id.value
+    let idRecursoEducativo = req.swagger.params.id.value;
 
 
-    ModelRecursoEducativo.findById(idRecursoEducativo, (err, recursoEducativo) => {
+    ModelRecursoEducativo.findById(idRecursoEducativo)
+        .populate('nivel')
+        .exec(function (err, recursoEducativo) {
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
+            }
 
+            if (!recursoEducativo) {
 
-        if (err) {
-            Error.push({
-                titulo: "Error Interno en el Servidor",
-                detalle: "Ocurrio algun error al realizar peticion",
-                link: req.url,
-                estado: "500"
-            })
-            return res.status(400).json({ errors: Error })
-        }
+                Error.push({
+                    titulo: "El Recurso Educativo no existe",
+                    detalle: "El id ingresado no corresponde a un recurso educativo",
+                    link: req.url,
+                    estado: "404"
+                });
+                return res.status(400).json({ errors: Error });
+            }
+            else {
 
-        if (!recursoEducativo) {
+                return res.status(200).json({
+                    link: req.url,
+                    data: [recursoEducativo],
+                    type: "recursos educativos"
+                });
 
-            Error.push({
-                titulo: "El Recurso Educativo no existe",
-                detalle: "El id ingresado no corresponde a un recurso educativo",
-                link: req.url,
-                estado: "404"
-            });
-            return res.status(400).json({ errors: Error });
-        }
-        else {
-
-            return res.status(200).json({
-                link: req.url,
-                data: [recursoEducativo],
-                type: "recursos educativos"
-            });
-
-        }
-
-    });
+            }
+        });
 }
 
 /** 
