@@ -12,7 +12,7 @@ const CursoSchema = new Schema({
     },
 
     nivel: {
-        type: String
+        type: Schema.Types.ObjectId, ref: 'niveles'
     },
 
     detalles: {
@@ -22,29 +22,36 @@ const CursoSchema = new Schema({
     planificacion: {
         type: [{
 
-            oa: String, //REFERENCIAR OBJETIVO DE APRENDIZAJE
-            fecha: Date,
-            detalles: String,
+            oa: {
+                type: Schema.Types.ObjectId, ref: 'objaprendizajes'
+            }, 
+
+            fecha: {
+                type: Date,
+                default: Date.now
+            },
+
+            detalles: {
+                type: String
+            },
+
             recursos: {
                 type: [{
-                    type: String
-                    //REFERENCIAR RECURSO EDUCATIVO
+                    type: Schema.Types.ObjectId, ref: 'RecursoEducativo'
                 }]
-            },
+            }
         }]
     },
 
     profesores: {
         type: [{
-            type: String
-            //REFERENCIAR USER
+            type: Schema.Types.ObjectId, ref: 'Users'    
         }]
     },
 
     alumnos: {
         type: [{
-            type: String
-            //REFERENCIAR USER
+            type: Schema.Types.ObjectId, ref: 'Users'
         }]
     },
 
@@ -53,10 +60,6 @@ const CursoSchema = new Schema({
         type: Date,
         default: Date.now
     }
-
-    /*asignatura: {
-        type: String
-    },*/
 
 });
 
