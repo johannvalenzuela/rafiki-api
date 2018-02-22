@@ -16,7 +16,11 @@ const Responses = require('../helpers/responses');
  */
 exports.getAsignaturas = (req, res) => {
   let Error = [];
-  ModelAsignatura.find({}, (err, asignaturas) => {
+  var nombre= req.query.nombre
+  var propositoFormativo= req.query.propositoFormativo
+  var enfasis= req.query.enfasis
+  var enfoque= req.query.enfoque
+  ModelAsignatura.find({'nombre': new RegExp(nombre), 'propositoFormativo': new RegExp(propositoFormativo), 'enfasis': new RegExp(enfasis), 'enfoque': new RegExp(enfoque)}, (err, asignaturas) => {
 
     if (err) {
       Error.push({
