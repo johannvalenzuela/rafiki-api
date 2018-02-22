@@ -259,7 +259,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseAsignatura"
+            $ref: "#/definitions/Asignatura"
         default:
           description: Error
           schema:
