@@ -19,36 +19,43 @@ exports.getActividades = (req, res) => {
 
   let Error = [];
 
-  ModelActividad.find({}, (err, actividades) => {
+  ModelActividad.find({})
+    .populate('autor')
+    .populate('nivel')
+    .exec(function (err, actividades) {
 
-    if (err) {
-      Error.push({
-        titulo: "Error Interno en el Servidor",
-        detalle: "Ocurrió algún error al realizar petición",
-        link: req.url,
-        estado: "500"
-      })
-      return res.status(400).json({ errors: Error })
-    }
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
 
-    if (!actividades) {
+        console.log(err);
+        return res.status(400).json({ errors: Error })
+      }
 
-      Error.push({
-        titulo: "No existen Actividades",
-        detalle: "La base de datos se encuentra sin actividades",
-        link: req.url,
-        estado: "404"
-      });
-      return res.status(400).json({ errors: Error });
-    }
-    else {
-      return res.status(200).json({
-        link: req.url,
-        data: actividades,
-        type: "actividades"
-      });
-    }
-  });
+      if (!actividades) {
+
+        Error.push({
+          titulo: "No existen Actividades",
+          detalle: "La base de datos se encuentra sin actividades",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      else {
+
+        return res.status(200).json({
+          link: req.url,
+          data: actividades,
+          type: "actividades"
+        });
+      }
+
+    });
 }
 
 
@@ -68,28 +75,42 @@ exports.getActividad = (req, res) => {
   let Error = [];
   let idActividad = req.swagger.params.id.value
 
+  ModelRecursoEducativo.findById(idActividad)
+    .populate('nivel')
+    .populate('autor')
+    .exec(function (err, actividad) {
 
-  ModelActividad.findById(idActividad, (err, actividad) => {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
+      }
 
+      if (!actividad) {
 
-    if (err) {
-      Error.push({
-        titulo: "Error Interno en el Servidor",
-        detalle: "Ocurrió algún error al realizar petición",
-        link: req.url,
-        estado: "500"
-      })
-      return res.status(400).json({ errors: Error })
-    }
+        Error.push({
+          titulo: "La actividad no existe",
+          detalle: "El id ingresado no corresponde a una actividad",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      else {
 
-    return res.status(200).json({
-      link: req.url,
-      data: [actividad],
-      type: "actividades"
+        return res.status(200).json({
+          link: req.url,
+          data: [actividad],
+          type: "actividades"
+        });
+
+      }
+
     });
-
-
-  });
 }
 
 
@@ -221,30 +242,9 @@ exports.postActividad = (req, res) => {
 
   let Error = [];
 
-  if (!req.body.profesorAutor) Error.push({
+  if (!req.body.dificultad) Error.push({
     titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'profesorAutor'",
-    link: req.url,
-    estado: "417"
-  });
-
-  if (!req.body.anhoAcademico) Error.push({
-    titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'anhoAcademico'",
-    link: req.url,
-    estado: "417"
-  });
-
-  if (!req.body.semestre) Error.push({
-    titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'semestre'",
-    link: req.url,
-    estado: "417"
-  });
-
-  if (!req.body.nivelDificultad) Error.push({
-    titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'nivelDificultad'",
+    detalle: "Se requiere el campo 'dificultad'",
     link: req.url,
     estado: "417"
   });
@@ -263,12 +263,6 @@ exports.postActividad = (req, res) => {
     estado: "417"
   });
 
-  if (!req.body.asignatura) Error.push({
-    titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'asignatura'",
-    link: req.url,
-    estado: "417"
-  });
 
   if (!req.body.tema) Error.push({
     titulo: "Solicitud Incompleta",
@@ -291,13 +285,6 @@ exports.postActividad = (req, res) => {
     estado: "417"
   });
 
-  if (!req.body.preguntaAlternativas) Error.push({
-    titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'preguntaAlternativas'",
-    link: req.url,
-    estado: "417"
-  });
-
   if (!req.body.respuesta) Error.push({
     titulo: "Solicitud Incompleta",
     detalle: "Se requiere el campo 'respuesta'",
@@ -312,12 +299,6 @@ exports.postActividad = (req, res) => {
     estado: "417"
   });
 
-  if (!req.body.respuestaAlternativas) Error.push({
-    titulo: "Solicitud Incompleta",
-    detalle: "Se requiere el campo 'respuestaAlternativas'",
-    link: req.url,
-    estado: "417"
-  });
 
 
   if (Error.length > 0) {

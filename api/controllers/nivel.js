@@ -23,36 +23,40 @@ module.exports = {
  * @return { errors: Error } JSON con un objeto Error
  */
 function get_niveles(request, response) {
-  let Error = [];
-  ModelNivel.find({}, (err, nivel) => {
 
-    if (err) {
-      Error.push({
-        titulo: "error interno del servidor",
-        detalle: "ocurrió un error interno al realizar petición",
-        link: request.url,
-        estado: "500"
-      })
-      return response.status(400).json({ errors: Error })
-    } else
-      if (nivel.length == 0) {
+  let Error = [];
+  ModelNivel.find({})
+    .populate('asignatura')
+    .populate('oa')
+    .exec(function (err, nivel) {
+
+      if (err) {
         Error.push({
-          titulo: "No se ha encontrado elementos",
-          detalle: "No existen niveles",
+          titulo: "error interno del servidor",
+          detalle: "ocurrió un error interno al realizar petición",
           link: request.url,
-          estado: "404"
+          estado: "500"
         })
         return response.status(400).json({ errors: Error })
-      } else {
-        return response.status(200).json({
-          link: request.url,
-          data: nivel,
-          type: "niveles"
-        });
-        console.log(nivel);
-      }
+      } else
+        if (nivel.length == 0) {
+          Error.push({
+            titulo: "No se ha encontrado elementos",
+            detalle: "No existen niveles",
+            link: request.url,
+            estado: "404"
+          })
+          return response.status(400).json({ errors: Error })
+        } else {
+          return response.status(200).json({
+            link: request.url,
+            data: nivel,
+            type: "niveles"
+          });
+          console.log(nivel);
+        }
 
-  });
+    });
 
 }
 /** 
@@ -80,34 +84,37 @@ function getNivelId(request, response) {
     return response.status(400).json({ errors: Error })
   }
   else {
-    ModelNivel.findById(id, function (err, nivel) {
-      if (!nivel) {
-        Error.push({
-          titulo: "No existe el elemento buscado",
-          detalle: "No se introdujo un ID de algún nivel",
-          link: request.url,
-          estado: "404"
-        })
-        return response.status(400).json({ errors: Error })
-      } else
-        if (err) {
+    ModelNivel.findById(id)
+      .populate('asignatura')
+      .populate('oa')
+      .exec(function (err, nivel) {
+        if (!nivel) {
           Error.push({
-            titulo: "Error interno del servidor",
-            detalle: "falló comunicación con la BD",
+            titulo: "No existe el elemento buscado",
+            detalle: "No se introdujo un ID de algún nivel",
             link: request.url,
-            estado: "500"
+            estado: "404"
           })
           return response.status(400).json({ errors: Error })
-        }
-        else {
-          return response.status(200).json({
-            link: request.url,
-            data: [nivel],
-            type: "niveles"
-          });
-          console.log(nivel);
-        }
-    });
+        } else
+          if (err) {
+            Error.push({
+              titulo: "Error interno del servidor",
+              detalle: "falló comunicación con la BD",
+              link: request.url,
+              estado: "500"
+            })
+            return response.status(400).json({ errors: Error })
+          }
+          else {
+            return response.status(200).json({
+              link: request.url,
+              data: [nivel],
+              type: "niveles"
+            });
+            console.log(nivel);
+          }
+      });
   }
 }
 
@@ -134,22 +141,37 @@ function createNivel(request, response) {
       return response.status(400).json({ errors: Error })
 
     } else
-      nivel.save(function (err) {
-        if (err) {
-          Error.push({
-            titulo: "Error interno del servidor",
-            detalle: "falló comunicación con la BD",
-            link: request.url,
-            estado: "500"
+
+      if (err) {
+        Error.push({
+          titulo: "Solicitud incorrecta",
+          detalle: "El valor de un atributo es incorrecto",
+          link: request.url,
+          estado: "404"
+        })
+        return response.status(400).json({ errors: Error })
+      }
+      else
+        if (nivel) {
+
+          nivel.save((err) => {
+            if (err) {
+              Error.push({
+                titulo: "Error interno del servidor",
+                detalle: "falló comunicación con la BD",
+                link: request.url,
+                estado: "500"
+              })
+              return response.status(400).json({ errors: Error })
+            }
+            else
+              return response.status(200).json({ link: request.url });
+            console.log(nivel);
+
+
           })
-          return response.status(400).json({ errors: Error })
         }
-        else
-          return response.status(200).json({ link: request.url });
-        console.log(nivel);
 
-
-      })
   });
 }
 /** 
