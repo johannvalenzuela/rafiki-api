@@ -15,34 +15,40 @@ const Responses = require('../helpers/responses');
  */
 exports.getEvaluaciones = (req, res) => {
     let Error = [];
-    Model.find({}, (err, evaluaciones) => {
-        if (err) {
-            Error.push({
-                titulo: "Error Interno en el Servidor",
-                detalle: "Ocurrio algun error al realizar peticion",
-                link: req.url,
-                estado: "500"
-            })
-            return res.status(400).json({ errors: Error })
-        }
-        if (!evaluaciones) {
-            Error.push({
-                titulo: "No existen evaluaciones",
-                detalle: "La base de datos se encuentra sin evaluaciones",
-                link: req.url,
-                estado: "404"
-            })
-            return res.status(400).json({ errors: Error })
-        }
-        if (evaluaciones || evaluaciones.length == 0) {
-            console.log(evaluaciones);
-            return res.status(200).json({
-                link: req.url,
-                data: evaluaciones,
-                type: "evaluacion"
-            });
-        }
-    });
+
+    Model.find({})
+        .populate('profesorAutor')
+        .populate('asignatura')
+        .populate('retroalimentacion')
+        .populate('actividades')
+        .exec(function (err, evaluaciones) {
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
+            }
+            if (!evaluaciones) {
+                Error.push({
+                    titulo: "No existen evaluaciones",
+                    detalle: "La base de datos se encuentra sin evaluaciones",
+                    link: req.url,
+                    estado: "404"
+                })
+                return res.status(400).json({ errors: Error })
+            }
+            if (evaluaciones || evaluaciones.length == 0) {
+                console.log(evaluaciones);
+                return res.status(200).json({
+                    link: req.url,
+                    data: evaluaciones,
+                    type: "evaluacion"
+                });
+            }
+        })
 }
 
 /** 
@@ -67,31 +73,40 @@ exports.getEvaluacion = (req, res) => {
         });
         return res.status(400).json({ errors: Error });
     }
-    Model.findById(id, (err, evaluacion) => {
-        if (err) {
-            Error.push({
-                titulo: "Error Interno en el Servidor",
-                detalle: "Ocurrio algun error al realizar peticion",
-                link: req.url,
-                estado: "500"
-            })
-            return res.status(400).json({ errors: Error })
-        }
-        if (!evaluacion) {
-            Error.push({
-                titulo: "ID no encontrada",
-                detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
-                link: req.url,
-                estado: "404"
-            });
-            return res.status(400).json({ errors: Error });
-        }
-        res.status(200).json({
-            link: req.url,
-            data: [evaluacion],
-            type: "evaluacion"
+
+    Model.findById(id)
+        .populate('profesorAutor')
+        .populate('asignatura')
+        .populate('retroalimentacion')
+        .populate('actividades')
+        .exec(function (err, evaluacion) {
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
+            }
+            if (!evaluacion) {
+                Error.push({
+                    titulo: "ID no encontrada",
+                    detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+                    link: req.url,
+                    estado: "404"
+                });
+                return res.status(400).json({ errors: Error });
+            }
+            console.log(evaluacion)
+            if (evaluacion) {
+                return res.status(200).json({
+                    link: req.url,
+                    data: [evaluacion],
+                    type: "evaluacion"
+                });
+            }
         });
-    });
 }
 
 /** 
@@ -277,7 +292,7 @@ exports.postEvaluacion = (req, res) => {
             return res.status(400).json({ errors: Error })
         }
 
-        if(evaluacion) {
+        if (evaluacion) {
             evaluacion.save(function (err) {
                 if (err) {
                     Error.push({

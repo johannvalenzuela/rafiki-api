@@ -213,55 +213,49 @@ exports.updateObjAprendizaje = (req, res) => {
  * @return {errors: Error} JSON con un objeto Error
  */
 exports.postObjAprendizaje = (req, res) => {
-    let id = req.swagger.params.id.value;
+
     let Error = [];
 
-    if (id.length < 24 || id.length > 24) {
-        Error.push({
-            titulo: "ID no es valida",
-            detalle: "Se esperaba ID valida",
-            link: req.url,
-            estado: "404"
-        });
+    if (!req.body.identificador) Error.push({
+        titulo: "Solicitud Incompleta",
+        detalle: "Se requiere el campo 'identificador'",
+        link: req.url,
+        estado: "417"
+    });
+
+    if (!req.body.tipo) Error.push({
+        titulo: "Solicitud Incompleta",
+        detalle: "Se requiere el campo 'tipo'",
+        link: req.url,
+        estado: "417"
+    });
+
+    if (!req.body.descripcion) Error.push({
+        titulo: "Solicitud Incompleta",
+        detalle: "Se requiere el campo 'descripcion'",
+        link: req.url,
+        estado: "417"
+    });
+
+    if (Error.length > 0) {
         return res.status(400).json({ errors: Error });
     }
 
-    ModelAprendizaje.findById(id, (err, objAprendizaje) => {
-        if (err && !objAprendizaje) {
-            Error.push({
-                titulo: "ID no encontrada",
-                detalle: "La ID no existe",
-                link: req.url,
-                estado: "404"
-            });
-            return res.status(400).json({ errors: Error });
-        }
-        objAprendizaje = Object.assign(objAprendizaje, req.body);
-        objAprendizaje.save(id, (err, objAprendizaje) => {
+    ModelAprendizaje.create(req.body, function (err, objAprendizaje) {
+
+        objAprendizaje.save(function (err) {
+
             if (err) {
                 Error.push({
                     titulo: "Error Interno en el Servidor",
-                    detalle: "Ocurrio algun error al realizar peticion",
+                    detalle: "Ocurrió algún error al realizar petición",
                     link: req.url,
                     estado: "500"
                 })
                 return res.status(400).json({ errors: Error })
             }
-            // res.json(asignatura); en caso de...
-            res.status(200).json({ link: req.url });
-        });
-
+            else
+                return res.status(201).json({ link: req.url });
+        })
     });
-    // ModelAprendizaje.create(req.body, function (err, objAprendizaje) {
-
-    //     objAprendizaje.save(function (err) {
-
-    //         if (err) {
-    //             res.status(500).send(Responses.getError({ message: err.message }));
-    //             return;
-    //         }
-    //         res.status(200).json(objAprendizaje);
-
-    //     })
-    // });
 }

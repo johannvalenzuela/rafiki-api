@@ -6,10 +6,10 @@ const Schema = mongoose.Schema;
 const EvaluacionSchema = new Schema ({
     
     profesorAutor: {
-        type: String, 
+        type: Schema.Types.ObjectId, ref: 'Users'
     },
 
-    creado_fecha: {
+    createAt: {
         type: Date,
         default: Date.now 
     },
@@ -25,7 +25,7 @@ const EvaluacionSchema = new Schema ({
     },
 
     asignatura: {
-        type: String 
+        type: Schema.Types.ObjectId, ref: 'Asignatura'
     },
 
     detalles: {
@@ -34,10 +34,16 @@ const EvaluacionSchema = new Schema ({
 
     //Enlaces de interes y/o información complementaria. Se entrega solo en preguntas de Ensayo.
     retroalimentacion: {
-        type: [{
-            type: String  
-        }]
+        type: Schema.Types.ObjectId, ref: 'RecursoEducativo'
     }, 
+
+    titulo: {
+        type: String
+    },
+
+    actividades: [{
+        type: Schema.Types.ObjectId, ref: 'Actividad'
+    }]
 
 });
 
