@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
 const RecursoEducativoSchema = new Schema({
 
     //Titulo del recurso educativo
@@ -22,7 +23,8 @@ const RecursoEducativoSchema = new Schema({
 
     //Nivel al que corresponde el recurso educativo
     nivel: {
-        type: String
+
+        type: Schema.Types.ObjectId, ref: 'niveles' 
     },
 
     //Tipo de recurso educativo
@@ -31,17 +33,18 @@ const RecursoEducativoSchema = new Schema({
         enum: ['Actividad', 'Imagenenes y Multimedia', 'Lectura', 'Partitura']
     },
 
-    //Nombre del autor del recurso educativo
-    autor: {
-        type: String
-    },
-
     //Enlaces a las partes que componen el recurso educativo
     links: {
         type: [{
             type: String
         }]
     },
+
+    //Fecha de creación
+    createAt: {
+        type: Date,
+        default: Date.now
+    }
 
 
 });
