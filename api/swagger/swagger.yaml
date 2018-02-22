@@ -295,7 +295,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Response"
+            $ref: "#/definitions/ResponseOrganizacion"
         default:
           description: Error
           schema:
@@ -309,7 +309,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/RequestOrganizacion"
       responses:
         "200":
           description: Success
@@ -450,7 +450,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Organizacion"
+            $ref: "#/definitions/RequestOrganizacion"
       responses:
         "200":
           description: Success
@@ -670,7 +670,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/RequestEvaluacion"
       responses:
         "200":
           description: Success
@@ -716,7 +716,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Evaluacion"
+            $ref: "#/definitions/RequestEvaluacion"
       responses:
         "200":
           description: Success
@@ -868,7 +868,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/RequestPlanEstudio"
       responses:
         "200":
           description: Success
@@ -914,7 +914,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/PlanEstudio"
+            $ref: "#/definitions/RequestPlanEstudio"
       responses:
         "200":
           description: Success
@@ -1234,18 +1234,14 @@ definitions:
         items: 
           type: string
         description: Descripcion de lo esperado para la asignatura
-      horasPedagogicasConJecAnual:
-        type: number
-        description: Numero de horas anuales con jornada escolar completa
-      horasPedagogicasSinJecAnual:
-        type: number
-        description: Numero de horas anuales sin jornada escolar completa
-      horasPedagogicasConJecSemanal:
-        type: number
-        description: Numero de horas semanales con jornada escolar completa
-      horasPedagogicasSinJecSemanal:
-        type: number
-        description: Numero de horas semanales sin jornada escolar completa
+      enfoque:
+        type: array
+        items:
+          type: string
+        description: Nociones y consideraciones básicas
+      propositoFormativo:
+        type: string
+        description: Completar!!!!!!!!
   RecursoEducativo:
     type: object
     properties:
@@ -1291,11 +1287,52 @@ definitions:
         type: string
         description: Tipo de organizacion (Municipal, Subvencionado, etc)
       sostenedor:
-        type: string
-        description: Nombre del sostenero de la organizacion
+        type: array
+        items:
+          $ref: "#/definitions/User"
       orientacionReligiosa:
         type: string
         description: Nombre de la orientacion religiosa de la organizacion
+      correos:
+        type: array
+        items:
+          type: string
+      telefonos:
+        type: array
+        items: 
+          type: object
+          properties:
+            nombre:
+              type: string
+              description: Nombre de la persona o lugar donde pertenece
+            numero:
+              type: string
+              description: Numero de telefono
+      web:
+        type: string
+        description: Pagina web de la organizacion
+      director:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      mensualidad:
+        type: number
+        description: Costo de la mensualidad de la organizacion
+      puntajeSimce:
+        type: number
+        description: Ultimo puntaje SIMCE obtenido por los alumnos en la organizacion
+      fechaPostulacion:
+        type: object
+        description: Objeto que contiene la fecha de inicio y cierre de la organizacion
+        properties:
+          inicio:
+            type: string
+            format: date-time
+            description: Fecha de inicio para las postulaciones de la organizacion
+          cierre:
+            type: string
+            format: date-time
+            description: Fecha de cierre para las postulaciones de la organizacion
       direccion:
         type: object
         description: Objeto que contiene la ubicacion de la organizacion
@@ -1309,43 +1346,30 @@ definitions:
           comuna:
             type: string
             description: Nombre de la comuna en donde se ubica la organizacion
-      correo:
-        type: string
-        description: Correo de la organizacion
-      telefono:
-        type: string
-        description: Telefono de la organizacion
-      web:
-        type: string
-        description: Pagina web de la organizacion
-      director:
-        type: string
-        description: Nombre del director de la organizacion
       numVacantes:
         type: number
         description: Numero de vacantes disponibles de la organizacion
-      fechaPostulacion:
-        type: object
-        description: Objeto que contiene la fecha de inicio y cierre de la organizacion
-        properties:
-          inicio:
-            type: string
-            description: Fecha de inicio para las postulaciones de la organizacion
-          cierre:
-            type: string
-            description: Fecha de cierre para las postulaciones de la organizacion
-      mensualidad:
-        type: number
-        description: Costo de la mensualidad de la organizacion
       totalAlumnosMatriculados:
         type: number
         description: Cantidad total de alumnos matriculados en la organizacion
       promAlumnosCurso:
         type: number
         description: Promedio general de alumnos por curso en la organizacion
-      puntajeSimce:
-        type: number
-        description: Ultimo puntaje SIMCE obtenido por los alumnos en la organizacion 
+      cursos:
+        type: array
+        items:
+          $ref: "#/definitions/Curso"
+      profesores:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      alumnos:
+        type: array
+        items:
+          $ref: "#/definitions/User"
+      createAt:
+        type: string
+        format: date-time
   User:
     type: object
     properties:
@@ -1499,15 +1523,16 @@ definitions:
   Evaluacion:
     type: object
     properties:
-      profesorAutor:
+      titulo:
         type: string
-        description: Profesor autor de la evaluacion
+        description: Titulo de la evaluacion
+      profesorAutor:
+        $ref: "#/definitions/User"
       nivelAprendizaje:
         type: string
         description: Nivel de aprendizaje ('Recordar', 'Comprender', 'Aplicar','Analizar','Evaluar', 'Crear')
       asignatura:
-        type: string
-        description: Nombre de la asignatura
+        $ref: "#/definitions/Asignatura"
       detalles:
         type: string
         description: Detalles que explican de qué trata esta evaluación
@@ -1515,10 +1540,14 @@ definitions:
         type: string
         description: Formas en las que se llevará acabo la evaluación
       retroalimentacion:
+        $ref: "#/definitions/RecursoEducativo"
+      actividades:
         type: array
         items: 
-          type: string
-        description: Enlaces y/o información complementaria para ser entregada como retroalimentación   
+          $ref: "#/definitions/Actividad"
+      createAt:
+        type: string
+        format: date-time
   Orientacion:
     type: object
     properties:
@@ -1575,19 +1604,6 @@ definitions:
           $ref: "#/definitions/Orientacion"
       type:
         type: string
-# Objetivos de Aprendizaje
-  ObjAprendizaje:
-    type: object
-    properties:
-      numero:
-        type: number
-        description: numero del objetivo de aprendizaje
-      tipo:
-        type: string
-        description: Tipo de aprendizaje ('Habilidad', 'Conocimiento', 'Actitud')
-      descripcion:
-        type: string
-        description: Informacion respecto a que apunta el objetivo de aprendizaje
   PlanEstudio:
     type: object
     properties:
@@ -1599,9 +1615,8 @@ definitions:
         items:
           type: object
           properties:
-            nombre:
-              type: string
-              description: Nombre de la asignatura
+            nivel:
+              $ref: "#/definitions/Nivel"
             horasMensuales:
               type: number
               description: Cantidad de horas mensuales
@@ -1620,7 +1635,18 @@ definitions:
       totalTiempoMinFD:
         type: number
         description: Tiempo total de Formacion Diferenciada
-
+# Objetivos de Aprendizaje
+  ObjAprendizaje:
+    type: object
+    properties:
+      identificador:
+        type: string
+        description: numero del objetivo de aprendizaje
+      tipo:
+        type: string
+      createAt:
+        type: string
+        format: date-time
   ResponseObjAprendizaje:
     type: object
     properties:
@@ -1708,9 +1734,6 @@ definitions:
           $ref: "#/definitions/Curso"    
       type:
         type: string   
-        
-        
-        
   RequestNivel:
     type: object
     properties:
@@ -1749,3 +1772,167 @@ definitions:
         type: array
         items: 
           type: string
+  RequestOrganizacion:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: Nombre completo de la organizacion
+      rbd:
+        type: number
+        description: Numero Rol Base de Datos de la organizacion
+      descripcion:
+        type: string
+        description: Descripcion de la organizacion
+      reconocimientoOficial:
+        type: string
+        description: Fecha de reconocimiento oficial de la organizacion
+      dependencia:
+        type: string
+        description: Tipo de organizacion (Municipal, Subvencionado, etc)
+      sostenedor:
+        type: array
+        items:
+          type: string
+      orientacionReligiosa:
+        type: string
+        description: Nombre de la orientacion religiosa de la organizacion
+      correos:
+        type: array
+        items:
+          type: string
+      telefonos:
+        type: array
+        items: 
+          type: object
+          properties:
+            nombre:
+              type: string
+              description: Nombre de la persona o lugar donde pertenece
+            numero:
+              type: string
+              description: Numero de telefono
+      web:
+        type: string
+        description: Pagina web de la organizacion
+      director:
+        type: array
+        items:
+          type: string
+      mensualidad:
+        type: number
+        description: Costo de la mensualidad de la organizacion
+      puntajeSimce:
+        type: number
+        description: Ultimo puntaje SIMCE obtenido por los alumnos en la organizacion
+      fechaPostulacion:
+        type: object
+        description: Objeto que contiene la fecha de inicio y cierre de la organizacion
+        properties:
+          inicio:
+            type: string
+            format: date
+            description: Fecha de inicio para las postulaciones de la organizacion
+          cierre:
+            type: string
+            format: date
+            description: Fecha de cierre para las postulaciones de la organizacion
+      direccion:
+        type: object
+        description: Objeto que contiene la ubicacion de la organizacion
+        properties:
+          calle:
+            type: string
+            description: Nombre de la calle en donde se ubica la organizacion
+          region:
+            type: string
+            description: Nombre de la region en donde se ubica la organizacion
+          comuna:
+            type: string
+            description: Nombre de la comuna en donde se ubica la organizacion
+      numVacantes:
+        type: number
+        description: Numero de vacantes disponibles de la organizacion
+      totalAlumnosMatriculados:
+        type: number
+        description: Cantidad total de alumnos matriculados en la organizacion
+      promAlumnosCurso:
+        type: number
+        description: Promedio general de alumnos por curso en la organizacion
+      cursos:
+        type: array
+        items:
+          type: string
+      profesores:
+        type: array
+        items:
+          type: string
+      alumnos:
+        type: array
+        items:
+          type: string
+      createAt:
+        type: string
+        format: date
+  RequestEvaluacion:
+    type: object
+    properties:
+      titulo:
+        type: string
+        description: Titulo de la evaluacion
+      profesorAutor:
+        type: string
+      nivelAprendizaje:
+        type: string
+        description: Nivel de aprendizaje ('Recordar', 'Comprender', 'Aplicar','Analizar','Evaluar', 'Crear')
+      asignatura:
+        type: string
+      detalles:
+        type: string
+        description: Detalles que explican de qué trata esta evaluación
+      tipoEjecucion:
+        type: string
+        description: Formas en las que se llevará acabo la evaluación
+      retroalimentacion:
+        type: string
+      actividades:
+        type: array
+        items: 
+          type: string
+      createAt:
+        type: string
+        format: date-time
+  RequestPlanEstudio:
+    type: object
+    properties:
+      nombre:
+        type: string
+        description: Nombre del plan de estudio
+      asignaturas:
+        type: array
+        items:
+          type: object
+          properties:
+            nivel:
+              type: string
+            horasMensuales:
+              type: number
+              description: Cantidad de horas mensuales
+            horasAnuales:
+              type: number
+              description: Cantidad de horas anuales
+      tipo:
+        type: string
+        description: Tipo de jornada ('Con JEC', 'Sin JEC')
+      horasLibreDisposicion:
+        type: number
+        description: Cantidad de horas de libre disposicion
+      totalTiempoMinFG:
+        type: number
+        description: Tiempo total de Formacion General
+      totalTiempoMinFD:
+        type: number
+        description: Tiempo total de Formacion Diferenciada
+      createAt:
+        type: string
+        format: date-time

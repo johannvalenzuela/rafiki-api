@@ -9,8 +9,8 @@ const planEstudioSchema = new Schema({
     },
 
     asignaturas: [{
-        nombre: {
-            type: String
+        nivel: {
+            type: Schema.Types.ObjectId, ref: 'niveles'
         },
         horasMensuales: {
             type: Number,
@@ -44,6 +44,11 @@ const planEstudioSchema = new Schema({
     totalTiempoMinFD: {
         type: Number,
         min: 0
-    }
+    },
+
+    createAt: {
+        type: Date,
+        default: Date.now
+    }, 
 })
 module.exports = mongoose.model('PlanEstudio', planEstudioSchema);

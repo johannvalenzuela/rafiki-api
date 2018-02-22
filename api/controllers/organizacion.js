@@ -2,6 +2,7 @@
 
 var util = require('util');
 const ModelOrganizacion = require('../../api/models/organizacion');
+const ModelUsers = require('../../api/models/user');
 
 /** 
  * @name getListOrganizaciones getListOrganizaciones GET /organizaciones
@@ -13,33 +14,40 @@ const ModelOrganizacion = require('../../api/models/organizacion');
  */
 exports.getListOrganizaciones = (req, res) => {
   let Error = [];
-  ModelOrganizacion.find({}, (err, organizacion) => {
-    if (err) {
-      Error.push({
-        titulo: "Error Interno en el Servidor",
-        detalle: "Ocurrio algun error al realizar peticion",
-        link: req.url,
-        estado: "500"
-      })
-      return res.status(400).json({ errors: Error })
-    }
-    if (!organizacion) {
-      Error.push({
-        titulo: "No existen organizaciones",
-        detalle: "La base de datos se encuentra sin organizaciones",
-        link: req.url,
-        estado: "404"
-      })
-      return res.status(400).json({ errors: Error })
-    }
-    if (organizacion || organizacion.length == 0) {
-      return res.status(200).json({
-        link: req.url,
-        data: organizacion,
-        type: "organizacion"
-      });
-    }
-  });
+
+  ModelOrganizacion.find({})
+    .populate('sostenedor')
+    .populate('director')
+    .populate('profesores')
+    .populate('alumnos')
+    .populate('cursos')
+    .exec(function (err, organizacion) {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
+      }
+      if (!organizacion) {
+        Error.push({
+          titulo: "No existen organizaciones",
+          detalle: "La base de datos se encuentra sin organizaciones",
+          link: req.url,
+          estado: "404"
+        })
+        return res.status(400).json({ errors: Error })
+      }
+      if (organizacion || organizacion.length == 0) {
+        return res.status(200).json({
+          'link': req.url,
+          'data': organizacion,
+          'type': "organizacion"
+        });
+      }
+    })
 }
 
 /** 
@@ -53,6 +61,7 @@ exports.getListOrganizaciones = (req, res) => {
 exports.getOrganizacion = (req, res) => {
   let organizacionID = req.swagger.params.id.value;
   let Error = [];
+ 
   if (organizacionID.length < 24 || organizacionID.length > 24) {
     Error.push({
       titulo: "ID no es valida",
@@ -63,7 +72,13 @@ exports.getOrganizacion = (req, res) => {
     return res.status(400).json({ errors: Error });
   }
 
-  ModelOrganizacion.findById(organizacionID, function (err, organizacion) {
+  ModelOrganizacion.findById(organizacionID)
+  .populate('sostenedor')
+  .populate('director')
+  .populate('profesores')
+  .populate('alumnos')
+  .populate('cursos')
+  .exec(function (err, organizacion) {
     if (err) {
       Error.push({
         titulo: "Error Interno en el Servidor",
@@ -82,14 +97,14 @@ exports.getOrganizacion = (req, res) => {
       });
       return res.status(400).json({ errors: Error });
     }
-    res.status(200).json({
-      link: req.url,
-      data: [organizacion],
-      type: "organizaciones"
-    });
-
-  });
-
+    if (organizacion) {
+      return res.status(200).json({
+        link: req.url,
+        data: [organizacion],
+        type: "organizacion"
+      });
+    }
+  })
 }
 
 /**
@@ -217,6 +232,7 @@ exports.deleteOrganizacion = (req, res) => {
 exports.createOrganizacion = (req, res) => {
   let Error = [];
 
+
   /* Verificando si existe cada atributo que realmente sea requerido y necesario */
   if (!req.body.nombre) Error.push({
     titulo: "Peticion Incompleta",
@@ -236,9 +252,9 @@ exports.createOrganizacion = (req, res) => {
     link: req.url,
     estado: "417"
   });
-  if (!req.body.correo) Error.push({
+  if (!req.body.correos) Error.push({
     titulo: "Peticion Incompleta",
-    detalle: "Se esperaba el atributo 'correo', pero no hubo exito",
+    detalle: "Se esperaba el atributo 'correos', pero no hubo exito",
     link: req.url,
     estado: "417"
   });
@@ -248,9 +264,9 @@ exports.createOrganizacion = (req, res) => {
     link: req.url,
     estado: "417"
   });
-  if (!req.body.telefono) Error.push({
+  if (!req.body.telefonos) Error.push({
     titulo: "Peticion Incompleta",
-    detalle: "Se esperaba un atributo 'telefono', pero no hubo exito",
+    detalle: "Se esperaba un atributo 'telefonos', pero no hubo exito",
     link: req.url,
     estado: "417"
   });
@@ -281,7 +297,7 @@ exports.createOrganizacion = (req, res) => {
     if (err) {
       Error.push({
         titulo: "Error Interno en el Servidor",
-        detalle: "Ocurrio algun error al realizar peticion",
+        detalle: "Ocurrio algun error al realizar la peticion",
         link: req.url,
         estado: "500"
       })
@@ -301,7 +317,7 @@ exports.createOrganizacion = (req, res) => {
         if (err) {
           Error.push({
             titulo: "Error Interno en el Servidor",
-            detalle: "Ocurrio algun error al realizar peticion",
+            detalle: "Ocurrio algun error al guardar en la Base de Datos",
             link: req.url,
             estado: "500"
           })
