@@ -16,7 +16,10 @@ const Responses = require('../helpers/responses');
  */
 exports.getObjAprendizajes = (req, res) => {
     let Error = [];
-    ModelAprendizaje.find({}, (err, objAprendizajes) => {
+    var tipo= req.query.tipo
+    var identificador= req.query.identificador
+    var descripcion= req.query.descripcion
+    ModelAprendizaje.find({'tipo': new RegExp(tipo), 'identificador': new RegExp(identificador), 'descripcion': new RegExp(descripcion)}, (err, objAprendizajes) => {
 
         if (err) {
             Error.push({
