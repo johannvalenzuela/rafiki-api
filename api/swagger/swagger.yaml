@@ -12,11 +12,11 @@ schemes:
   - http
   - https
 # format of bodies a client can send (Content-Type)
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
+#securityDefinitions:
+ # Bearer:
+  #  type: apiKey
+   # name: Authorization
+    #in: header
 consumes:
   - application/json
 # format of the responses to the client (Accepts)
@@ -183,12 +183,12 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Nivel"
+            $ref: "#/definitions/RequestNivel"
       responses:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/Nivel"
+            $ref: "#/definitions/ResponseNivel"
         default:
           description: Error
           schema:
@@ -243,7 +243,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Nivel"
+            $ref: "#/definitions/RequestNivel"
       responses:
         "200":
           description: Success
@@ -771,7 +771,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/ResponseOrientacion"
+            $ref: "#/definitions/RequestOrientacion"
       responses:
         "200":
           description: Success
@@ -817,7 +817,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/Orientacion"
+            $ref: "#/definitions/RequestOrientacion"
       responses:
         "200":
           description: Success
@@ -1183,11 +1183,6 @@ definitions:
       password:
         type: string
         example: "password"
-  Resource:
-    type: object
-    properties:
-      resource:
-        type: string
   Token:
     type: object
     properties:
@@ -1409,6 +1404,14 @@ definitions:
       decreto:
         type: string
         description: Decreto para el nivel académico
+      oa:
+        type: array
+        items: 
+           $ref: "#/definitions/ObjAprendizaje"
+      asignatura:
+        $ref: "#/definitions/Asignatura"
+         
+  
   GeneralResponse:
     type: object
     properties:
@@ -1549,30 +1552,13 @@ definitions:
       introduccion:
         type: string
         description: Introduccion
-      basesCurriculares:
-        type: string
-        description: Nivel de aprendizaje ('Recordar', 'Comprender', 'Aplicar','Analizar','Evaluar', 'Crear')
       programaEstudio:
         type: string
         description: Formas en las que se llevará acabo la evaluación
       asignaturas:
         type: array
-        description: Nombre de la asignatura
         items: 
-          type: object
-          properties:
-            enfoque: 
-              type: string
-              description: hola
-            enfasis: 
-              type: string
-              description: hola
-            proposito_formativo: 
-              type: string
-              description: hola
-            asignatura: 
-              type: string
-              description: hola
+          $ref: "#/definitions/Nivel"
   Errors:
     type: object
     properties:
@@ -1746,6 +1732,44 @@ definitions:
           $ref: "#/definitions/Curso"    
       type:
         type: string   
+  RequestNivel:
+    type: object
+    properties:
+      sigla:
+        type: string
+        description: Nombre completo del usuario
+      tipo_nivel:
+        type: string
+        description: RUT del usuario
+      grado:
+        type: number
+        description: Correo del usuario
+      descripcion:
+        type: string
+        description: descripción del nivel
+      decreto:
+        type: string
+        description: Decreto para el nivel académico
+      oa:
+        type: array
+        items: 
+           type: string
+      asignatura:
+        type: string
+        
+  RequestOrientacion:
+    type: object
+    properties:
+      introduccion:
+        type: string
+        description: Introduccion
+      programaEstudio:
+        type: string
+        description: Formas en las que se llevará acabo la evaluación
+      asignaturas:
+        type: array
+        items: 
+          type: string
   RequestOrganizacion:
     type: object
     properties:

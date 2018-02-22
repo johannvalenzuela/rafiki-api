@@ -24,7 +24,9 @@ module.exports = {
  */
 function getOrientaciones(request, response) {
   let Error = [];
-  ModelOrientacion.find({}, (err, orientacion) => {
+  ModelOrientacion.find({})
+  .populate('asignaturas')
+  .exec(function (err, orientacion ) {
     if (err) {
       Error.push({
         titulo: "error interno del servidor",
@@ -80,7 +82,9 @@ function getOrientacionId(request, response) {
     })
     return response.status(400).json({ errors: Error })
   }
-  ModelOrientacion.findById(id, function (err, orientacion) {
+  ModelOrientacion.findById(id) 
+  .populate('asignaturas')
+  .exec(function (err, orientacion) {
 
     if (!orientacion) {
       Error.push({
