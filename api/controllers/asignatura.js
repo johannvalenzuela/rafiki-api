@@ -16,7 +16,22 @@ const Responses = require('../helpers/responses');
  */
 exports.getAsignaturas = (req, res) => {
   let Error = [];
-  ModelAsignatura.find({}, (err, asignaturas) => {
+  var query = {};
+
+  if (req.query.nombre) {
+    query["nombre"] = { $regex: req.query.nombre };
+  }
+  if (req.query.propositoFormativo) {
+    query["propositoFormativo"] = { $regex: req.query.propositoFormativo };
+  }
+  if (req.query.enfasis) {
+    query["enfasis"] = { $regex: req.query.enfasis };
+  }
+  if (req.query.enfoque) {
+    query["enfoque"] = { $regex: req.query.enfoque };
+  }
+
+  ModelAsignatura.find(query, (err, asignaturas) => {
 
     if (err) {
       Error.push({
