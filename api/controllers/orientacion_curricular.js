@@ -32,6 +32,11 @@ function getOrientaciones(request, response) {
   if (request.query.programaEstudio)
     query["programaEstudio"] = { $regex : request.query.programaEstudio, $options:"i" };
 
+  if (req.query.asignaturas) {
+    let arr = req.query.asignaturas.split(',');
+    query["asignaturas"] = { $in: arr }
+  }
+
   ModelOrientacion.find(query)
   .populate('asignaturas')
   .exec(function (err, orientacion ) {
