@@ -16,7 +16,50 @@ exports.getCursos = (req, res) => {
 
   let Error = [];
 
-  ModelCurso.find({})
+  var query = {};
+
+
+  if (req.query.nombre) {
+
+    query["nombre"] = { $regex: req.query.nombre, $options: "i" };
+
+  }
+
+  if (req.query.salaCurso) {
+
+    query["salaCurso"] = { $regex: req.query.salaCurso, $options: "i" };
+
+  }
+
+
+  if (req.query.nivel) {
+
+    query["nivel"] = { $regex: req.query.nivel, $options: "i" };
+
+  }
+
+  if (req.query.detalles) {
+
+    query["detalles"] = { $regex: req.query.detalles, $options: "i" };
+
+  }
+
+  if (req.query.profesores) {
+
+    let arr = req.query.profesores.split(',');
+    query["profesores"] = { $in: arr }
+
+  }
+
+  if (req.query.alumnos) {
+
+    let arr = req.query.alumnos.split(',');
+    query["alumnos"] = { $in: arr }
+
+  }
+
+
+  ModelCurso.find(query)
     .populate('nivel')
     .populate('profesores')
     .populate('alumnos')
@@ -31,7 +74,7 @@ exports.getCursos = (req, res) => {
           link: req.url,
           estado: "500"
         })
-        
+
         return res.status(400).json({ errors: Error })
       }
 
