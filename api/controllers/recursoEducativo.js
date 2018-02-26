@@ -131,6 +131,57 @@ exports.getRecursoEducativo = (req, res) => {
 }
 
 /** 
+ * Función para obtener un Recurso educativo.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports getNivelRecursoEducativo GET /recursosEducativos/{id}/nivel
+ * @param req Petición HTTP, id de Recurso educativo en path
+ * @param res | 200 Recurso educativo encontrado | 404  Recurso educativo no existe | 500 Error al buscar |
+ * @return {object} JSON con objeto Nivel de Recurso Educativo
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.getNivelRecursoEducativo = (req, res) => {
+
+    let Error = [];
+    let idRecursoEducativo = req.swagger.params.id.value;
+
+
+    ModelRecursoEducativo.findById(idRecursoEducativo)
+        .populate('nivel')
+        .exec(function (err, recursoEducativo) {
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
+            }
+
+            if (!recursoEducativo) {
+
+                Error.push({
+                    titulo: "El Recurso Educativo no existe",
+                    detalle: "El id ingresado no corresponde a un recurso educativo",
+                    link: req.url,
+                    estado: "404"
+                });
+                return res.status(400).json({ errors: Error });
+            }
+            else {
+
+                return res.status(200).json({
+                    link: req.url,
+                    data: [recursoEducativo.nivel],
+                    type: "niveles"
+                });
+
+            }
+        });
+}
+
+/** 
  * Función para eliminar un Recurso educativo.
  *
  * @author Samuel Carrasco Fuentes
