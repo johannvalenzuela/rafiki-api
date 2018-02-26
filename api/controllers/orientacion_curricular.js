@@ -27,38 +27,28 @@ function getOrientaciones(request, response) {
   var query = {};
 
   if (request.query.introduccion)
-    query["introduccion"] = { $regex : request.query.introduccion, $options:"i" };
+    query["introduccion"] = { $regex: request.query.introduccion, $options: "i" };
 
   if (request.query.programaEstudio)
-    query["programaEstudio"] = { $regex : request.query.programaEstudio, $options:"i" };
+    query["programaEstudio"] = { $regex: request.query.programaEstudio, $options: "i" };
 
-  if (req.query.asignaturas) {
-    let arr = req.query.asignaturas.split(',');
+  if (request.query.asignaturas) {
+    let arr = request.query.asignaturas.split(',');
     query["asignaturas"] = { $in: arr }
   }
 
   ModelOrientacion.find(query)
-  .populate('asignaturas')
-  .exec(function (err, orientacion ) {
-    if (err) {
-      Error.push({
-        titulo: "error interno del servidor",
-        detalle: "ocurrió un error interno al realizar petición",
-        link: request.url,
-        estado: "500"
-      })
-      return response.status(400).json({ errors: Error })
-    }
-    if (orientacion.length == 0) {
-      Error.push({
-        titulo: "No se ha encontrado elementos",
-        detalle: "No existen orientaciones curriculares",
-        link: request.url,
-        estado: "404"
-      })
-      return response.status(400).json({ errors: Error })
-    }
-    else {
+    .populate('asignaturas')
+    .exec(function (err, orientacion) {
+      if (err) {
+        Error.push({
+          titulo: "error interno del servidor",
+          detalle: "ocurrió un error interno al realizar petición",
+          link: request.url,
+          estado: "500"
+        })
+        return response.status(400).json({ errors: Error })
+      }
 
       return response.status(200).json({
         link: request.url,
@@ -66,11 +56,7 @@ function getOrientaciones(request, response) {
         type: "orientaciones"
       });
       console.log(orientacion);
-
-    }
-
-  });
-
+    });
 }
 /** 
  * Función para obtener un objeto orientacion_curricular
@@ -95,35 +81,35 @@ function getOrientacionId(request, response) {
     })
     return response.status(400).json({ errors: Error })
   }
-  ModelOrientacion.findById(id) 
-  .populate('asignaturas')
-  .exec(function (err, orientacion) {
+  ModelOrientacion.findById(id)
+    .populate('asignaturas')
+    .exec(function (err, orientacion) {
 
-    if (!orientacion) {
-      Error.push({
-        titulo: "No existe el elemento buscado",
-        detalle: "No se introdujo una ID de alguna orientación curricular",
-        link: request.url,
-        estado: "404"
-      })
-      return response.status(400).json({ errors: Error })
-    } else
-      if (err) {
+      if (!orientacion) {
         Error.push({
-          titulo: "Error interno del servidor",
-          detalle: "falló comunicación con la BD",
+          titulo: "No existe el elemento buscado",
+          detalle: "No se introdujo una ID de alguna orientación curricular",
           link: request.url,
-          estado: "500"
+          estado: "404"
         })
         return response.status(400).json({ errors: Error })
-      }
-    return response.status(200).json({
-      link: request.url,
-      data: [orientacion],
-      type: "orientaciones"
+      } else
+        if (err) {
+          Error.push({
+            titulo: "Error interno del servidor",
+            detalle: "falló comunicación con la BD",
+            link: request.url,
+            estado: "500"
+          })
+          return response.status(400).json({ errors: Error })
+        }
+      return response.status(200).json({
+        link: request.url,
+        data: [orientacion],
+        type: "orientaciones"
+      });
+      console.log(orientacion);
     });
-    console.log(orientacion);
-  });
 }
 
 
