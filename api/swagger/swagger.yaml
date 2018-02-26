@@ -211,6 +211,28 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/Errors"
+            
+  /niveles/{id}/aprendizajes/:
+      # our controller name
+    x-swagger-router-controller: nivel
+    get:
+      description: Obtener un nivel capturado por id
+      operationId: get_aprendizajes
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ObjAprendizaje"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
   /niveles:
     # our controller name
     x-swagger-router-controller: nivel
