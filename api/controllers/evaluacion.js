@@ -8,6 +8,7 @@ const Responses = require('../helpers/responses');
  * Función para obtener un arreglo de evaluaciones
  *
  * @author Johann Valenzuela Torres
+ * @author Israel Ogas Vega
  * @exports getEvaluaciones GET /evaluaciones
  * @param req Petición HTTP
  * @param res | 200 Evaluaciones | 404 No hay evaluaciones | 500 Error al buscar |
@@ -15,8 +16,34 @@ const Responses = require('../helpers/responses');
  */
 exports.getEvaluaciones = (req, res) => {
     let Error = [];
+    var query = {};
 
-    Model.find({})
+    if (req.query.autor) {
+        query["profesorAutor"] = { $in: req.query.autor }
+    }
+    if (req.query.titulo) {
+        query["titulo"] = { $regex: req.query.titulo, $options: "i" };
+    }
+    if (req.query.nivel_aprendizaje) {
+        query["nivelAprendizaje"] = { $regex: req.query.nivel_aprendizaje, $options: "i" };
+    }
+    if (req.query.tipo_ejecucion) {
+        query["tipoEjecucion"] = { $regex: req.query.tipo_ejecucion, $options: "i" };
+    }
+    if (req.query.asignatura) {
+        query["asignatura"] = { $in: req.query.asignatura }
+    }
+    if (req.query.detalles) {
+        query["detalles"] = { $regex: req.query.detalles, $options: "i" };
+    }
+    if (req.query.retroalimentacion) {
+        query["retroalimentacion"] = { $in: req.query.retroalimentacion }
+    }
+    if (req.query.actividad) {
+        query["actividad"] = { $in: req.query.actividad }
+    }
+
+    Model.find(query)
         .populate('profesorAutor')
         .populate('asignatura')
         .populate('retroalimentacion')
@@ -55,6 +82,7 @@ exports.getEvaluaciones = (req, res) => {
  * Función para obtener una evaluación.
  *
  * @author Johann Valenzuela Torres
+ * @author Israel Ogas Vega
  * @exports getEvaluacion GET /evaluaciones/{id}
  * @param req Petición HTTP, id de evaluación en path
  * @param res | 200 Evaluacion encontrada | 404 Evaluación no existe | 500 Error al buscar |
@@ -113,6 +141,7 @@ exports.getEvaluacion = (req, res) => {
  * Función para eliminar una evaluación.
  *
  * @author Johann Valenzuela Torres
+ * @author Israel Ogas Vega
  * @exports deleteEvaluacion DELETE /evaluaciones/{id}
  * @param req Petición HTTP, id de evaluación en Path
  * @param res | 200 Evaluacion eliminada | 500 Error al buscar | 404 La evaluación no existe |
@@ -173,6 +202,7 @@ exports.deleteEvaluacion = (req, res) => {
  * Función para actualizar una evaluación.
  *
  * @author Johann Valenzuela Torres
+ * @author Israel Ogas Vega
  * @exports getEvaluacion PUT /evaluaciones/{id}
  * @param req Petición HTTP, id de evaluación en path
  * @param res | 200 Evaluacion encontrada | 404 Evaluación no existe | 500 Error al buscar |
@@ -233,6 +263,7 @@ exports.updateEvaluacion = (req, res) => {
  * Función para insertar una evaluación.
  *
  * @author Johann Valenzuela Torres
+ * @author Israel Ogas Vega
  * @exports postEvaluacion POST /evaluaciones
  * @param req Petición HTTP, JSON Objeto evaluación en Body
  * @param res | 200 Evaluacion creada | 500 Error al buscar |
