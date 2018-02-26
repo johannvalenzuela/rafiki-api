@@ -19,7 +19,63 @@ exports.getActividades = (req, res) => {
 
   let Error = [];
 
-  ModelActividad.find({})
+  var query = {};
+
+
+  if (req.query.autor) {
+
+    query["autor"] = { $regex : req.query.autor, $options:"i" };
+
+  }
+
+  if (req.query.dificultad) {
+
+    query["dificultad"] = { $regex : req.query.dificultad, $options:"i" };
+
+  }
+
+  if (req.query.nivelAprendizaje) {
+
+    query["nivelAprendizaje"] = { $regex : req.query.nivelAprendizaje, $options:"i" };
+
+  }
+
+  if (req.query.tipoPregunta) {
+
+    query["tipoPregunta"] = { $regex : req.query.tipoPregunta, $options:"i" };
+
+  }
+
+  if (req.query.nivel) {
+
+    query["nivel"] = { $regex : req.query.nivel, $options:"i" };
+
+  }
+
+  if (req.query.tema) {
+
+    query["tema"] = { $regex : req.query.tema, $options:"i" };
+
+  }
+
+  if (req.query.subTema) {
+
+    query["subTema"] = { $regex : req.query.subTema, $options:"i" };
+
+  }
+
+  if (req.query.preguntaEnunciado) {
+
+    query["preguntaEnunciado"] = { $regex : req.query.preguntaEnunciado, $options:"i" };
+  }
+
+  if (req.query.puntajeTotal) {
+
+    query["puntajeTotal"] = { $eq : req.query.puntajeTotal};
+
+  }
+
+  ModelActividad.find(query)
     .populate('autor')
     .populate('nivel')
     .exec(function (err, actividades) {
