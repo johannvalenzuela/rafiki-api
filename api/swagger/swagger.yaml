@@ -259,7 +259,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseAsignatura"
+            $ref: "#/definitions/Asignatura"
         default:
           description: Error
           schema:
@@ -1642,9 +1642,10 @@ definitions:
         description: numero del objetivo de aprendizaje
       tipo:
         type: string
-      createAt:
+        description: Tipo de aprendizaje ('Habilidad', 'Conocimiento', 'Actitud') 
+      descripcion:
         type: string
-        format: date-time
+        description: descripcion de objetivos de aprendizaje
   ResponseObjAprendizaje:
     type: object
     properties:
