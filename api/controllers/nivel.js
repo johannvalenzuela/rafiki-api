@@ -25,7 +25,30 @@ module.exports = {
 function get_niveles(request, response) {
 
   let Error = [];
-  ModelNivel.find({})
+
+  var query = {};
+
+  if (request.query.sigla)
+    query["sigla"] = { $regex: request.query.sigla, $options: "i" };
+
+  if (request.query.tipo_nivel)
+    query["tipo_nivel"] = { $regex: request.query.tipo_nivel, $options: "i" };
+
+  if (request.query.descripcion)
+    query["descripcion"] = { $regex: request.query.descripcion, $options: "i" };
+
+  if (request.query.grado)
+    query["grado"] = { $eq: request.query.grado };
+
+  if (req.query.oa) {
+    let arr = req.query.oa.split(',');
+    query["oa"] = { $in: arr }
+  }
+  if (req.query.asignatura) {
+    query["asignatura"] = { $in: req.query.asignatura }
+}
+
+  ModelNivel.find(query)
     .populate('asignatura')
     .populate('oa')
     .exec(function (err, nivel) {
