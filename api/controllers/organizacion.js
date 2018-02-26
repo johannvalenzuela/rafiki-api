@@ -166,7 +166,7 @@ exports.getListOrganizaciones = (req, res) => {
     let arr = req.query.alumnos.split(',');
     query["alumnos"] = { $in: arr }
 
-    // http://localhost:10010/organizaciones?alumnos=5a74b03387e68a2f80c81672,5a73cb9c1819653ad8d4ab68
+  // http://localhost:10010/organizaciones?alumnos=5a74b03387e68a2f80c81672,5a73cb9c1819653ad8d4ab68
   }
 
   console.log(query)
@@ -198,16 +198,284 @@ exports.getListOrganizaciones = (req, res) => {
       }
       if (organizacion || organizacion.length == 0) {
         return res.status(200).json({
-          'link': req.url,
-          'data': organizacion,
-          'type': "organizacion"
+          link: req.url,
+          data: organizacion,
+          type: "organizacion"
         });
       }
     })
 }
 
 /** 
- * @name getOrganizacion getOrganizacion GET /organizaciones
+ * @name getListAlumnos getListAlumnos GET /organizaciones/{id}/alumnos
+ * @description Funcion que obtiene una lista de alumnos de una organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Object} JSON del objecto Alumnos en Organizacion
+ */
+exports.getListAlumnos = (req, res) => {
+  let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelOrganizacion.findById(id)
+    .populate('alumnos')
+    .exec(function (err, organizacion) {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(500).json({ errors: Error })
+      }
+      if (!organizacion) {
+        Error.push({
+          titulo: "ID no encontrada",
+          detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      if (organizacion) {
+        return res.status(200).json({
+          link: req.url,
+          data: [organizacion.alumnos],
+          type: "organizacion"
+        });
+      }
+    })
+}
+
+
+/** 
+ * @name getListProfesores getListProfesores GET /organizaciones/{id}/profesores
+ * @description Funcion que obtiene una lista de profesores de una organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Object} JSON del objecto Profesores en Organizacion
+ */
+exports.getListProfesores = (req, res) => {
+  let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelOrganizacion.findById(id)
+    .populate('profesores')
+    .exec(function (err, organizacion) {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(500).json({ errors: Error })
+      }
+      if (!organizacion) {
+        Error.push({
+          titulo: "ID no encontrada",
+          detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      if (organizacion) {
+        return res.status(200).json({
+          link: req.url,
+          data: [organizacion.profesores],
+          type: "organizacion"
+        });
+      }
+    })
+}
+
+/** 
+ * @name getListSostenedores getListSostenedores GET /organizaciones/{id}/sostenedores
+ * @description Funcion que obtiene una lista de sostenedores de una organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Object} JSON del objecto Sostenedores en Organizacion
+ */
+exports.getListSostenedores = (req, res) => {
+  let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelOrganizacion.findById(id)
+    .populate('sostenedor')
+    .exec(function (err, organizacion) {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(500).json({ errors: Error })
+      }
+      if (!organizacion) {
+        Error.push({
+          titulo: "ID no encontrada",
+          detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      if (organizacion) {
+        return res.status(200).json({
+          link: req.url,
+          data: [organizacion.sostenedor],
+          type: "organizacion"
+        });
+      }
+    })
+}
+
+
+/** 
+ * @name getListDirectores getListDirectores GET /organizaciones/{id}/directores
+ * @description Funcion que obtiene una lista de sostenedores de una organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Object} JSON del objecto Sostenedores en Organizacion
+ */
+exports.getListDirectores = (req, res) => {
+  let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelOrganizacion.findById(id)
+    .populate('director')
+    .exec(function (err, organizacion) {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(500).json({ errors: Error })
+      }
+      if (!organizacion) {
+        Error.push({
+          titulo: "ID no encontrada",
+          detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      if (organizacion) {
+        return res.status(200).json({
+          link: req.url,
+          data: [organizacion.director],
+          type: "organizacion"
+        });
+      }
+    })
+}
+
+
+/** 
+ * @name getListCursos getListCursos GET /organizaciones/{id}/cursos
+ * @description Funcion que obtiene una lista de cursos de una organizacion
+ * @author Israel Ogas
+ * @param req una identificacion de solicitud de un objeto
+ * @param res una identificacion de respuesta de un objeto
+ * @return {Object} JSON del objecto Cursos en Organizacion
+ */
+exports.getListCursos = (req, res) => {
+  let id = req.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length < 24 || id.length > 24) {
+    Error.push({
+      titulo: "ID no es valida",
+      detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+      link: req.url,
+      estado: "404"
+    });
+    return res.status(400).json({ errors: Error });
+  }
+
+  ModelOrganizacion.findById(id)
+    .populate('cursos')
+    .exec(function (err, organizacion) {
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrio algun error al realizar peticion",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(500).json({ errors: Error })
+      }
+      if (!organizacion) {
+        Error.push({
+          titulo: "ID no encontrada",
+          detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      if (organizacion) {
+        return res.status(200).json({
+          link: req.url,
+          data: [organizacion.cursos],
+          type: "organizacion"
+        });
+      }
+    })
+}
+
+/** 
+ * @name getOrganizacion getOrganizacion GET /organizaciones/{id}
  * @description Funcion que obtiene una organizacion
  * @author Israel Ogas
  * @param req una identificacion de solicitud de un objeto
