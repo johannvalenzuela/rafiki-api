@@ -14,7 +14,84 @@ const ModelPlanEstudio = require('../../api/models/planEstudio');
  */
 exports.getPlanEstudios = (req, res) => {
     let Error = [];
-    ModelPlanEstudio.find({})
+    var query = {};
+
+    if (req.query.nombre) {
+        query["nombre"] = { $regex: req.query.nombre, $options: "i" };
+    }
+    if (req.query.tipo) {
+        query["tipo"] = { $regex: req.query.tipo, $options: "i" };
+    }
+
+    /*********************************************************************************************************************************
+     * Revisar estos 3
+     */
+    if (req.query.nivel) {
+        query["asignaturas.nivel"] = { $in: req.query.nivel }
+    }
+    if (req.query.horas_mensuales) {
+        if (req.query.horas_mensuales["min"] && req.query.horas_mensuales["max"]) {
+            query["asignaturas.horasMensuales"] = { $gte: req.query.horas_mensuales["min"], $lte: req.query.horas_mensuales["max"] };
+        } else if (req.query.horas_mensuales["min"]) {
+            query["asignaturas.horasMensuales"] = { $gte: req.query.horas_mensuales["min"] }
+        } else if (req.query.horas_mensuales["max"]) {
+            query["asignaturas.horasMensuales"] = { $lte: req.query.horas_mensuales["max"] }
+        } else {
+            query["asignaturas.horasMensuales"] = { $eq: req.query.horas_mensuales }
+        }
+    }
+    if (req.query.horas_anuales) {
+        if (req.query.horas_anuales["min"] && req.query.horas_anuales["max"]) {
+            query["asignaturas.horasAnuales"] = { $gte: req.query.horas_anuales["min"], $lte: req.query.horas_anuales["max"] };
+        } else if (req.query.horas_anuales["min"]) {
+            query["asignaturas.horasAnuales"] = { $gte: req.query.horas_anuales["min"] }
+        } else if (req.query.horas_anuales["max"]) {
+            query["asignaturas.horasAnuales"] = { $lte: req.query.horas_anuales["max"] }
+        } else {
+            query["asignaturas.horasAnuales"] = { $eq: req.query.horas_anuales }
+        }
+    }
+
+    /**************************************************************************************************************************** */
+
+    if (req.query.horas_LD) {
+        if (req.query.horas_LD["min"] && req.query.horas_LD["max"]) {
+            query["horasLibreDisposicion"] = { $gte: req.query.horas_LD["min"], $lte: req.query.horas_LD["max"] };
+        } else if (req.query.horas_LD["min"]) {
+            query["horasLibreDisposicion"] = { $gte: req.query.horas_LD["min"] }
+        } else if (req.query.horas_LD["max"]) {
+            query["horasLibreDisposicion"] = { $lte: req.query.horas_LD["max"] }
+        } else {
+            query["horasLibreDisposicion"] = { $eq: req.query.horas_LD }
+        }
+    }
+    if (req.query.total_tiempo_FG) {
+        if (req.query.total_tiempo_FG["min"] && req.query.total_tiempo_FG["max"]) {
+            query["totalTiempoMinFG"] = { $gte: req.query.total_tiempo_FG["min"], $lte: req.query.total_tiempo_FG["max"] };
+        } else if (req.query.total_tiempo_FG["min"]) {
+            query["totalTiempoMinFG"] = { $gte: req.query.total_tiempo_FG["min"] }
+        } else if (req.query.total_tiempo_FG["max"]) {
+            query["totalTiempoMinFG"] = { $lte: req.query.total_tiempo_FG["max"] }
+        } else {
+            query["totalTiempoMinFG"] = { $eq: req.query.total_tiempo_FG }
+        }
+    }
+
+    if (req.query.total_tiempo_FD) {
+        if (req.query.total_tiempo_FD["min"] && req.query.total_tiempo_FD["max"]) {
+            query["totalTiempoMinFD"] = { $gte: req.query.total_tiempo_FD["min"], $lte: req.query.total_tiempo_FD["max"] };
+        } else if (req.query.total_tiempo_FD["min"]) {
+            query["totalTiempoMinFD"] = { $gte: req.query.total_tiempo_FD["min"] }
+        } else if (req.query.total_tiempo_FD["max"]) {
+            query["totalTiempoMinFD"] = { $lte: req.query.total_tiempo_FD["max"] }
+        } else {
+            query["totalTiempoMinFD"] = { $eq: req.query.total_tiempo_FD }
+        }
+    }
+
+
+
+    ModelPlanEstudio.find(query)
         .populate('asignaturas.nivel')
         .exec(function (err, planEstudio) {
             if (err) {
