@@ -138,6 +138,63 @@ exports.getEvaluacion = (req, res) => {
 }
 
 /** 
+ * Función para obtener una lista de actividades de una evaluación.
+ *
+ * @author Johann Valenzuela Torres
+ * @author Israel Ogas Vega
+ * @exports getEvaluacion GET /evaluaciones/{id}
+ * @param req Petición HTTP, id de evaluación en path
+ * @param res | 200 Evaluacion encontrada | 404 Evaluación no existe | 500 Error al buscar |
+ * @return {actividad: evaluacion.actividad} JSON con una variable de valor Objeto evaluacion
+ */
+exports.get_actividades = (req, res) => {
+    let id = req.swagger.params.id.value;
+    let Error = [];
+
+    if (id.length < 24 || id.length > 24) {
+        Error.push({
+            titulo: "ID no es valida",
+            detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+            link: req.url,
+            estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+    }
+
+    Model.findById(id)
+        .populate('actividades')
+        .exec(function (err, evaluacion) {
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
+            }
+            if (!evaluacion) {
+                Error.push({
+                    titulo: "ID no encontrada",
+                    detalle: "Se esperaba ID valida o existente en la BD, pero no hubo exito",
+                    link: req.url,
+                    estado: "404"
+                });
+                return res.status(400).json({ errors: Error });
+            }
+            console.log(evaluacion)
+            if (evaluacion) {
+                return res.status(200).json({
+                    link: req.url,
+                    data: [evaluacion.actividades],
+                    type: "actividades"
+                });
+            }
+        });
+}
+
+
+/** 
  * Función para eliminar una evaluación.
  *
  * @author Johann Valenzuela Torres
