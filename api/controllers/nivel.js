@@ -9,7 +9,8 @@ module.exports = {
   getNivelId: getNivelId,
   createNivel: createNivel,
   updateNivel: updateNivel,
-  deleteNivel: deleteNivel
+  deleteNivel: deleteNivel,
+  get_aprendizajes: get_aprendizajes
 
 };
 /** 
@@ -40,13 +41,13 @@ function get_niveles(request, response) {
   if (request.query.grado)
     query["grado"] = { $eq: request.query.grado };
 
-  if (req.query.oa) {
-    let arr = req.query.oa.split(',');
+  if (request.query.oa) {
+    let arr = request.query.oa.split(',');
     query["oa"] = { $in: arr }
   }
-  if (req.query.asignatura) {
-    query["asignatura"] = { $in: req.query.asignatura }
-}
+  if (request.query.asignatura) {
+    query["asignatura"] = { $in: request.query.asignatura }
+  }
 
   ModelNivel.find(query)
     .populate('asignatura')
@@ -62,23 +63,12 @@ function get_niveles(request, response) {
         })
         return response.status(400).json({ errors: Error })
       } else
-        if (nivel.length == 0) {
-          Error.push({
-            titulo: "No se ha encontrado elementos",
-            detalle: "No existen niveles",
-            link: request.url,
-            estado: "404"
-          })
-          return response.status(400).json({ errors: Error })
-        } else {
-          return response.status(200).json({
-            link: request.url,
-            data: nivel,
-            type: "niveles"
-          });
-          console.log(nivel);
-        }
-
+        return response.status(200).json({
+          link: request.url,
+          data: nivel,
+          type: "niveles"
+        });
+      console.log(nivel);
     });
 
 }
@@ -134,6 +124,54 @@ function getNivelId(request, response) {
               link: request.url,
               data: [nivel],
               type: "niveles"
+            });
+            console.log(nivel);
+          }
+      });
+  }
+}
+
+function get_aprendizajes(request, response) {
+
+  let id = request.swagger.params.id.value;
+  let Error = [];
+
+  if (id.length != 24) {
+    Error.push({
+      titulo: "ID no valida",
+      detalle: "No se introdujo una ID valida",
+      link: request.url,
+      estado: "404"
+    })
+    return response.status(400).json({ errors: Error })
+  }
+  else {
+    ModelNivel.findById(id)
+      .populate('oa')
+      .exec(function (err, nivel) {
+        if (!nivel) {
+          Error.push({
+            titulo: "No existe el elemento buscado",
+            detalle: "No se introdujo un ID de algún nivel",
+            link: request.url,
+            estado: "404"
+          })
+          return response.status(400).json({ errors: Error })
+        } else
+          if (err) {
+            Error.push({
+              titulo: "Error interno del servidor",
+              detalle: "falló comunicación con la BD",
+              link: request.url,
+              estado: "500"
+            })
+            return response.status(400).json({ errors: Error })
+          }
+          else {
+            return response.status(200).json({
+              link: request.url,
+              data: [nivel.oa],
+              type: "objetivos_aprendizajes"
             });
             console.log(nivel);
           }
