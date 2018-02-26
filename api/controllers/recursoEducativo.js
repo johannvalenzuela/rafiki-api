@@ -22,7 +22,39 @@ exports.getRecursosEducativos = (req, res) => {
 
     let Error = [];
 
-    ModelRecursoEducativo.find({})
+    var query = {};
+
+
+    if (req.query.titulo) {
+
+        query["titulo"] = { $regex: req.query.titulo, $options: "i" };
+    }
+
+    if (req.query.descripcion) {
+
+        query["descripcion"] = { $regex: req.query.descripcion, $options: "i" };
+
+    }
+
+    if (req.query.asignatura) {
+
+        query["asignatura"] = { $regex: req.query.asignatura, $options: "i" };
+
+    }
+
+    if (req.query.nivel) {
+
+        query["nivel"] = { $regex: req.query.nivel, $options: "i" };
+
+    }
+
+    if (req.query.tipoRecurso) {
+
+        query["tipoRecurso"] = { $regex: req.query.tipoRecurso, $options: "i" };
+
+    }
+
+    ModelRecursoEducativo.find(query)
         .populate('nivel')
         .exec(function (err, recursosEducativos) {
 
@@ -44,7 +76,7 @@ exports.getRecursosEducativos = (req, res) => {
             });
 
         }
-    );
+        );
 }
 
 /** 
