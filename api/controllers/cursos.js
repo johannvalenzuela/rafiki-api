@@ -1,5 +1,6 @@
 var util = require('util');
 var ModelCurso = require('../../api/models/curso');
+var ModelNivel = require('../../api/models/nivel');
 
 
 /** 
@@ -64,8 +65,6 @@ exports.getCursos = (req, res) => {
     .populate('profesores')
     .populate('alumnos')
     .populate('planificacion')
-    .populate('planificacion.oa')
-    .populate('planificacion.recursos')
     .exec(function (err, cursos) {
 
       console.log(cursos);
@@ -354,39 +353,51 @@ exports.getCursoNivel = (req, res) => {
   let Error = [];
   let idCurso = req.swagger.params.id.value
 
-  ModelCurso.findById(idCurso)
-    .populate('nivel')
-    // .populate('profesores')
-    // .populate('alumnos')
-    .exec(function (err, curso) {
-      if (err) {
-        Error.push({
-          titulo: "Error Interno en el Servidor",
-          detalle: "Ocurrió algún error al realizar petición",
-          link: req.url,
-          estado: "500"
-        })
-        return res.status(400).json({ errors: Error })
-      }
+  ModelCurso.findById(idCurso, (err, curso) => {
+    console.log(curso.nivel)
+    ModelNivel.findById(curso.nivel)
+      .populate('asignatura')
+      .populate('oa')
+      .exec(function (err, nivel) {
+        if (!nivel) {
+          Error.push({
+            titulo: "No existe el elemento buscado",
+            detalle: "No se introdujo un ID de algún nivel",
+            link: req.url,
+            estado: "404"
+          })
+          return res.status(400).json({ errors: Error })
+        } else
+          if (err) {
+            Error.push({
+              titulo: "Error interno del servidor",
+              detalle: "falló comunicación con la BD",
+              link: req.url,
+              estado: "500"
+            })
+            return res.status(400).json({ errors: Error })
+          }
+          else {
+            return res.status(200).json({
+              link: req.url,
+              data: [nivel],
+              type: "niveles"
+            });
+            console.log(nivel);
+          }
+      });
+  });
 
-      if (!curso) {
-
-        Error.push({
-          titulo: "El Curso no existe",
-          detalle: "El id ingresado no corresponde a un curso",
-          link: req.url,
-          estado: "404"
-        });
-        return res.status(400).json({ errors: Error });
-      }
-      else {
-        return res.status(200).json({
-          link: req.url,
-          data: [curso.nivel],
-          type: "cursos"
-        });
-      }
-    });
+  // ModelCurso.findById(idCurso)
+  //   .exec(function (err, curso) {
+  //     console.log(curso.nivel.id)
+  //     // ModelNivel.findById(curso.nivel.id)
+  //     // .populate('asignatura')
+  //     // .populate('oa')
+  //     // .exec(function (err, nivel) {
+        
+  //     // });
+  //   });
 
 }
 
@@ -406,9 +417,7 @@ exports.getCursoProfesores = (req, res) => {
   let idCurso = req.swagger.params.id.value
 
   ModelCurso.findById(idCurso)
-    // .populate('nivel')
     .populate('profesores')
-    // .populate('alumnos')
     .exec(function (err, curso) {
       if (err) {
         Error.push({
@@ -457,8 +466,6 @@ exports.getCursoAlumnos = (req, res) => {
   let idCurso = req.swagger.params.id.value
 
   ModelCurso.findById(idCurso)
-    // .populate('nivel')
-    // .populate('profesores')
     .populate('alumnos')
     .exec(function (err, curso) {
       if (err) {
@@ -508,9 +515,6 @@ exports.getCursoPlanificacion = (req, res) => {
   let idCurso = req.swagger.params.id.value
 
   ModelCurso.findById(idCurso)
-    .populate('nivel')
-    .populate('profesores')
-    .populate('alumnos')
     .populate('planificacion')
     .populate('planificacion.oa')
     .populate('planificacion.recursos')
