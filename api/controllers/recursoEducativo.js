@@ -56,6 +56,7 @@ exports.getRecursosEducativos = (req, res) => {
 
     ModelRecursoEducativo.find(query)
         .populate('nivel')
+        .populate('asignatura')
         .exec(function (err, recursosEducativos) {
 
             if (err) {
@@ -97,6 +98,7 @@ exports.getRecursoEducativo = (req, res) => {
 
     ModelRecursoEducativo.findById(idRecursoEducativo)
         .populate('nivel')
+        .populate('asignatura')
         .exec(function (err, recursoEducativo) {
             if (err) {
                 Error.push({
@@ -131,13 +133,13 @@ exports.getRecursoEducativo = (req, res) => {
 }
 
 /** 
- * Función para obtener un Recurso educativo.
+ * Función para obtener Nivel de un Recurso educativo.
  *
  * @author Samuel Carrasco Fuentes
- * @exports getNivelRecursoEducativo GET /recursosEducativos/{id}/nivel
+ * @exports getRecursoEducativo GET /recursosEducativos/{id}/nivel
  * @param req Petición HTTP, id de Recurso educativo en path
  * @param res | 200 Recurso educativo encontrado | 404  Recurso educativo no existe | 500 Error al buscar |
- * @return {object} JSON con objeto Nivel de Recurso Educativo
+ * @return {object} JSON con objeto Nivel de un Recurso Educativo
  * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
  */
 exports.getNivelRecursoEducativo = (req, res) => {
@@ -175,6 +177,57 @@ exports.getNivelRecursoEducativo = (req, res) => {
                     link: req.url,
                     data: [recursoEducativo.nivel],
                     type: "niveles"
+                });
+
+            }
+        });
+}
+
+/** 
+ * Función para obtener Asignatura de un Recurso educativo.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports getAsignaturaRecursoEducativo GET /recursosEducativos/{id}/asignatura
+ * @param req Petición HTTP, id de Recurso educativo en path
+ * @param res | 200 Recurso educativo encontrado | 404  Recurso educativo no existe | 500 Error al buscar |
+ * @return {object} JSON con objeto Asignatura de un Recurso Educativo
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.getAsignaturaRecursoEducativo = (req, res) => {
+
+    let Error = [];
+    let idRecursoEducativo = req.swagger.params.id.value;
+
+
+    ModelRecursoEducativo.findById(idRecursoEducativo)
+        .populate('asignatura')
+        .exec(function (err, recursoEducativo) {
+            if (err) {
+                Error.push({
+                    titulo: "Error Interno en el Servidor",
+                    detalle: "Ocurrio algun error al realizar peticion",
+                    link: req.url,
+                    estado: "500"
+                })
+                return res.status(400).json({ errors: Error })
+            }
+
+            if (!recursoEducativo) {
+
+                Error.push({
+                    titulo: "El Recurso Educativo no existe",
+                    detalle: "El id ingresado no corresponde a un recurso educativo",
+                    link: req.url,
+                    estado: "404"
+                });
+                return res.status(400).json({ errors: Error });
+            }
+            else {
+
+                return res.status(200).json({
+                    link: req.url,
+                    data: [recursoEducativo.asignatura],
+                    type: "asignaturas"
                 });
 
             }
