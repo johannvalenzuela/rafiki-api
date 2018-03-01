@@ -1743,6 +1743,7 @@ definitions:
         type: string
       descripcion:
         type: string
+        description: descripcion de objetivos de aprendizaje
   ResponseObjAprendizaje:
     type: object
     properties:
