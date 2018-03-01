@@ -1741,6 +1741,7 @@ definitions:
         description: numero del objetivo de aprendizaje
       tipo:
         type: string
+        description: Tipo de aprendizaje ('Habilidad', 'Conocimiento', 'Actitud') 
       descripcion:
         type: string
         description: descripcion de objetivos de aprendizaje
