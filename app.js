@@ -41,7 +41,7 @@ SwaggerExpress.create(config, (err, swaggerExpress) => {
   // install middleware
   swaggerExpress.register(app);
   mongoose.Promise = global.Promise;
-  mongoose.connect('mongodb://54.233.193.162:27017/rafiki-test');
+  // mongoose.connect('mongodb://54.233.193.162:27017/rafiki-test');
   var port = process.env.PORT || 10010;
 
   app.listen(port);
