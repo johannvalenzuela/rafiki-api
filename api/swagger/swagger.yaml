@@ -164,7 +164,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseNivel"
+            $ref: "#/definitions/Nivel"
         default:
           description: Error
           schema:
@@ -228,7 +228,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseNivel"
+            $ref: "#/definitions/Nivel"
         default:
           description: Error
           schema:
@@ -1172,6 +1172,90 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/Errors"
+  /recursosEducativos/{id}/nivel:
+    # our controller name
+    x-swagger-router-controller: recursoEducativo
+    get:
+      description: Obtener nivel de un recurso educativo
+      operationId: getNivelRecursoEducativo
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Nivel"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
+  /recursosEducativos/{id}/asignatura:
+    # our controller name
+    x-swagger-router-controller: recursoEducativo
+    get:
+      description: Obtener asignatura de un recurso educativo
+      operationId: getAsignaturaRecursoEducativo
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Asignatura"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
+  /actividades/{id}/nivel:
+    # our controller name
+    x-swagger-router-controller: actividad
+    get:
+      description: Obtener Nivel de una actividad
+      operationId: getNivelActividad
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Nivel"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
+  /actividades/{id}/autor:
+    # our controller name
+    x-swagger-router-controller: actividad
+    get:
+      description: Obtener Autor de una actividad
+      operationId: getAutorActividad
+      # define the type of response for Success "200" and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/User"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
 # complex objects have schema definitions
 definitions:
   Authentication:
@@ -1252,8 +1336,7 @@ definitions:
         type: string
         description: Descripcion del recurso educativo
       asignatura:
-        type: string
-        description: Nombre de la asignatura a la que alude el recurso educativo
+        $ref: "#/definitions/Asignatura"
       nivel:
         $ref: "#/definitions/Nivel"
       tipoRecurso:
@@ -2033,7 +2116,7 @@ definitions:
         description: Descripcion del recurso educativo
       asignatura:
         type: string
-        description: Nombre de la asignatura a la que alude el recurso educativo
+        description: Asignatura a la que alude el recurso educativo (ID)
       nivel:
         type: string
         description: Nivel al que corresponde el recurso educativo (ID)

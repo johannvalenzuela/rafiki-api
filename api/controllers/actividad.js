@@ -131,7 +131,7 @@ exports.getActividad = (req, res) => {
   let Error = [];
   let idActividad = req.swagger.params.id.value
 
-  ModelRecursoEducativo.findById(idActividad)
+  ModelActividad.findById(idActividad)
     .populate('nivel')
     .populate('autor')
     .exec(function (err, actividad) {
@@ -168,6 +168,111 @@ exports.getActividad = (req, res) => {
 
     });
 }
+
+/** 
+ * Función para obtener nivel de una Actividad.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports getNivelActividad GET /actividades/{id}/nivel
+ * @param req Petición HTTP, id de actividad en path
+ * @param res | 200 Actividad encontrada | 404 Actividad no existe | 500 Error al buscar |
+ * @return {object} JSON con objeto Nivel de una Actividad
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.getNivelActividad = (req, res) => {
+
+  let Error = [];
+  let idActividad = req.swagger.params.id.value
+
+  ModelActividad.findById(idActividad)
+    .populate('nivel')
+    .exec(function (err, actividad) {
+
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
+      }
+
+      if (!actividad) {
+
+        Error.push({
+          titulo: "La actividad no existe",
+          detalle: "El id ingresado no corresponde a una actividad",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      else {
+
+        return res.status(200).json({
+          link: req.url,
+          data: [actividad.nivel],
+          type: "niveles"
+        });
+
+      }
+
+    });
+}
+
+/** 
+ * Función para obtener autor de una Actividad.
+ *
+ * @author Samuel Carrasco Fuentes
+ * @exports getAutorActividad GET /actividades/{id}/autor
+ * @param req Petición HTTP, id de actividad en path
+ * @param res | 200 Actividad encontrada | 404 Actividad no existe | 500 Error al buscar |
+ * @return {object} JSON con objeto Autor de una Actividad
+ * @return {errors: Error } JSON con un objeto que contiene arreglo de Objetos Error
+ */
+exports.getAutorActividad = (req, res) => {
+
+  let Error = [];
+  let idActividad = req.swagger.params.id.value
+
+  ModelActividad.findById(idActividad)
+    .populate('autor')
+    .exec(function (err, actividad) {
+
+      if (err) {
+        Error.push({
+          titulo: "Error Interno en el Servidor",
+          detalle: "Ocurrió algún error al realizar petición",
+          link: req.url,
+          estado: "500"
+        })
+        return res.status(400).json({ errors: Error })
+      }
+
+      if (!actividad) {
+
+        Error.push({
+          titulo: "La actividad no existe",
+          detalle: "El id ingresado no corresponde a una actividad",
+          link: req.url,
+          estado: "404"
+        });
+        return res.status(400).json({ errors: Error });
+      }
+      else {
+
+        return res.status(200).json({
+          link: req.url,
+          data: [actividad.autor],
+          type: "users"
+        });
+
+      }
+
+    });
+}
+
 
 
 /** 

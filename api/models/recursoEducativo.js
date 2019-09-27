@@ -18,7 +18,7 @@ const RecursoEducativoSchema = new Schema({
 
     //Nombre de la asignatura a la que alude el recurso educativo
     asignatura: {
-        type: String
+        type: Schema.Types.ObjectId, ref: 'Asignatura'
     },
 
     //Nivel al que corresponde el recurso educativo
