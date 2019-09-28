@@ -295,7 +295,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseOrganizacion"
+            $ref: "#/definitions/Organizacion"
         default:
           description: Error
           schema:
@@ -430,7 +430,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ResponseOrganizacion"
+            $ref: "#/definitions/Organizacion"
         default:
           description: Error
           schema:
@@ -1001,7 +1001,7 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: "#/definitions/ObjAprendizaje"
+            $ref: "#/definitions/Response"
         default:
           description: Error
           schema:
@@ -1172,6 +1172,111 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/Errors"
+  /organizaciones/{id}/alumnos:
+    # our controller name
+    x-swagger-router-controller: organizacion
+    get:
+      description: Obtener alumnos de una organizacion
+      operationId: getListAlumnos
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/User"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
+  /organizaciones/{id}/profesores:
+    # our controller name
+    x-swagger-router-controller: organizacion
+    get:
+      description: Obtener profesores de una organizacion
+      operationId: getListProfesores
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/User"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
+  /organizaciones/{id}/sostenedores:
+    # our controller name
+    x-swagger-router-controller: organizacion
+    get:
+      description: Obtener cursos de una organizacion
+      operationId: getListSostenedores
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/User"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
+  /organizaciones/{id}/directores:
+    # our controller name
+    x-swagger-router-controller: organizacion
+    get:
+      description: Obtener cursos de una organizacion
+      operationId: getListDirectores
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/User"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
+  /organizaciones/{id}/cursos:
+    # our controller name
+    x-swagger-router-controller: organizacion
+    get:
+      description: Obtener cursos de una organizacion
+      operationId: getListCursos
+      # define the type of response for Success "200  " and Error
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Curso"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/Errors"
 # complex objects have schema definitions
 definitions:
   Authentication:
@@ -1323,11 +1428,11 @@ definitions:
         properties:
           inicio:
             type: string
-            format: date-time
+            format: date
             description: Fecha de inicio para las postulaciones de la organizacion
           cierre:
             type: string
-            format: date-time
+            format: date
             description: Fecha de cierre para las postulaciones de la organizacion
       direccion:
         type: object
@@ -1363,9 +1468,6 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/User"
-      createAt:
-        type: string
-        format: date-time
   User:
     type: object
     properties:
@@ -1543,9 +1645,6 @@ definitions:
         type: array
         items: 
           $ref: "#/definitions/Actividad"
-      createAt:
-        type: string
-        format: date-time
   Orientacion:
     type: object
     properties:
@@ -1870,9 +1969,6 @@ definitions:
         type: array
         items:
           type: string
-      createAt:
-        type: string
-        format: date
   RequestEvaluacion:
     type: object
     properties:
@@ -1898,9 +1994,6 @@ definitions:
         type: array
         items: 
           type: string
-      createAt:
-        type: string
-        format: date-time
   RequestPlanEstudio:
     type: object
     properties:
@@ -1932,9 +2025,6 @@ definitions:
       totalTiempoMinFD:
         type: number
         description: Tiempo total de Formacion Diferenciada
-      createAt:
-        type: string
-        format: date-time
   RequestCurso:
     type: object
     properties:
