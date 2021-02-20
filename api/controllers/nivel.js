@@ -40,12 +40,12 @@ function get_niveles(request, response) {
   if (request.query.grado)
     query["grado"] = { $eq: request.query.grado };
 
-  if (req.query.oa) {
-    let arr = req.query.oa.split(',');
+  if (request.query.oa) {
+    let arr = request.query.oa.split(',');
     query["oa"] = { $in: arr }
   }
-  if (req.query.asignatura) {
-    query["asignatura"] = { $in: req.query.asignatura }
+  if (request.query.asignatura) {
+    query["asignatura"] = { $in: request.query.asignatura }
 }
 
   ModelNivel.find(query)
